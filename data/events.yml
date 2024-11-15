@@ -1,11 +1,12 @@
-- title: "Quarkus Insight - What is Quarkus Roq?"
-  description: "Andy Damevin, Matheus Cruz and Melloware join us to discuss Quarkus Roq, which includes tooling for generating a static website with Quarkus."
-  date: "2024-11-11"
-  link: https://www.youtube.com/quarkusio/live
-- title: "Roq 1.0"
-  description: "Roq 1.0 is out, it's time to Roq with blogs!"
-  date: "2024-10-31"
-  link: https://docs.quarkiverse.io/quarkus-roq/dev/index.html#generate
-- title: "Roq 1.0 Beta"
-  description: "You can start building your site or blog with Roq. More features will come to cover all the needs you can expect from an awesome SSG!"
-  date: "2024-10-20"
+- title: "Finally, a blog"
+  description: "This blog comes to life, powered by Roq and Quarkus. Want an easy way to generate static HTML for your own blog? Check it out!"
+  date: "2024-11-15"
+  link: https://pages.quarkiverse.io/quarkus-roq/
+- title: "General Availability"
+  description: "NetObserv 1.0 is out, officially a new Red Hat product for OpenShift!"
+  date: "2023-01-17"
+  link: https://www.redhat.com/en/blog/check-out-the-new-network-observability-support-in-openshift-4.12
+- title: "NetObserv birth"
+  description: "This was the first release of the NetObserv operator on OperatorHub!"
+  date: "2022-02-14"
+  link: https://github.com/netobserv/network-observability-operator/discussions/56
