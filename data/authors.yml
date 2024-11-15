@@ -1,0 +1,21 @@
+jtama:
+  name: "Jérôme Tama"
+  avatar: "https://github.com/jtama.png"
+  job: Ce que je veux
+  profile: "https://x.com/jtama_"
+  nickname: "jtama"
+  bio: "Passionate about Java, Quarkus, containers, and documentation as code, I mainly develop, train, and sometimes contribute to OSS projects"
+ia3andy:
+  name: "Andy Damevin"
+  avatar: "https://github.com/ia3andy.png"
+  job: Principal Software Engineer
+  profile: "https://x.com/ia3andy"
+  nickname: "ia3andy"
+  bio: "I am happy to wake up every day and make the Java world a better place with Quarkus. I am mostly a backend developer but I am not that bad at doing web apps either in my spare time, in fact, you can be the judge of that since Roq is my baby :-)"
+mcruzdev:
+  name: "Matheus Cruz"
+  avatar: "https://github.com/mcruzdev.png"
+  profile: "https://x.com/mcruzdev"
+  job: Senior Software Engineer
+  nickname: "mcruzdev"
+  bio: "I am a passionate learner, open-source enthusiast, and Java developer with a drive for continuous improvement. When I’m not coding, you can find me on the Brazilian Jiu Jitsu mats, playing the guitar, or exploring new challenges. I believe in the power of community, collaboration, and creativity—both in and outside of tech."
