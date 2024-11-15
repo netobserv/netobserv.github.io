@@ -51,7 +51,7 @@ The dashboard shows a stable number of flows captured per second, most of the ti
 
 ![Flows per second]({page.image('agent_metrics_perf/fps-1.png')})
 
-We may also check the `hey-ho` traffic captured by NetObserv, in bytes per second, with this `promql` query: `sum(rate(netobserv_workload_ingress_bytes_total{DstK8S_Namespace=~"gallery.*",DstK8S_OwnerType="Deployment"}[2m]))`. It is very stable at 4MBps:
+We may also check the `hey-ho` traffic captured by NetObserv, in bytes per second, with this `promql` query: `sum(rate(netobserv_workload_ingress_bytes_total{ DstK8S_Namespace=~"gallery.*",DstK8S_OwnerType="Deployment"}[2m]))`. It is very stable at 4MBps:
 
 ![Hey-ho traffic]({page.image('agent_metrics_perf/heyho-mbps-1.png')})
 
@@ -120,7 +120,7 @@ Even if there are five metrics, it shows mostly three things: the deduper cache 
 
 The buffer size metrics tell us that the hashmaps are containing between 15K and 25K elements, which is a sum for every eBPF agent pods. We are interested to know if the hashmap configuration isn't over-sized. We can click the Inspect link and edit a little bit the promQL to see per-pod utilization:
 
-`netobserv_agent_buffer_size{name="hashmap-unique"}` shows per-pod maps size, or `max(netobserv_agent_buffer_size{name="hashmap-unique"})` shows the maximum map utilization across pods.
+`netobserv_agent_buffer_size{ name="hashmap-unique"}` shows per-pod maps size, or `max(netobserv_agent_buffer_size{ name="hashmap-unique"})` shows the maximum map utilization across pods.
 
 ![Per-pod size]({page.image('agent_metrics_perf/per-pod-hashmap-size.png')})
 
