@@ -118,7 +118,7 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <sourceFile>${project.basedir}/../.all-contributorsrc</sourceFile>
+                            <sourceFile>${project.basedir}/.all-contributorsrc</sourceFile>
                             <destinationFile>data/contributors.json</destinationFile>
                         </configuration>
                     </execution>
