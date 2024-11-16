@@ -1,21 +1,42 @@
+Amoghrd:
+  name: "Amogh RD"
+  avatar: "https://github.com/Amoghrd.png"
+  profile: "https://github.com/Amoghrd"
+  nickname: "Amoghrd"
+  bio: "Bio coming soon..."
+dushyantbehl:
+  name: "Dushyant Behl"
+  avatar: "https://github.com/dushyantbehl.png"
+  profile: "https://github.com/dushyantbehl"
+  nickname: "dushyantbehl"
+  bio: "Bio coming soon..."
 jotak:
   name: "Joël Takvorian"
   avatar: "https://github.com/jotak.png"
-  job: Software Engineer
   profile: "https://framapiaf.org/@jotak"
   nickname: "jotak"
-  bio: "Coming soon..."
-ia3andy:
-  name: "Andy Damevin"
-  avatar: "https://github.com/ia3andy.png"
-  job: Principal Software Engineer
-  profile: "https://x.com/ia3andy"
-  nickname: "ia3andy"
-  bio: "I am happy to wake up every day and make the Java world a better place with Quarkus. I am mostly a backend developer but I am not that bad at doing web apps either in my spare time, in fact, you can be the judge of that since Roq is my baby :-)"
-mcruzdev:
-  name: "Matheus Cruz"
-  avatar: "https://github.com/mcruzdev.png"
-  profile: "https://x.com/mcruzdev"
-  job: Senior Software Engineer
-  nickname: "mcruzdev"
-  bio: "I am a passionate learner, open-source enthusiast, and Java developer with a drive for continuous improvement. When I’m not coding, you can find me on the Brazilian Jiu Jitsu mats, playing the guitar, or exploring new challenges. I believe in the power of community, collaboration, and creativity—both in and outside of tech."
+  bio: "Bio coming soon..."
+jpinsonneau:
+  name: "Julien Pinsonneau"
+  avatar: "https://github.com/jpinsonneau.png"
+  profile: "https://github.com/jpinsonneau"
+  nickname: "jpinsonneau"
+  bio: "Bio coming soon..."
+memodi:
+  name: "Mehul Modi"
+  avatar: "https://github.com/memodi.png"
+  profile: "https://github.com/memodi"
+  nickname: "memodi"
+  bio: "Bio coming soon..."
+msherif1234:
+  name: "Mohamed S. Mahmoud"
+  avatar: "https://github.com/msherif1234.png"
+  profile: "https://github.com/msherif1234"
+  nickname: "msherif1234"
+  bio: "Bio coming soon..."
+stleerh:
+  name: "Steven Lee"
+  avatar: "https://github.com/stleerh.png"
+  profile: "https://github.com/stleerh"
+  nickname: "stleerh"
+  bio: "Bio coming soon..."

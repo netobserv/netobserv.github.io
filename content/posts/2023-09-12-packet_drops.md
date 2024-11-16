@@ -3,14 +3,12 @@ layout: :theme/post
 title: "Tracking packet drops"
 description: "Network Observability Real-Time Per Flow Packets Drop"
 tags: eBPF,Drops,Monitoring,Troubleshooting
-author: Amoghrd
+authors: [Amoghrd,jpinsonneau,msherif1234]
 ---
 
 # Network Observability Real-Time Per Flow Packets Drop
 
 ![logo]({page.image('packet-drops/packets-drop-logo.png')})
-
-By: Amogh RD, Julien Pinsonneau and Mohamed S. Mahmoud
 
 In OCP ensuring efficient packet delivery is crucial for maintaining smooth
 communication between applications. However, due to various factors such

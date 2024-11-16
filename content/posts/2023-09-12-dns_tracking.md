@@ -3,15 +3,13 @@ layout: :theme/post
 title: "DNS tracking"
 description: "Network Observability Per Flow DNS tracking"
 tags: eBPF,DNS,Monitoring,Troubleshooting
-author: jpinsonneau
+authors: [jpinsonneau,memodi,msherif1234]
 ---
 
 
 # Network Observability Per Flow DNS tracking
 
 ![logo]({page.image('dns-tracking/dns-tracking-logo.png')})
-
-By: Julien Pinsonneau, Mehul Modi and Mohamed S. Mahmoud
 
 In today's interconnected digital landscape, Domain Name System (DNS) tracking
 plays a crucial role in networking and security. DNS resolution is a fundamental

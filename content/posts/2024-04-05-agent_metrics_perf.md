@@ -3,7 +3,7 @@ layout: :theme/post
 title: "Fine tuning with agent metrics"
 description: "Performance fine-tuning - a deep dive in eBPF agent metrics"
 tags: eBPF,Performance,Configuration,Metrics
-author: ia3andy
+authors: [jotak]
 ---
 
 # Performance fine-tuning - a deep dive in eBPF agent metrics

@@ -4,6 +4,39 @@ layout: theme-layouts/roq-default/post
 
 {@io.quarkiverse.roq.frontmatter.runtime.model.DocumentPage page}
 
+<style>
+.page-share {
+        visibility: hidden;
+}
+</style>
+
+<header class="header-page">
+  <div class="author">
+    <span>
+      Author(s): 
+    </span>
+    <!-- authors.yml is in the data/ -->
+    {#for handle in page.data.authors}
+      {#let author=cdi:authors.get(handle)}
+      {#if author}
+        <details>
+          <summary>
+            <span>{author.name}</span>
+          </summary>
+          {#author-card name=author.name avatar=author.avatar nickname=author.nickname profile=author.profile}
+            {#if author.bio}
+              {author.bio}
+            {/if}
+          {/author-card}
+        </details>
+      {#else}
+        <span>{handle}</span>
+      {/if}
+      {/let}
+    {/for}
+  </div>
+</header>
+
 {#insert /}
 
 {#article-end}

@@ -3,12 +3,10 @@ layout: :theme/post
 title: "Secondary interfaces"
 description: "Network Observability secondary interface support"
 tags: Monitoring,Network,Multus,SRIOV
-author: msherif1234
+authors: [msherif1234]
 ---
 
 # Network Observability secondary interface support
-
-By: Mohamed S. Mahmoud
 
 Network observability for secondary interfaces with Multus and SR-IOV plugins
 in Kubernetes can be a complex task, but it's crucial for monitoring and

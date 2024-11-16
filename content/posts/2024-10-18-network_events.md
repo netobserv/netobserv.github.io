@@ -3,7 +3,7 @@ layout: :theme/post
 title: OVN Network Events 
 description: "Monitoring OVN Networking Events using Network Observability"
 tags: Monitoring,Network,NetworkPolicy,OVN
-author: msherif1234
+authors: [msherif1234]
 ---
 
 # <div align="center">Monitoring OVN Networking Events using Network Observability</div>
@@ -11,8 +11,6 @@ author: msherif1234
 <p align="center">
   <img src="{page.image('network-events/network-events-logo.drawio.png')}" alt="logo" width="25%"/>
 </p>
-
-By: Mohamed S. Mahmoud
 
 Network security and performance maintenance crucially depend on monitoring network events triggered
 by OVN (Open Virtual Network), including network policies, admin network policies, and egress firewalls.
