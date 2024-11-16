@@ -30,7 +30,7 @@ The dashboard called "NetObserv / Health" is created when you install a `FlowCol
 
 It shows a bunch of statistics such as the flows per second that NetObserv captures, the configured sampling ratio (0 or 1 mean sample everything), the errors reported by managed components and the number of flows dropped, either upstream from the eBPF agent, or downstream not stored in Loki. Below, the dashboard is broken down into a different section per component, and lastly the resource usage.
 
-![Health dashboard]({page.image('agent_metrics_perf/health-overview.png')})
+![Health dashboard]({page.image('agent-metrics-perf/health-overview.png')})
 
 For this blog we are more interested in the eBPF agent statistics and the resource usage.
 
@@ -42,21 +42,21 @@ Like mentioned above, let's generate some traffic with `hey-ho`:
 ./hey-ho.sh -r 3 -d 3 -z 60m -n 2 -q 2 -p -b
 ```
 
-![hey-ho]({page.image('agent_metrics_perf/hey-ho.png')})
+![hey-ho]({page.image('agent-metrics-perf/hey-ho.png')})
 
 This is spawning 18 pods in 2 namespaces, talking to each other. Let's have a look at the metrics then.
 
 The dashboard shows a stable number of flows captured per second, most of the time between 3K and 3.5K. No drops, no errors:
 
-![Flows per second]({page.image('agent_metrics_perf/fps-1.png')})
+![Flows per second]({page.image('agent-metrics-perf/fps-1.png')})
 
 We may also check the `hey-ho` traffic captured by NetObserv, in bytes per second, with this `promql` query: `sum(rate(netobserv_workload_ingress_bytes_total{ DstK8S_Namespace=~"gallery.*",DstK8S_OwnerType="Deployment"}[2m]))`. It is very stable at 4MBps:
 
-![Hey-ho traffic]({page.image('agent_metrics_perf/heyho-mbps-1.png')})
+![Hey-ho traffic]({page.image('agent-metrics-perf/heyho-mbps-1.png')})
 
 Now looking at the resource usage:
 
-![Resource usage]({page.image('agent_metrics_perf/res-usage-100000.png')})
+![Resource usage]({page.image('agent-metrics-perf/res-usage-100000.png')})
 
 That's also relatively stable, with the eBPF pods using in total around 0.08 CPU and around 340 MB.
 
@@ -64,13 +64,13 @@ That's also relatively stable, with the eBPF pods using in total around 0.08 CPU
 
 Now let's look at the agent stats:
 
-![Agent stats overview]({page.image('agent_metrics_perf/agent-stats-overview.png')})
+![Agent stats overview]({page.image('agent-metrics-perf/agent-stats-overview.png')})
 
 What does all this mean? OK, take a breath. We need to talk about the [agent architecture](https://github.com/netobserv/netobserv-ebpf-agent/blob/main/docs/architecture.md) first.
 
 ### Agent architecture
 
-![Agent architecture]({page.image('agent_metrics_perf/agent-architecture.png')})
+![Agent architecture]({page.image('agent-metrics-perf/agent-architecture.png')})
 
 The agent runs on every node and injects an [eBPF](https://ebpf.io/) program in the Linux kernel in order to listen received and sent packets on network interfaces. The Linux architecture segregates the kernel space and the user space, restricting how data can flow between them. Some specific data structures are available to eBPF programs in order to transfer data between those spaces. By default, our agent uses two of these structures: a ring buffer, and per-CPU hashmaps (other structures can be used depending on the enabled features of the agent).
 
@@ -91,7 +91,7 @@ Parenthesis closed, we were looking at the different charts under the eBPF agent
 
 - **Eviction rate**: this is the rate of eviction events, broken down per internal component
 
-![Eviction rate]({page.image('agent_metrics_perf/eviction-rate.png')})
+![Eviction rate]({page.image('agent-metrics-perf/eviction-rate.png')})
 
 In theory, you should see the same rate between the exporter (`grpc` here) and the `deduper`, and it should also equal the sum of `hashmap` and `accounter` (which is in the ring buffer data path).
 
@@ -101,17 +101,17 @@ You may also notice that the hashmap eviction rate is a flat constant 1.2. That'
 
 - **Ringbuffer / HashMap ratio**: ratio between ring-buffer evictions and hashmap evictions.
 
-![RB/HM ratio]({page.image('agent_metrics_perf/hm-rb-ratio.png')})
+![RB/HM ratio]({page.image('agent-metrics-perf/hm-rb-ratio.png')})
 
 Keep it as low as possible. The picture here is fine: even the spike is actually a low one, at 4e-4.
 
 - **Evicted flows rate**: similar to the rate of evictions except it counts the number of flows rather than the individual eviction events. Also broken down per internal component.
 
-![Evicted flows rate]({page.image('agent_metrics_perf/evicted-flows-rate.png')})
+![Evicted flows rate]({page.image('agent-metrics-perf/evicted-flows-rate.png')})
 
 - **Buffer sizes**: some internal buffer sizes. This will be our starting point for fine-tuning.
 
-![Buffer sizes]({page.image('agent_metrics_perf/buffer-sizes.png')})
+![Buffer sizes]({page.image('agent-metrics-perf/buffer-sizes.png')})
 
 Even if there are five metrics, it shows mostly three things: the deduper cache size, the hashmap size and the accounter cache size. `deduper-map` and `deduper-list` should normally be identical, as well as `hashmap-total` and `hashmap-unique`. They were mostly duplicated for debugging. If you find that they aren't identical, that might be an indication that something isn't going as expected. In that case, feel free to [open a github issue](https://github.com/netobserv/netobserv-ebpf-agent/issues) to discuss.
 
@@ -121,7 +121,7 @@ The buffer size metrics tell us that the hashmaps are containing between 15K and
 
 `netobserv_agent_buffer_size{ name="hashmap-unique"}` shows per-pod maps size, or `max(netobserv_agent_buffer_size{ name="hashmap-unique"})` shows the maximum map utilization across pods.
 
-![Per-pod size]({page.image('agent_metrics_perf/per-pod-hashmap-size.png')})
+![Per-pod size]({page.image('agent-metrics-perf/per-pod-hashmap-size.png')})
 
 Sounds like it never goes above 4K.
 
@@ -133,15 +133,15 @@ Let's halve it and see what happens.
 
 ### cacheMaxFlows=50000
 
-![Agent stats at 50000 cacheMaxFlows]({page.image('agent_metrics_perf/agent-stats-50000.png')})
+![Agent stats at 50000 cacheMaxFlows]({page.image('agent-metrics-perf/agent-stats-50000.png')})
 
 The eviction rate, and the flows per second haven't changed a lot, this is reassuring. The ring buffer ratio is still low. We can also take a look at the captured traffic, to double-check we're not missing anything:
 
-![Hey-ho traffic]({page.image('agent_metrics_perf/heyho-mbps-2.png')})
+![Hey-ho traffic]({page.image('agent-metrics-perf/heyho-mbps-2.png')})
 
 Still a pretty flat 4 MBps. So far so good. So what, does it have any impact at all? What about the resource usage?
 
-![Resource usage at 50000 cacheMaxFlows]({page.image('agent_metrics_perf/res-usage-50000.png')})
+![Resource usage at 50000 cacheMaxFlows]({page.image('agent-metrics-perf/res-usage-50000.png')})
 
 Oh, waw! Although no much impact on CPU, the memory has been greatly reduced! From more than 400 MB to 250 MB. That was a good move.
 
@@ -151,7 +151,7 @@ Let's go further and set `cacheMaxFlows` to 10K.
 
 We're getting closer to the 4K utilization that we were seeing before. If this threshold is reached, we can expect more use of the ring buffer. Let's see if that happens.
 
-![Agent stats at 10000 cacheMaxFlows]({page.image('agent_metrics_perf/agent-stats-10000.png')})
+![Agent stats at 10000 cacheMaxFlows]({page.image('agent-metrics-perf/agent-stats-10000.png')})
 
 While the ring buffer doesn't seem to be more used most of the time, there is a spike at 11:25. Maps are still well used but it had an impact on the deduper buffer size and the flows evicted.
 
@@ -159,11 +159,11 @@ Taking a close look at the eviction rate graph, there's a small increase of the 
 
 Note that there is an artifact visible here, a global increase of the flows being generated (~3.5K to ~4K), which could be related to a test workloads restart. 10 minutes later it retrieved its previous level, closer to 3K:
 
-![FPS back to normal]({page.image('agent_metrics_perf/fps-back-normal.png')})
+![FPS back to normal]({page.image('agent-metrics-perf/fps-back-normal.png')})
 
 What about the resource usage?
 
-![Resource usage at 10000 cacheMaxFlows]({page.image('agent_metrics_perf/res-usage-10000.png')})
+![Resource usage at 10000 cacheMaxFlows]({page.image('agent-metrics-perf/res-usage-10000.png')})
 
 Memory decreased again, though not as much as before. There is a slight CPU increase which can be attributed to the increased number of flows (which decreases as well after 10 minutes). So it sounds like despite approaching the utilization threshold, we're still on a positive trend, but it weakens.
 
@@ -173,11 +173,11 @@ Next step: dare the devil below the utilization threshold, with 2K.
 
 We shouldn't expect anything good here, but let's see.
 
-![Agent stats at 2000 cacheMaxFlows]({page.image('agent_metrics_perf/agent-stats-2000.png')})
+![Agent stats at 2000 cacheMaxFlows]({page.image('agent-metrics-perf/agent-stats-2000.png')})
 
 Resource usage:
 
-![Resource usage at 2000 cacheMaxFlows]({page.image('agent_metrics_perf/res-usage-2000.png')})
+![Resource usage at 2000 cacheMaxFlows]({page.image('agent-metrics-perf/res-usage-2000.png')})
 
 Well, the situation has worsened, but not as much as we could fear. The CPU has increased by +40% but the number of flows, while also growing, is not exploding. Memory consumption looks unchanged, although it has probably been re-balanced internally between the hashmap and other parts (we could run a profiler if we really want to know). The ring buffer is now consistently used, indicating a somewhat degraded situation, but usage is still in a decent proportion. Things can really get out of hand when the ratio exceeds ~0.05, and here it is still an order of magnitude below.
 
@@ -187,11 +187,11 @@ Also, something interesting to note is that the hashmap evictions (purple line i
 
 The goal for setting a more aggressive timeout is to flush the hashmaps more often, hence removing as much as possible the need of the ring buffer as a fallback due to having full maps. But flushing maps more often comes at the cost of generating more flows.
 
-![Agent stats at 1s cacheTimeout]({page.image('agent_metrics_perf/agent-stats-1s.png')})
+![Agent stats at 1s cacheTimeout]({page.image('agent-metrics-perf/agent-stats-1s.png')})
 
 We reached our goal: the ring buffer ratio has dropped. But we see more flows are generated, around 8K instead of 5-6K previously. Also, buffers are smaller since we flush them more often.
 
-![Resource usage at 1s cacheTimeout]({page.image('agent_metrics_perf/res-usage-1s.png')})
+![Resource usage at 1s cacheTimeout]({page.image('agent-metrics-perf/res-usage-1s.png')})
 
 More flows mean more CPU. The impact goes beyond the agent alone, as the components that are downstream the pipeline (flowlogs-pipeline and, if you use them, Kafka and Loki), will also need to process more flows. But while the situation seems less glorious here, this is on purpose: to keep us out of a flows runaway due to over-use of the ring buffer, which we will see next.
 
@@ -199,11 +199,11 @@ More flows mean more CPU. The impact goes beyond the agent alone, as the compone
 
 Just for the sake of the demonstration, here's how it looks like with an undersized hashmap leading to over-use of the ring buffer. This is between 12:20 and 12:30 in the charts:
 
-![Agent stats runaway]({page.image('agent_metrics_perf/agent-stats-runaway.png')})
+![Agent stats runaway]({page.image('agent-metrics-perf/agent-stats-runaway.png')})
 
 The ring buffer ratio went above 0.05 with even a huge spike to 0.5. This resulted in a burst of evicted flows from ~5K to ~20K.
 
-![Resource usage runaway]({page.image('agent_metrics_perf/res-usage-runaway.png')})
+![Resource usage runaway]({page.image('agent-metrics-perf/res-usage-runaway.png')})
 
 This had a big impact on CPU usage:
 - +457% CPU when compared to `cacheMaxFlows=10000`
@@ -221,6 +221,6 @@ The key takeaways are:
 
 To conclude with a last picture, this is how the captured traffic looked during all these tests (in orange) versus the same from cAdvisor metrics taken as a reference (in blue):
 
-![Hey-ho traffic]({page.image('agent_metrics_perf/heyho-mbps-3.png')})
+![Hey-ho traffic]({page.image('agent-metrics-perf/heyho-mbps-3.png')})
 
 You can see that they almost perfectly match. It means that all the tweaks we did haven't affected the correctness of the data, even during the "flows runaway" at 12:25 where we could have feared some drops.

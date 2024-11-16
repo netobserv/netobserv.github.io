@@ -9,7 +9,7 @@ author: jpinsonneau
 
 # Network Observability Per Flow DNS tracking
 
-![logo]({page.image('dns_tracking/dns_tracking_logo.png')})
+![logo]({page.image('dns-tracking/dns-tracking-logo.png')})
 
 By: Julien Pinsonneau, Mehul Modi and Mohamed S. Mahmoud
 
@@ -95,46 +95,46 @@ Open your OCP Console and move to `Administrator view` -> `Observe` ->
 Three new filters, `DNS Id`, `DNS Latency` and `DNS Response Code` will be
 available in the common section:
 
-![dns filters]({page.image('dns_tracking/dns_filters.png')})
+![dns filters]({page.image('dns-tracking/dns-filters.png')})
 
 The first one will allow you to filter on a specific DNS Id (found using `dig`
 command or in flow table details) to correlate with your query.
 
-![dns id]({page.image('dns_tracking/dns_id.png')})
+![dns id]({page.image('dns-tracking/dns-id.png')})
 
 The second one helps to identify potential performance issues by looking at DNS
 resolution latency.
 
-![dns latency more than]({page.image('dns_tracking/dns_latency_more_than.png')})
+![dns latency more than]({page.image('dns-tracking/dns-latency-more-than.png')})
 
 The third filter surfaces DNS response codes, which can help detect errors or
 unauthorized resolutions.
 
-![dns rcode]({page.image('dns_tracking/dns_response_code.png')})
+![dns rcode]({page.image('dns-tracking/dns-response-code.png')})
 
 ### Overview
 
 New graphs are introduced in the `advanced options` -> `Manage panels` popup:
 
-![advanced options 1]({page.image('dns_tracking/advanced_options1.png')})
+![advanced options 1]({page.image('dns-tracking/advanced-options1.png')})
 
 - Top X average DNS latencies
 - Top X DNS response code
 - Top X DNS response code stacked with total
 
-![dns graphs 1]({page.image('dns_tracking/dns_graphs1.png')})
-![dns graphs 2]({page.image('dns_tracking/dns_graphs2.png')})
+![dns graphs 1]({page.image('dns-tracking/dns-graphs1.png')})
+![dns graphs 2]({page.image('dns-tracking/dns-graphs2.png')})
 
 ### Traffic flows
 
 The table view adds the new DNS columns `Id`, `Latency` and `Response code`,
 which are available from the `advanced options` -> `manage columns` popup.
 
-![advanced options 2]({page.image('dns_tracking/advanced_options2.png')})
+![advanced options 2]({page.image('dns-tracking/advanced-options2.png')})
 
 The DNS flows display this information in both the table and the side panel:
 
-![dns table]({page.image('dns_tracking/dns_table.png')})
+![dns table]({page.image('dns-tracking/dns-table.png')})
 
 ## Future support
 

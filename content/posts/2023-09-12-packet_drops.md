@@ -8,7 +8,7 @@ author: Amoghrd
 
 # Network Observability Real-Time Per Flow Packets Drop
 
-![logo]({page.image('packet_drops/packets_drop_logo.png')})
+![logo]({page.image('packet-drops/packets-drop-logo.png')})
 
 By: Amogh RD, Julien Pinsonneau and Mohamed S. Mahmoud
 
@@ -82,7 +82,7 @@ Open your OCP Console and move to
 
 Now, a new query option is available to filter flows by their drop status:
 
-![drop filter query option]({page.image('packet_drops/drop_filter_query_option.png')})
+![drop filter query option]({page.image('packet-drops/drop-filter-query-option.png')})
 
 - `Fully dropped` shows the flows that have 100% dropped packets
 - `Containing drops` shows the flows having at least one packet dropped
@@ -92,18 +92,18 @@ Now, a new query option is available to filter flows by their drop status:
 Two new filters, `Packet drop TCP state` and `Packet drop latest cause` are available
 in the common section:
 
-![drop state & cause filters]({page.image('packet_drops/drop_state_cause_filters.png')})
+![drop state & cause filters]({page.image('packet-drops/drop-state-cause-filters.png')})
 
 The first one will allow you to set the TCP state filter:
 
-![state filter]({page.image('packet_drops/state_filter.png')})
+![state filter]({page.image('packet-drops/state-filter.png')})
 
 - A _LINUX_TCP_STATES_H number like 1, 2, 3
 - A _LINUX_TCP_STATES_H TCP name like `ESTABLISHED`, `SYN_SENT`, `SYN_RECV`
 
 The second one will let you pick causes to filter on:
 
-![cause filter]({page.image('packet_drops/cause_filter.png')})
+![cause filter]({page.image('packet-drops/cause-filter.png')})
 
 - A _LINUX_DROPREASON_CORE_H number like 2, 3, 4
 - A _LINUX_DROPREASON_CORE_H SKB_DROP_REASON name like
@@ -113,7 +113,7 @@ The second one will let you pick causes to filter on:
 
 New graphs are introduced in the `advanced options` -> `manage panels` popup:
 
-![advanced options]({page.image('packet_drops/advanced_options.png')})
+![advanced options]({page.image('packet-drops/advanced-options.png')})
 
 - Top X flow dropped rates stacked
 - Total dropped rate
@@ -123,13 +123,13 @@ New graphs are introduced in the `advanced options` -> `manage panels` popup:
 
 Select the desired graphs to render them in the overview panel:
 
-![drop graphs 1]({page.image('packet_drops/drop_graphs1.png')})
-![drop graphs 2]({page.image('packet_drops/drop_graphs2.png')})
-![drop graphs 3]({page.image('packet_drops/drop_graphs3.png')})
+![drop graphs 1]({page.image('packet-drops/drop-graphs1.png')})
+![drop graphs 2]({page.image('packet-drops/drop-graphs2.png')})
+![drop graphs 3]({page.image('packet-drops/drop-graphs3.png')})
 
 Note that you can compare the top drops against total dropped or total traffic
 in the last graph using the kebab menu
-![drop graph option]({page.image('packet_drops/drop_graph_options.png')})
+![drop graph option]({page.image('packet-drops/drop-graph-options.png')})
 
 ### Traffic flows
 
@@ -137,14 +137,14 @@ The table view shows the number of `bytes` and `packets` sent in green and the
 related numbers dropped in red. Additionally, you can get details about the
 drop in the side panel that brings you to the proper documentation.
 
-![drop table]({page.image('packet_drops/drop_table.png')})
+![drop table]({page.image('packet-drops/drop-table.png')})
 
 ### Topology
 
 Last but not least, the topology view displays edges containing drops in red.
 That's useful especially when digging on a specific drop reason between two resources.
 
-![drop topology]({page.image('packet_drops/drop_topology.png')})
+![drop topology]({page.image('packet-drops/drop-topology.png')})
 
 ## Potential use-case scenarios
 
@@ -158,20 +158,20 @@ while : ; do curl <another nodeIP>:<unknown port>; sleep 5; done
 
 The drops can be observed on the console as seen below:
 
-![NO_SOCKET drop table]({page.image('packet_drops/NO_SOCKET_table.png')})
+![NO_SOCKET drop table]({page.image('packet-drops/NO-SOCKET-table.png')})
 
-![NO_SOCKET drop overview]({page.image('packet_drops/NO_SOCKET_overview.png')})
+![NO_SOCKET drop overview]({page.image('packet-drops/NO-SOCKET-overview.png')})
 
 - `OVS_DROP_LAST_ACTION` drop reason: OVS packet drops can be observed on
  RHEL9.2 and above. It can be emulated by running the iperf command with
  network-policy set to drop on a particular port.
  These drops can be observed on the console as seen below:
 
-![OVS drop table]({page.image('packet_drops/OVS_table.png')})
+![OVS drop table]({page.image('packet-drops/OVS-table.png')})
 
-![OVS drop topology]({page.image('packet_drops/OVS_topology.png')})
+![OVS drop topology]({page.image('packet-drops/OVS-topology.png')})
 
-![OVS drop overview]({page.image('packet_drops/OVS_overview.png')})
+![OVS drop overview]({page.image('packet-drops/OVS-overview.png')})
 
 ## Resource impact of using PacketDrop
 

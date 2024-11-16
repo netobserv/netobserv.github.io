@@ -9,7 +9,7 @@ author: msherif1234
 # <div align="center">Monitoring OVN Networking Events using Network Observability</div>
 
 <p align="center">
-  <img src="{page.image('network_events/network_events_logo.drawio.png')}" alt="logo" width="25%"/>
+  <img src="{page.image('network-events/network-events-logo.drawio.png')}" alt="logo" width="25%"/>
 </p>
 
 By: Mohamed S. Mahmoud
@@ -81,7 +81,7 @@ spec:
   - Egress
 ```
 
-<img src="{page.image('network_events/ingr_egr_network_events.png')}" alt="ingress and egress network policy events">
+<img src="{page.image('network-events/ingr-egr-network-events.png')}" alt="ingress and egress network policy events">
 
 _Screen capture of the traffic flows in the NetObserv console plugin,
 with a network events column showing traffic allowed or denied by network policy rules_
@@ -132,7 +132,7 @@ spec:
 
 ```
 
-<img src="{page.image('network_events/admin_policy_network_events.png')}" alt="admin network policy events">
+<img src="{page.image('network-events/admin-policy-network-events.png')}" alt="admin network policy events">
 
 _Screen capture of the traffic flows in the NetObserv console plugin, with a network events column
 showing the delegation by the admin policy resulting in traffic allowed or denied_
@@ -197,7 +197,7 @@ spec:
 
 ```
 
-<img src="{page.image('network_events/egress_fw_network_events.png')}" alt="egress firewall network events">
+<img src="{page.image('network-events/egress-fw-network-events.png')}" alt="egress firewall network events">
 
 _Screen capture of the traffic flows in the NetObserv console plugin,
 with a network events column showing traffic allowed or denied by egress firewall rules_
@@ -228,7 +228,7 @@ consumption by the NetObserv console plugin. The new events are displayed in the
 
 A filter is introduced to filter flows based on network event enrichment.
 
-![network events building blocks]({page.image('network_events/network_events_design.drawio.png')})
+![network events building blocks]({page.image('network-events/network-events-design.drawio.png')})
 
 ## Configuration
 

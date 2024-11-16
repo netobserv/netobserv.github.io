@@ -17,7 +17,7 @@ troubleshooting network issues in a Kubernetes cluster.
 ## Overview of how you can achieve network observability for secondary interface
 
 <p align="center">
-  <img src="{page.image('secondary_interface/sriov.png')}" alt="logo" width="75%"/>
+  <img src="{page.image('secondary-interface/sriov.png')}" alt="logo" width="75%"/>
 </p>
 
 1. **Multus CNI Plugin**: Multus is a CNI (Container Network Interface) plugin
@@ -151,7 +151,7 @@ By opening the console plugin and looking in the Traffic Flows table and filter 
 `Network interface name == net1`  like the following for TCP flow 
 packets as an example
 
-<img src="{page.image('secondary_interface/sriov_flow.png')}" alt="logo" width="300%"/>
+<img src="{page.image('secondary-interface/sriov-flow.png')}" alt="logo" width="300%"/>
 
 ## Feedback
 
