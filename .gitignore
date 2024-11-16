@@ -1,4 +1,3 @@
 data/*.json
-old/
 .quarkus
 target/
