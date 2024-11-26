@@ -6,6 +6,10 @@ tags: Monitoring,Network,Multus,SRIOV
 authors: [msherif1234]
 ---
 
+<div class="heading-info">
+Check out the revised version of this post on the Red Hat blog: <a href='https://www.redhat.com/fr/blog/network-observability-secondary-interface-support'>Network Observability secondary interface support</a>.
+</div>
+
 # Network Observability secondary interface support
 
 Network observability for secondary interfaces with Multus and SR-IOV plugins

@@ -6,6 +6,10 @@ tags: Monitoring,Network,NetworkPolicy,OVN
 authors: [msherif1234]
 ---
 
+<div class="heading-info">
+Check out the revised version of this post on the Red Hat developers blog: <a href='https://developers.redhat.com/articles/2024/11/19/monitor-ovn-networking-events-using-network-observability'>Monitor OVN networking events using Network Observability</a>.
+</div>
+
 # <div align="center">Monitoring OVN Networking Events using Network Observability</div>
 
 <p align="center">

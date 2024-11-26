@@ -6,6 +6,10 @@ tags: eBPF,Drops,Monitoring,Troubleshooting
 authors: [Amoghrd,jpinsonneau,msherif1234]
 ---
 
+<div class="heading-info">
+Check out the revised version of this post on the Red Hat blog: <a href='https://www.redhat.com/en/blog/network-observability-real-time-per-flow-packets-drop'>Network Observability real-time per flow packets drop</a>.
+</div>
+
 # Network Observability Real-Time Per Flow Packets Drop
 
 ![logo]({page.image('packet-drops/packets-drop-logo.png')})
