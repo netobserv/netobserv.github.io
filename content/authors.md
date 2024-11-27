@@ -9,7 +9,7 @@ layout: :theme/page
 
 <div class="authors">
   <!-- authors.yml is in the data/ -->
-  {#for id in cdi:authors.fields}
+  {#for id in lists:shuffle(cdi:authors.fields)}
     {#let author=cdi:authors.get(id)}
     <!-- the author-card tag is defined in the default Roq theme -->
     {#author-card name=author.name avatar=author.avatar nickname=author.nickname profile=author.profile}
