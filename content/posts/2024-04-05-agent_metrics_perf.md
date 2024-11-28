@@ -1,12 +1,10 @@
 ---
 layout: :theme/post
-title: "Fine tuning with agent metrics"
-description: "Performance fine-tuning - a deep dive in eBPF agent metrics"
+title: "Performance fine-tuning - a deep dive in eBPF agent metrics"
+description: "You can improve NetObserv performance with a bit of fine-tuning"
 tags: eBPF,Performance,Configuration,Metrics
 authors: [jotak]
 ---
-
-# Performance fine-tuning - a deep dive in eBPF agent metrics
 
 When you install Network Observability (NetObserv) on your OpenShift or Kubernetes cluster, it comes with a default configuration that is designed to fit the most common use cases of cluster size and load. It should "just work". However it might not be optimal, because the effects of configuring some components, such as the eBPF agent cache, would highly vary depending on its environment: it can be affected by the number of nodes in the cluster, the number of pods, the traffic bandwidth, the cardinality of connections, etc. This is why it is recommended to spend some time on fine-tuning.
 

@@ -1,7 +1,7 @@
 ---
 layout: :theme/post
-title: "NetObserv without Loki"
-description: "Light-weight Network Observability operator without Loki"
+title: "Light-weight Network Observability operator without Loki"
+description: "Get the pros and cons to install NetObserv without Loki"
 tags: Performance,Metrics,Loki
 authors: [memodi,stleerh]
 ---
@@ -9,8 +9,6 @@ authors: [memodi,stleerh]
 <div class="heading-info">
 Check out the revised version of this post on the Red Hat developers blog: <a href='https://developers.redhat.com/articles/2024/09/19/lightweight-network-observability-operator-without-loki'>Light-weight Network Observability operator without Loki</a>.
 </div>
-
-# Light-weight Network Observability Operator without Loki
 
 Recently, the Network Observability Operator released version 1.6, which added a major enhancement to provide network insights for your OpenShift cluster without Loki. This enhancement was also featured in [What's new in Network Observability 1.6](https://developers.redhat.com/articles/2024/08/12/whats-new-network-observability-16) blog, providing a quick overview of the feature. Until this release, Loki was required to be deployed alongside Network Observability to store the network flows data. In this blog, lets look at some of the advantages and trade-offs users would have when deploying the Network Observability Operator with Loki disabled. As more metrics are enabled by default with this feature, we'll also demonstrate a use-case on how those metrics can benefit users for real world scenarios.
 

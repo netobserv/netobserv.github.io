@@ -1,7 +1,7 @@
 ---
 layout: :theme/post
-title: "DNS tracking"
-description: "Network Observability Per Flow DNS tracking"
+title: "Network Observability Per Flow DNS tracking"
+description: "Why? Because it's always DNS"
 tags: eBPF,DNS,Monitoring,Troubleshooting
 authors: [jpinsonneau,memodi,msherif1234]
 ---
@@ -9,8 +9,6 @@ authors: [jpinsonneau,memodi,msherif1234]
 <div class="heading-info">
 Check out the revised version of this post on the Red Hat blog: <a href='https://www.redhat.com/en/blog/network-observability-per-flow-dns-tracking'>Network Observability per flow DNS tracking</a>.
 </div>
-
-# Network Observability Per Flow DNS tracking
 
 ![logo]({page.image('dns-tracking/dns-tracking-logo.png')})
 

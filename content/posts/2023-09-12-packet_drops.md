@@ -1,7 +1,7 @@
 ---
 layout: :theme/post
-title: "Tracking packet drops"
-description: "Network Observability Real-Time Per Flow Packets Drop"
+title: "Network Observability Real-Time Per Flow Packets Drop"
+description: "Monitoring packet drops helps understanding network performance or configuration issues"
 tags: eBPF,Drops,Monitoring,Troubleshooting
 authors: [Amoghrd,jpinsonneau,msherif1234]
 ---
@@ -9,8 +9,6 @@ authors: [Amoghrd,jpinsonneau,msherif1234]
 <div class="heading-info">
 Check out the revised version of this post on the Red Hat blog: <a href='https://www.redhat.com/en/blog/network-observability-real-time-per-flow-packets-drop'>Network Observability real-time per flow packets drop</a>.
 </div>
-
-# Network Observability Real-Time Per Flow Packets Drop
 
 ![logo]({page.image('packet-drops/packets-drop-logo.png')})
 
@@ -20,6 +18,7 @@ as network congestion, misconfigured systems, or hardware limitations,
 packets might occasionally get dropped. Detecting and diagnosing these
 packet drops is essential for optimizing network performance and
 maintaining a high quality of service.
+
 This is where eBPF (extended Berkeley Packet Filter) comes into play
 as a powerful tool for real-time network performance analysis.
 In this blog, we'll take a detailed look at how network observability
