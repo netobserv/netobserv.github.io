@@ -1,0 +1,70 @@
+---
+layout: theme-layouts/roq-default/post
+---
+
+{@io.quarkiverse.roq.frontmatter.runtime.model.DocumentPage page}
+
+<style>
+.page-share {
+  visibility: hidden;
+}
+.heading-info {
+	font-size: 15pt;
+	background-color: #e7ffdc;
+	border-left: 5px solid #338a26;
+	padding-left: 1.1rem;
+	margin-left: 1rem;
+	font-style: italic;
+	color: #ada8a8;
+	padding-top: 0.3rem;
+	padding-bottom: 0.3rem;
+}
+</style>
+
+<header class="header-page">
+  <div class="author">
+    <span>
+      Author(s): 
+    </span>
+    <!-- authors.yml is in the data/ -->
+    {#for handle in page.data.authors}
+      {#let author=cdi:authors.get(handle)}
+      {#if author}
+        <details>
+          <summary>
+            <span>{author.name}</span>
+          </summary>
+          {#author-card name=author.name avatar=author.avatar nickname=author.nickname profile=author.profile}
+            {#if author.bio}
+              {author.bio}
+            {/if}
+          {/author-card}
+        </details>
+      {#else}
+        <span>{handle}</span>
+      {/if}
+      {/let}
+    {/for}
+  </div>
+</header>
+
+{#insert /}
+
+{#article-end}
+<div class="giscus"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="netobserv/network-observability-operator"
+        data-repo-id="R_kgDOGIHvvQ"
+        data-category="Blog"
+        data-category-id="DIC_kwDOGIHvvc4CkTdO"
+        data-mapping="title"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+</script>
+{/}

@@ -1,0 +1,3 @@
+data/*.json
+.quarkus
+target/
