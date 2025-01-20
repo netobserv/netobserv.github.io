@@ -72,8 +72,6 @@ This will include:
 
 - [Conntrack Zone ID](https://lwn.net/Articles/370152/#:~:text=A%20zone%20is%20simply%20a,to%20seperate%20conntrack%20defragmentation%20queues.)
 
-- ICMP code
-
 ## How to enable Packet Translation enrichment feature
 
  To enable packet translation enrichment feature, create a `FlowCollector` resource with the following feature enabled
