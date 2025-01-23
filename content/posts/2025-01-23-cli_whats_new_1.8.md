@@ -10,27 +10,37 @@ authors: [jpinsonneau]
 
 ![logo]({page.image('cli-whats-new-1-8/cli_logo.png')})
 
+```
+------------------------------------------------------------------------
+         _  _     _       _                       ___ _    ___
+        | \| |___| |_ ___| |__ ___ ___ _ ___ __  / __| |  |_ _|
+        | .' / -_)  _/ _ \ '_ (_-</ -_) '_\ V / | (__| |__ | | 
+        |_|\_\___|\__\___/_.__/__/\___|_|  \_/   \___|____|___|
+
+------------------------------------------------------------------------
+```
+
 Since we [introduced the Network Observability CLI](./2024-07-25-cli.md), numerous features have been added. This article will cover the improvements in version 1.8 and provide some concrete examples.
 
 ## New Options Available
 This update adds several options to the CLI, covering more scenarios and enabling scripting on top of the tool.
 
-### Run in Background
+### Operate in the Background
 The `--background` option allows you to start a flow or packet capture without connecting your terminal to the collector pod. This enables you to let the capture run in the background while you work on something else. You can check the capture's progress using the `follow` command and copy the collector output locally using the `copy` command. Once the job is complete, you can `stop` or `cleanup` everything.
 
-### Custom Namespace
+### Customizable Namespace
 You can now customize the capture namespace using the `NETOBSERV_NAMESPACE` environment variable. When the CLI starts, it automatically checks if this namespace exists and will stop if it finds any conflict with a pending capture. This is particularly useful if you want to run captures in parallel.
 
 ### Subnets Labelling
 The tool can now read configurations from `cluster-config-v1` and `network` to identify **Machine**, **Pods**, and **Services** subnets using the `--get-subnet` option. This will automatically add `SrcSubnetLabel` and `DstSubnetLabel` to your flows.
 
-### YAML Output
+### YAML Configuration Output
 Outputting a `.yml` file instead of running the capture is now possible using the `--yaml` option. The file will contain all the resources needed to run the capture, such as the namespace, the agents embedding the pipeline and its configuration, and the related services. The collector will need to be run manually in parallel to start the capture.
 
-## Advanced Filtering
+## Enhanced Data Filtering
 Filtering is crucial to gather precise network data without involving excessive resources and storage. The CLI focuses on this area, allowing you to deploy agents only where needed and fine-tune what's captured.
 
-### NodeSelector
+### Assigning Agents to Nodes
 It's now possible to define agents `nodeSelector` to capture on a subset of nodes. You can rely on existing labels or create a dedicated one for this usage. For example, you can run:
 ```sh
 `oc netobserv flows --node-selector=kubernetes.io/hostname:my-node
@@ -38,7 +48,7 @@ It's now possible to define agents `nodeSelector` to capture on a subset of node
 to run the agents on the node with the `kubernetes.io/hostname:my-node` label.
 
 ### eBPF Filters
-Agents recently introduced the ability to filter on IPs, Ports, Protocol, Action, TCPFlags, and more simultaneously. You can now apply these filters in the CLI as shown below:
+Agents recently introduced [the ability to filter](https://github.com/netobserv/netobserv-ebpf-agent/blob/main/docs/flow_filtering.md) on IPs, Ports, Protocol, Action, TCPFlags, and more simultaneously. You can now apply these filters in the CLI as shown below:
 
 ```sh
 netobserv flows \                 # Capture flows
@@ -48,13 +58,13 @@ or --protocol=UDP                 # or UDP
 
 You can add as many filters as you want and separate them by or to create multiple capture scenarios.
 
-### Regular Expressions
+### Regular Expressions Usage
 If you need to filter on enriched content beyond the agent-level filters, you can use **regexes** to match any field/value pair. To filter all traffic from OpenShift namespaces, for example, you can use `--regexes=SrcK8S_Namespace~openshift.*`.
 
 Regexes are comma-separated, so you can use multiple at once, such as `--regexes=SrcK8S_Namespace~my-ns,SrcK8S_Name~my-app`. Refer to the [flows format](https://github.com/netobserv/network-observability-operator/blob/main/docs/flows-format.adoc) to see the possible fields.
 
 ## Unified Collector UI
-Capturing packets now resembles flow capture, allowing you to live filter the content. This improvement was made possible by introducing the [flowlogs-pipeline](https://github.com/netobserv/flowlogs-pipeline) component inside eBPF agents, which parse packets and generate flows from them. All filtering capabilities are compatible with this approach!
+Capturing **packets** now resembles **flows** capture, allowing you to live filter the content. This improvement was made possible by introducing the [flowlogs-pipeline](https://github.com/netobserv/flowlogs-pipeline) component inside [eBPF agents](https://github.com/netobserv/netobserv-ebpf-agent), which parse packets and generate flows from them. All filtering capabilities are compatible with this approach!
 
 ## Metrics Capture on OpenShift
 Capturing metrics is now possible using the `metrics` command. This creates a `ServiceMonitor` to gather metrics from the agents and store them in [Prometheus](https://prometheus.io/). You can enable all or specific features to gather more information about your network, such in:
@@ -70,6 +80,53 @@ to focus only on drops.
 On top of the features, you can use all the filtering capabilities mentioned above to focus on what you're looking for. A `NetObserv / On Demand` dashboard will be automatically created, showing the results.
 
 ![dashboard]({page.image('cli-whats-new-1-8/dashboard.png')})
+
+## Help!
+
+The help has been enhanced to provide examples for each command and option. You can type `oc netobserv help` for the general help message or request help on a specific command, such as `oc netobserv metrics help`, to get its options list.
+
+```sh
+$ oc netobserv help
+
+Netobserv allows you to capture flows, packets and metrics from your cluster.
+Find more information at: https://github.com/netobserv/network-observability-cli/
+
+Syntax: netobserv [flows|packets|metrics|follow|stop|copy|cleanup|version] [options]
+
+main commands:
+  flows      Capture flows information in JSON format using collector pod.
+  metrics    Capture metrics information in Prometheus using a ServiceMonitor (OCP cluster only).
+  packets    Capture packets information in pcap format using collector pod.
+
+extra commands:
+  cleanup    Remove netobserv components and configurations.
+  copy       Copy collector generated files locally.
+  follow     Follow collector logs when running in background.
+  stop       Stop collection by removing agent daemonset.
+  version    Print software version.
+
+basic examples:
+  netobserv flows --drops         # Capture dropped flows on all nodes
+  netobserv packets --port=8080   # Capture packets on port 8080
+  netobserv metrics --enable_all  # Capture all cluster metrics with pktDrop, dns, rtt and network events features
+
+advanced examples:
+  Capture drops in background and copy output locally
+    netobserv flows --background \                            # Capture flows using background mode
+    --max-time=15m \                                          # for a maximum of 15 minutes
+    --protocol=TCP --port=8080 \                              # either on TCP 8080
+    or --protocol=UDP                                         # or UDP
+    netobserv follow                                          # Display the progression of the background capture
+    netobserv stop                                            # Stop the background capture by deleting eBPF agents
+    netobserv copy                                            # Copy the background capture output data
+    netobserv cleanup                                         # Cleanup netobserv CLI by removing the remaining collector pod
+
+  Capture packets on specific nodes and port
+    netobserv packets                                         # Capture packets
+    --node-selector=netobserv:true \                          # on nodes labelled with netobserv=true
+    --port=80 \                                               # on port 80 only
+    --max-bytes=100000000                                     # for a maximum of 100MB
+```
 
 ## Feedback
 We hope you enjoyed this article!
