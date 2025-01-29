@@ -1,0 +1,26 @@
+name: Build PR Preview
+
+on:
+  pull_request:
+
+jobs:
+  build-website:
+    name: Build Website
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate blog
+        uses: quarkiverse/quarkus-roq@v1
+        with:
+          maven-executable: 'mvn'
+          maven-build-args: '-DskipTests -Dquarkus.profile=gh-pages'
+          github-pages: 'false'
+          setup-java: 'false'
+
+      - name: Publishing blog
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog
+          path: ./target/roq
+          retention-days: 3
