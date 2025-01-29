@@ -163,17 +163,21 @@ Once you updated your policies, you can give another try to your route until you
 The drop cause will dissapear and your route should open correctly now. On top of that, you can ensure that the Round Trip Time is correct. 
 If you are still experienting issues with the route, you may update / get rid of the filter(s) and play with live filtering.
 
-- While running a capture, you can place additionnal live filters to the view by simply typing keywords on your keyboard such as `nodejs`:
+- While running a capture, you can place **additionnal live filters** to the view by simply typing keywords on your keyboard such as `nodejs`:
 ![cli live filter]({page.image('cli/connectivity-scenario-cli-live-filter.png')})
 
 - And add as many keywords as you want by pressing enter:
 ![cli live filters]({page.image('cli/connectivity-scenario-cli-live-filters.png')})
 
-- If your deployment involve some DNS resolution, you can switch to the DNS display and show latencies and errors:
+- If your deployment involve some DNS resolution, you can switch to the **DNS** display and show latencies and errors:
 Once you updated your policies, you can give another try to your route until you fix the issue:
 ![cli dns]({page.image('cli/connectivity-scenario-cli-dns.png')})
 
   Those `NxDomain` errors could be from a misconfiguration in your app deployment trying to reach the wrong domain.
+
+- To check which network is involved, you can switch to **Network Name** enrichment and **UDN** display.
+This will show you which network name, interfaces, direction and User Defined Network name involved.
+![cli network]({page.image('cli/connectivity-scenario-cli-network.png')})
 
 Once you are done, simply press `CTRL + C` to exit. Your capture will be copied to your local machine for post mortem analysis.
 
@@ -214,7 +218,7 @@ What about encrypted traffic ?
 
 Most of the time, your traffic will be secured and you will not have access to the data it holds. However, Wireshark has the ability to decrypt the content if you [provide the proper secrets](https://wiki.wireshark.org/TLS#tls-decryption). However, getting these secrets may be tricky depending on where the encryption happens and needs some juggling. 
 If you are looking for the traffic between your browser and the cluster, you can simply run the following command to capture [pre-master-secret keylog file](https://wiki.wireshark.org/TLS#using-the-pre-master-secret):
-```
+```sh
 SSLKEYLOGFILE="keylog.txt" chromium-browser &
 ```
 
