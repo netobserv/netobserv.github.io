@@ -11,7 +11,7 @@ Check out the revised version of this post on the Red Hat developers blog: <a hr
 </div>
 
 <p align="center">
-  <img src="{page.image('network-events/network-events-logo.drawio.png')}" alt="logo" width="25%"/>
+  <img src="{page.image('network-events/network-events-logo-drawio.png')}" alt="logo" width="25%"/>
 </p>
 
 Network security and performance maintenance crucially depend on monitoring network events triggered
@@ -228,7 +228,7 @@ consumption by the NetObserv console plugin. The new events are displayed in the
 
 A filter is introduced to filter flows based on network event enrichment.
 
-![network events building blocks]({page.image('network-events/network-events-design.drawio.png')})
+![network events building blocks]({page.image('network-events/network-events-design-drawio.png')})
 
 ## Configuration
 
