@@ -8,7 +8,7 @@ authors: [jpinsonneau]
 
 # Network Observability On Demand 1.8 Update
 
-![logo]({page.image('cli-whats-new-1-8/cli_logo.png')})
+![logo]({page.image('cli-whats-new-1-8/cli-logo.png')})
 
 ```
 ------------------------------------------------------------------------
