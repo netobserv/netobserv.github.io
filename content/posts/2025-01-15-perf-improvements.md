@@ -190,7 +190,9 @@ Those changes triggered a refactoring that doesn't come without consequences and
 
 - Most importantly, **partial flows**: because now having two different maps, one for the main flows, generated from the TC hook, and another for the enrichments, generated from other hooks, there can sometimes be a mismatch between these two. Especially when the enrichment map keys aren't found in the flows map, it results in generating partial flows, which is a flow that lacks some information. Namely, the TCP flags, the MAC addresses and the bytes and packets counters are missing in partial flows. It doesn't mean these values are entirely lost: you could still be able to find them in an adjacent flow - it's because flows are evicted periodically, and an eviction might occur precisely at the _wrong moment_ (it's a race condition), with only partial data being available at that time. Another cause for partial flows could be sampling, when the agent is configured with a sampling rate: if for some reason the enrichment data is sampled but the corresponding TC hook packet isn't, this would also result in a partial flow.
 
-[screenshot UI]
+**Fig. 8: an example of partial flow, with 0 bytes/packets**
+
+![Partial flow]({page.image('perf-improvements-1-8/partial-flow.png')})
 
 - Limitation in **observed interfaces**: because BPF structure size must be predictable, we cannot store in map all the observed interfaces, we need to set a maximum. This is currently 6. If a packet is seen on more than six interfaces, we would only show the first six. Today we consider it sufficient, but we might raise the max later if needed. A prometheus metrics was added to notify for maximum reached.
 
