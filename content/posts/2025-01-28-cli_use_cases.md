@@ -211,6 +211,74 @@ Once you are done, simply press `CTRL + C` to exit. Your capture will be copied 
 
 That's the end of the first scenario about connectivity checks !
 
+## User Defined Network (Tech Preview)
+
+As tech preview, you can enrich flows to get User Defined Network (UDNs) informations. To do so, you will need to use the `--enable_udn_mapping` option.
+
+To configure your UDNs, [refer to the official documentation](https://docs.openshift.com/container-platform/4.17/networking/multiple_networks/primary_networks/about-user-defined-networks.html).
+
+Our primary UDN in this example is defined as:
+```yaml
+apiVersion: k8s.ovn.org/v1
+kind: UserDefinedNetwork
+metadata:
+  name: primary-udn
+  namespace: user-defined-network
+spec:
+  layer2:
+    role: Primary
+    subnets:
+      - 10.0.0.0/24
+  topology: Layer2
+  ```
+
+Once everything is configured, you can inspect your pods YAML and look for the `k8s.v1.cni.cncf.io/network-status` annotation:
+```yaml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod-a
+  namespace: user-defined-network
+...
+  annotations:
+...
+    k8s.v1.cni.cncf.io/network-status: |-
+      [{
+          "name": "ovn-kubernetes",
+          "interface": "eth0",
+          "ips": [
+              "10.131.0.35"
+          ],
+          "mac": "0a:58:0a:83:00:23",
+          "dns": {}
+      },{
+          "name": "ovn-kubernetes",
+          "interface": "ovn-udn1",
+          "ips": [
+              "10.0.0.4"
+          ],
+          "mac": "0a:58:0a:00:00:04",
+          "default": true,
+          "dns": {}
+      }]
+...
+```
+
+Note that `eth0` is the default pod network and `ovn-udn1`is the User Defined Network. We are going to filter on its IP: `10.0.0.4`.
+As this IP is not unique across the cluster, we can add a filter on the port `8080` which will be used in this example and the node annotation `kubernetes.io/hostname=ci-ln-cfqkhfb-72292-6l8l5-worker-c-lrr4q` matching the node running this pod.
+
+All together, it will be like:
+```sh
+oc netobserv flows --enable_udn_mapping --peer_ip=10.0.0.4 --port=8080 --node-selector=kubernetes.io/hostname:ci-ln-cfqkhfb-72292-6l8l5-worker-c-lrr4q
+```
+
+Once this is running, it will hang for flows to come. In this scenario, we simply run a curl between two pods under the same UDN.
+You can cycle to **UDN mapping** display once you get your flows to see which UDN is involved.
+
+![udns]({page.image('cli/udns.png')})
+
+You can retreive the namespace `user-defined-network` and the name `primary-udn` from the UDN labels column.
+
 ## Identify unknown traffic content
 
 In this next scenario, we are going to dig into unknown packets using unencrypted traffic on `TCP` protocol on port `80`. We usually avoid such usage on production cluster and would like to understand who's involved in these.
