@@ -40,6 +40,37 @@ LAST SEEN   TYPE     REASON             OBJECT                    MESSAGE
 0s          Normal   Started            Pod/collector             Started container collector
 ```
 
+## North / South and East / West traffic
+The CLI is able to read configurations from `cluster-config-v1` and `network` to identify **Machine**, **Pods**, and **Services** subnets using the `--get-subnets` option. This will automatically add `SrcSubnetLabel` and `DstSubnetLabel` to your flows.
+
+You will see subnets being configured during the creation of the agents:
+```sh
+creating flow-capture agents:
+opt: get_subnets, value: true
+Found subnets:
+    Services: "172.30.0.0/16"
+    Pods: "10.128.0.0/14"
+    Machines: "10.0.0.0/16"
+```
+
+Once running, you can cycle to different views using left / right arrow keys and change the displayed enrichment colomns using page up / down ones.
+Also, to adapt to your screen height, you can increase / decrease the number of displayed flows using up / down arrow keys.
+
+![subnets]({page.image('cli/subnets.png')})
+
+You can live filter this capture by typing Machines / Pods or Services keyword to only see what you look for here.
+
+However, if you want to capture only a subset of these flows, you can use the regexes filter on top such as:
+```sh
+oc netobserv flows --get-subnets --regexes=SrcSubnetLabel~Pods,DstSubnetLabel~Services
+```
+
+**WARNING: Running regexes filters means that all the flows are captured and enriched before applying this filter stage in the pipeline. To avoid performance impact on your cluster, use eBPF filters such as IPs, Ports and Protocol as most as possible.**
+
+The output will now only show **Pods** to **Services** flows:
+![pods subnets]({page.image('cli/pods-subnets.png')})
+
+
 ## Connectivity check(s) between two endpoints
 
 Let's start with a simple case where you have a pod not able to reach an endpoint. We are using a simple nodejs sample app deployed in `connectivity-scenario` namespace for the demo.
@@ -135,10 +166,7 @@ At this stage, the collector wait for incoming data. If nothing shows yet, it me
 Once some traffic is captured, the output will look like:
 ![cli network events]({page.image('cli/connectivity-scenario-cli-events.png')})
 
-You can cycle to different views using left / right arrow keys and change the displayed enrichment colomns using page up / down ones.
-Also, to adapt to your screen height, you can increase / decrease the number of displayed flows using up / down arrow keys.
-
-In this capture, we see that the traffic is blocked by a network policy since it reports the `NetpolNamespace` network event.
+Cycle to the **network events** view. In this capture, we see that the traffic is blocked by a network policy since it reports the `NetpolNamespace` event.
 Edit your network policies and give another try.
 
 Behind the scenes in our scenario, we used to have a deny all on the pod label:
