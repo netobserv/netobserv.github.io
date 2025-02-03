@@ -76,7 +76,7 @@ Finally, you can add a node selector label on top
 
 All together, the command to run flow capture with all the features on our pod IP will be:
 ```sh
-oc netobserv flows --enable_all --peer_ip=10.129.0.48
+oc netobserv flows --enable_all --peer_ip=10.131.0.19
 ```
 
 The script will connect to your cluster and start deploying eBPF agents and collector pod:
@@ -101,7 +101,7 @@ opt: rtt_enable, value: true
 opt: network_events_enable, value: true
 opt: udn_enable, value: true
 opt: pkt_xlat_enable, value: true
-opt: filter_peer_ip, value: 10.129.0.48
+opt: filter_peer_ip, value: 10.129.0.19
 daemonset.apps/netobserv-cli created
 Waiting for daemon set "netobserv-cli" rollout to finish: 0 of 2 updated pods are available...
 Waiting for daemon set "netobserv-cli" rollout to finish: 1 of 2 updated pods are available...
@@ -121,7 +121,7 @@ Once that done, it will connect to the collector and display its output:
 
 ------------------------------------------------------------------------
 INFO[0000] Log level: info
-Option(s): enable_all|peer_ip=10.129.0.48 
+Option(s): enable_all|peer_ip=10.129.0.19 
 INFO[0000] Kernel version: 5.14.0-427.50.1.el9_4.x86_64 
 INFO[0000] Starting Flow Capture...                     
 INFO[0000] Creating database...                         
@@ -133,12 +133,12 @@ INFO[0000] flows table created
 At this stage, the collector wait for incoming data. If nothing shows yet, it means that no traffic is captured. Try to open the route of your application or update the filters of the capture.
 
 Once some traffic is captured, the output will look like:
-![cli dropped]({page.image('cli/connectivity-scenario-cli-dropped.png')})
+![cli network events]({page.image('cli/connectivity-scenario-cli-events.png')})
 
 You can cycle to different views using left / right arrow keys and change the displayed enrichment colomns using page up / down ones.
 Also, to adapt to your screen height, you can increase / decrease the number of displayed flows using up / down arrow keys.
 
-In this capture, we see that the traffic is blocked by OVS since it reports the `OVS_DROP_LAST_ACTION` drop cause. This probably means that a Network Policy is involved.
+In this capture, we see that the traffic is blocked by a network policy since it reports the `NetpolNamespace` network event.
 Edit your network policies and give another try.
 
 Behind the scenes in our scenario, we used to have a deny all on the pod label:
@@ -147,7 +147,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: deny-nodejs
-  namespace: connectivity-scenario
+  namespace: sample-app
 spec:
   podSelector:
     matchLabels:
@@ -158,9 +158,9 @@ spec:
 ```
 
 Once you updated your policies, you can give another try to your route until you fix the issue:
-![cli ok]({page.image('cli/connectivity-scenario-cli-ok.png')})
+![cli traffic]({page.image('cli/connectivity-scenario-cli-traffic.png')})
 
-The drop cause will dissapear and your route should open correctly now. On top of that, you can ensure that the Round Trip Time is correct. 
+The network event will dissapear and your route should open correctly now. On top of that, you can ensure that the Round Trip Time is correct. 
 If you are still experienting issues with the route, you may update / get rid of the filter(s) and play with live filtering.
 
 - While running a capture, you can place **additionnal live filters** to the view by simply typing keywords on your keyboard such as `nodejs`:
