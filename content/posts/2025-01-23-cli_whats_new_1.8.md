@@ -31,7 +31,7 @@ oc netobserv flows --background # Run a flow capture in the background
 
 oc netobserv follow             # Show current capture progress
 
-oc netobserv stop               # Stop the capture keeping the collector running
+oc netobserv stop               # Stop the capture, keeping the collector pod alive
 
 oc netobserv copy               # Copy the output
 
