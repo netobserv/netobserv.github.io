@@ -29,7 +29,7 @@ The `--background` option allows you to start a flow or packet capture without c
 ```sh
 oc netobserv flows --background # Run a flow capture in the background
 
-oc netobserv follow             # Show current capture progression
+oc netobserv follow             # Show current capture progress
 
 oc netobserv stop               # Stop the capture keeping the collector running
 
