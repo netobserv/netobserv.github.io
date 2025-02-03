@@ -107,7 +107,7 @@ key: SrcK8S_Namespace value: openshift.*
 Regexes are comma-separated, so you can use multiple at once, such as `--regexes=SrcK8S_Namespace~my-ns,SrcK8S_Name~my-app`. Refer to the [flows format](https://github.com/netobserv/network-observability-operator/blob/main/docs/flows-format.adoc) to see the possible fields.
 
 ## Unified Collector UI
-Capturing **packets** now resembles **flows** capture, allowing you to live filter the content. This improvement was made possible by introducing the [flowlogs-pipeline](https://github.com/netobserv/flowlogs-pipeline) component inside [eBPF agents](https://github.com/netobserv/netobserv-ebpf-agent), which parse packets and generate flows from them. All filtering capabilities are compatible with this approach!
+Capturing **packets** now resembles **flows** capture, allowing you to live filter the content. This improvement was made possible by introducing the [flowlogs-pipeline](https://github.com/netobserv/flowlogs-pipeline) component inside [eBPF agents](https://github.com/netobserv/netobserv-ebpf-agent), which parses packets and generates flows from them. All filtering capabilities are compatible with this approach!
 
 Run a packet capture on a specitic port for example:
 ```sh
