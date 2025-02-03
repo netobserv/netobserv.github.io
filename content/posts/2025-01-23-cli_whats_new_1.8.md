@@ -45,7 +45,7 @@ You can now customize the capture namespace using the `NETOBSERV_NAMESPACE` envi
 NETOBSERV_NAMESPACE=my_ns oc netobserv [flows|packets|metrics|follow|stop|copy|cleanup]
 ```
 
-### Subnets Labelling
+### Subnets Labelling (for OCP clusters)
 The tool can now read Openshift configurations from `cluster-config-v1` and `network` to identify **Machine**, **Pods**, and **Services** subnets using the `--get-subnets` option. This will automatically add `SrcSubnetLabel` and `DstSubnetLabel` to your flows.
 
 You will see subnets being configured during the creation of the agents:
