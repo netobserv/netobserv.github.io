@@ -46,7 +46,7 @@ NETOBSERV_NAMESPACE=my_ns oc netobserv [flows|packets|metrics|follow|stop|copy|c
 ```
 
 ### Subnets Labelling
-The tool can now read configurations from `cluster-config-v1` and `network` to identify **Machine**, **Pods**, and **Services** subnets using the `--get-subnets` option. This will automatically add `SrcSubnetLabel` and `DstSubnetLabel` to your flows.
+The tool can now read Openshift configurations from `cluster-config-v1` and `network` to identify **Machine**, **Pods**, and **Services** subnets using the `--get-subnets` option. This will automatically add `SrcSubnetLabel` and `DstSubnetLabel` to your flows.
 
 You will see subnets being configured during the creation of the agents:
 ```sh
