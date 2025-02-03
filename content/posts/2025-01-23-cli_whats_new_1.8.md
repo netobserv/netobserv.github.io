@@ -62,9 +62,6 @@ Found subnets:
 
 ![subnet labels]({page.image('cli-whats-new-1-8/subnets.png')})
 
-### YAML Configuration Output
-Outputting a `.yml` file instead of running the capture is now possible using the `--yaml` option. The file will contain all the resources needed to run the capture, such as the namespace, the agents embedding the pipeline and its configuration, and the related services. The collector will need to be run manually in parallel to start the capture.
-
 ## Enhanced Data Filtering
 Filtering is crucial to gather precise network data without involving excessive resources and storage. The CLI focuses on this area, allowing you to deploy agents only where needed and fine-tune what's captured.
 
