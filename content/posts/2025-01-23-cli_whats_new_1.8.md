@@ -187,7 +187,7 @@ You can also request help on a specific command, such as `oc netobserv metrics h
 ```sh
 $ oc netobserv metrics help
 
-Netobserv allows you to capture metrics on your OCP cluster.
+Netobserv CLI allows you to capture metrics on your OCP cluster.
 Find more information at: https://github.com/netobserv/network-observability-cli/
 
 Syntax: netobserv metrics [options]
