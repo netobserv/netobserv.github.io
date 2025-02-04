@@ -6,6 +6,8 @@ tags: eBPF,Performance,Code
 authors: [jotak]
 ---
 
+_Thanks to: Julien Pinsonneau and Sara Thomas for reviewing_
+
 Last year, 2024, there were a few discussions at Red Hat, R&D related, around the eBPF Agent provided with NetObserv. One of these discussions focused especially on its performances and was a starting point to bring life to ideas. I'll take this opportunity to warmly thank Simone Ferlin-Reiter, Toke Hoiland Jorgensen, Mohamed S. Mahmoud and Donald Hunter for their contributions. Toke took the time to deep-dive in the code and shared his thoughts on the potential improvements.
 
 The [eBPF agent](https://github.com/netobserv/netobserv-ebpf-agent/) is the base block from where everything starts in NetObserv, as such it is a critical piece to optimize. That doesn't mean the other pieces should be neglected. [FLP](https://github.com/netobserv/flowlogs-pipeline), be prepared: you're next!
@@ -129,7 +131,7 @@ It's also in terms of maximum queries per second that the overhead is interestin
 
 ![QPS]({page.image('perf-improvements-1-8/qps.png')})
 
-Since this is not rate-limited, hey generates as much load as it can with its 50 workers. It shows a QPS increase of +5.6% compared to NetObserv 1.7.
+Since this is not rate-limited, _hey_ generates as much load as it can with its 50 workers. It shows a QPS increase of +5.6% compared to NetObserv 1.7.
 
 ## How did we go there: under the cover
 
@@ -194,7 +196,7 @@ Those changes triggered a refactoring that doesn't come without consequences and
 
 ![Partial flow]({page.image('perf-improvements-1-8/partial-flow.png')})
 
-- Limitation in **observed interfaces**: because BPF structure size must be predictable, we cannot store in map all the observed interfaces, we need to set a maximum. This is currently 6. If a packet is seen on more than six interfaces, we would only show the first six. Today we consider it sufficient, but we might raise the max later if needed. A Prometheus metrics was added to notify for the maximum reached.
+- Limitation in **observed interfaces**: because BPF structure size must be predictable, we cannot store in map all the observed interfaces, we need to set a maximum. This is currently six. If a packet is seen on more than six interfaces, we would only show the first six. Today we consider it sufficient, but we might raise the max later if needed. A Prometheus metrics was added to notify for the maximum reached.
 
 ## Next
 
