@@ -69,12 +69,9 @@ Found subnets:
 Filtering is crucial to gather precise network data without involving excessive resources and storage. The CLI focuses on this area, allowing you to deploy agents only where needed and fine-tune what's captured.
 
 ### Assigning Agents to Nodes
-It's now possible to define agents `nodeSelector` to capture on a subset of nodes. You can rely on existing labels or create a dedicated one for this usage. For example, you can run:
+It's now possible to define agents `nodeSelector` to capture on a subset of nodes. You can rely on existing labels or create a dedicated one for this usage. For example, you can run the agents on the node with the `kubernetes.io/hostname:my-node` label with the following command:
 ```sh
 oc netobserv flows --node-selector=kubernetes.io/hostname:my-node
-```
-to run the agents on the node with the `kubernetes.io/hostname:my-node` label.
-
 ### eBPF Filters
 Agents recently introduced [the ability to filter](https://github.com/netobserv/netobserv-ebpf-agent/blob/main/docs/flow_filtering.md) on IPs, Ports, Protocol, Action, TCPFlags, and more simultaneously. You can now apply these filters in the CLI as shown below:
 
