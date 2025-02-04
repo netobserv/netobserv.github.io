@@ -92,7 +92,7 @@ opt: filter_protocol, value: UDP
 
 ![filters]({page.image('cli-whats-new-1-8/filters.png')})
 
-You can add up to 16 sets of filters separated by `or` operator to create multiple capture scenarios.
+You can add up to 16 sets of filters separated by the `or` operator to create multiple capture scenarios.
 
 ### Regular Expressions Usage
 If you need to filter on enriched content beyond the agent-level filters, you can use **regexes** to match any field/value pair. To keep only the traffic from OpenShift namespaces, for example, you can use `--regexes=SrcK8S_Namespace~openshift.*`.
