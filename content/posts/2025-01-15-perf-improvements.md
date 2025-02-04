@@ -6,7 +6,7 @@ tags: eBPF,Performance,Code
 authors: [jotak]
 ---
 
-Last year, 2024, there has been a few discussions at Red Hat, R&D related, around the eBPF Agent provided with NetObserv. One of these discussions focused especially on its performances and was a starting point to bring life to ideas. I'll take this opportunity to warmly thank Simone Ferlin-Reiter, Toke Hoiland Jorgensen, Mohamed S. Mahmoud and Donald Hunter for their contributions. Toke took the time to deep-dive in the code and shared his thoughts on the potential improvements.
+Last year, 2024, there were a few discussions at Red Hat, R&D related, around the eBPF Agent provided with NetObserv. One of these discussions focused especially on its performances and was a starting point to bring life to ideas. I'll take this opportunity to warmly thank Simone Ferlin-Reiter, Toke Hoiland Jorgensen, Mohamed S. Mahmoud and Donald Hunter for their contributions. Toke took the time to deep-dive in the code and shared his thoughts on the potential improvements.
 
 The [eBPF agent](https://github.com/netobserv/netobserv-ebpf-agent/) is the base block from where everything starts in NetObserv, as such it is a critical piece to optimize. That doesn't mean the other pieces should be neglected. [FLP](https://github.com/netobserv/flowlogs-pipeline), be prepared: you're next!
 
@@ -58,7 +58,7 @@ _NB: the "wide load" profile used here corresponds to 3000 workers rate-limited 
 
 ### Overhead
 
-Observing traffic never comes without an overhead, but hopefully NetObserv makes it as low as possible. By lowering the CPU usage, we expect to lower the overhead: less CPU used by the eBPF agent means more CPU available for other tasks. When running low on CPU, it can make a difference.
+Some resource overhead is inevitable when observing traffic, but hopefully NetObserv makes it as low as possible. By lowering the CPU usage, we expect to lower the overhead: less CPU used by the eBPF agent means more CPU available for other tasks. When running low on CPU, it can make a difference.
 
 I used _hey_ again to measure the overhead in two different ways:
 
@@ -115,7 +115,7 @@ Status code distribution:
 
 After that I ran the same command twice, first with NetObserv 1.7, second with NetObserv 1.8.
 
-In both cases, some values remained unchanged compared to the baseline: Fastest was always 0.0006s, Average 0.0015s, and same for the Fastest and Average details (DNS+dialup, DNS-lookup, req write, resp wait, resp read). Which is a good sign that NetObserv doesn't generate latency overhead for most of the requests. It's on higher percentiles that an overhead starts showing up.
+In both cases, some values remained unchanged compared to the baseline: Fastest was always 0.0006s, Average 0.0015s, and same for the Fastest and Average details (DNS+dialup, DNS-lookup, req write, resp wait, resp read). These numbers are a good sign that NetObserv doesn't generate latency overhead for most of the requests. It's on higher percentiles that an overhead starts showing up.
 
 **Fig. 5: latency distribution across baseline and versions (in seconds)**
 
@@ -129,7 +129,7 @@ It's also in terms of maximum queries per second that the overhead is interestin
 
 ![QPS]({page.image('perf-improvements-1-8/qps.png')})
 
-Since this is not rate-limited, hey generates load as much as it can with its 50 workers. It shows a QPS increase of +5.6% compared to NetObserv 1.7.
+Since this is not rate-limited, hey generates as much load as it can with its 50 workers. It shows a QPS increase of +5.6% compared to NetObserv 1.7.
 
 ## How did we go there: under the cover
 
@@ -137,7 +137,7 @@ Now is the technical part. Here's what we did.
 
 ### Moving away from per-CPU map
 
-eBPF provides several [structures](https://docs.ebpf.io/linux/map-type/) to allow sharing data between the kernel space and the user space. Hash maps are especially useful as they allow persisting the data across calls and hook points. Thanks to hash maps, NetObserv can keep track of flows in the kernel space, aggregate new packets observed there, and thus limit the size of data transfer between the kernel and the user spaces for better performance.
+eBPF provides several [structures](https://docs.ebpf.io/linux/map-type/) that allow sharing data between the kernel space and the user space. Hash maps are especially useful as they allow for data persistence across calls and hook points. Thanks to hash maps, NetObserv can keep track of flows in the kernel space, aggregate new packets observed there, and thus limit the size of data transfer between the kernel and the user spaces for better performance.
 
 Among the different map types, there is [BPF_MAP_TYPE_HASH](https://docs.ebpf.io/linux/map-type/BPF_MAP_TYPE_HASH/) and [BPF_MAP_TYPE_PERCPU_HASH](https://docs.ebpf.io/linux/map-type/BPF_MAP_TYPE_PERCPU_HASH/).
 
@@ -145,11 +145,11 @@ Among the different map types, there is [BPF_MAP_TYPE_HASH](https://docs.ebpf.io
 
 ![Map types]({page.image('perf-improvements-1-8/map-types.png')})
 
-They are quite similar, except that the latter has, for every key, one value per CPU. In other words, data processed by different CPUs will land in different buckets. When it comes to observing packets, you may think there is no need for the per-CPU map: as we want to aggregate packets into network flows, the per-CPU segregation doesn't make sense, we don't care about which CPU processed the packet. Of course, we would need to handle concurrent access: if two packets are processed by two CPUs, there could be a concurrent write. [Spin locks](https://docs.ebpf.io/linux/concepts/concurrency/#spin-locks) are there for this reason.
+They are quite similar, except that the latter has, for every key, one value per CPU. In other words, data processed by different CPUs lands in different buckets. When it comes to observing packets, you may think there is no need for the per-CPU map; since we want to aggregate packets into network flows, the per-CPU segregation doesn't make sense, and we don't care about which CPU processed the packet. Of course, we would need to handle concurrent access: if two packets are processed by two CPUs, there could be a concurrent write. [Spin locks](https://docs.ebpf.io/linux/concepts/concurrency/#spin-locks) are there for this reason.
 
 But the crux of the matter was that our map is accessed for writes by different hook points. For instance, there is the [TC hook](https://github.com/netobserv/netobserv-ebpf-agent/blob/2c96c420fc5ed223b7b99b00b2705fe84c5c0110/bpf/flows.c#L282) that is our main observation point for capturing packets, and other trace points such as [the one looking for drops](https://github.com/netobserv/netobserv-ebpf-agent/blob/2c96c420fc5ed223b7b99b00b2705fe84c5c0110/bpf/pkt_drops.h#L104), which enriches the flows with additional information. Those enrichment trace points can't acquire the lock to perform updates. Using a per-CPU map has been an answer to this problem, as it is not going to be written concurrently.
 
-The drawback of using per-CPU maps for network flows is that for the same flow, which is defined (roughly - more on that later) by its 5-tuple (source IP, destination IP, source port, destination port, protocol), packets have no reason to be processed by just a single CPU. In other words, the flow information is spread over multiple CPU buckets in the map. Not only does it force us to reassemble flow chunks when they are read from the user space, wasting precious CPU cycles, but most importantly it's not memory efficient, with map sizes being potentially multiplied by the number of cores, and data being sometimes duplicated on several CPU buckets.
+The drawback of using per-CPU maps for network flows is that for the same flow, which is defined (roughly - more on that later) by its 5-tuple (source IP, destination IP, source port, destination port, protocol), packets have no reason to be processed by just a single CPU. In other words, the flow information is spread over multiple CPU buckets in the map. Not only does it force us to reassemble flow chunks when they are read from the user space, wasting precious CPU cycles; but most importantly, it's not memory efficient, with map sizes being potentially multiplied by the number of cores, and data being sometimes duplicated on several CPU buckets.
 
 Today, we change all of that by refactoring our data structures. Our solution is to avoid writing the flow map from the enrichment hooks. Instead of that, we are introducing a new map, dedicated to enriched data. Map keys are going to be duplicated across those two maps, but it's a lesser evil. So now, we can change the main map to be a shared one across CPUs, with a spinlock. We still have some reassembling work to do in the user space though, to merge the main map with the enrichment map, but it is more straightforward than merging entire flows together. We also have a couple of ideas to further improve this process, more on that later.
 
@@ -188,21 +188,21 @@ There have been other improvements identified, more as low-hanging fruits, but s
 
 Those changes triggered a refactoring that doesn't come without consequences and tradeoffs.
 
-- Most importantly, **partial flows**: because now having two different maps, one for the main flows, generated from the TC hook, and another for the enrichments, generated from other hooks, there can sometimes be a mismatch between these two. Especially when the enrichment map keys aren't found in the flows map, it results in generating partial flows, which is a flow that lacks some information. Namely, the TCP flags, the MAC addresses and the bytes and packets counters are missing in partial flows. It doesn't mean these values are entirely lost: you could still be able to find them in an adjacent flow - it's because flows are evicted periodically, and an eviction might occur precisely at the _wrong moment_ (it's a race condition), with only partial data being available at that time. Another cause for partial flows could be sampling, when the agent is configured with a sampling rate: if for some reason the enrichment data is sampled but the corresponding TC hook packet isn't, this would also result in a partial flow.
+- Most importantly, **partial flows**: because now having two different maps, one for the main flows, generated from the TC hook, and another for the enrichments, generated from other hooks, there can sometimes be a mismatch between these two. Especially when the enrichment map keys aren't found in the flows map, the result is a generated partial flow, which is a flow that lacks some information. Namely, the TCP flags, the MAC addresses and the bytes and packets counters are missing in partial flows. It doesn't mean these values are entirely lost; you could still be able to find them in an adjacent flow - it's because flows are evicted periodically, and an eviction might occur precisely at the _wrong moment_ (it's a race condition), with only partial data being available at that time. Another cause for partial flows could be sampling, when the agent is configured with a sampling rate: if for some reason the enrichment data is sampled but the corresponding TC hook packet isn't, this would also result in a partial flow.
 
 **Fig. 8: an example of partial flow, with 0 bytes/packets**
 
 ![Partial flow]({page.image('perf-improvements-1-8/partial-flow.png')})
 
-- Limitation in **observed interfaces**: because BPF structure size must be predictable, we cannot store in map all the observed interfaces, we need to set a maximum. This is currently 6. If a packet is seen on more than six interfaces, we would only show the first six. Today we consider it sufficient, but we might raise the max later if needed. A prometheus metrics was added to notify for maximum reached.
+- Limitation in **observed interfaces**: because BPF structure size must be predictable, we cannot store in map all the observed interfaces, we need to set a maximum. This is currently 6. If a packet is seen on more than six interfaces, we would only show the first six. Today we consider it sufficient, but we might raise the max later if needed. A Prometheus metrics was added to notify for the maximum reached.
 
 ## Next
 
-Better performance is a never ending battle. Especially here in NetObserv, it is critical to run our eBPF probes with the minimal possible impacts on the monitored workloads, and on the cluster overall.
+Better performance is a never ending battle. Especially here in NetObserv, it is critical to run our eBPF probes with the minimal possible impacts on the monitored workloads and on the cluster overall.
 
 ### Back to the ringbuffer
 
-As mentioned above, there are some ideas to improve further the data processing between kernel and user spaces. One of them consists in re-evaluating how relevant would be a [ringbuffer](https://docs.ebpf.io/linux/map-type/BPF_MAP_TYPE_RINGBUF/).
+As mentioned above, there are some ideas to improve further the data processing between kernel and user spaces. One of them consists in re-evaluating the relevance of a [ringbuffer](https://docs.ebpf.io/linux/map-type/BPF_MAP_TYPE_RINGBUF/).
 
 [Previously](https://opensource.com/article/22/8/ebpf-network-observability-cloud) we found that a hash map is more relevant than a ringbuffer for forwarding flows to the user space. This is mostly because the hash map allows in-kernel aggregation, thus reducing the size of the data to copy, whereas the ringbuffer is for a stateless usage, transferring data as soon as it comes, thus with the risk to copy some duplicated parts again and again.
 
@@ -212,7 +212,7 @@ However, now that we have split the data into two maps, while the above certainl
 
 We've seen that doing de-duplication in the kernel already helped a lot. There's more that we can do, but to keep nothing from you, it's a bit tricky.
 
-Modern networking is complex, and multi-layered. There are more layers than what we currently de-duplicate. In OVN-Kubernetes for instance, a [GENEVE encapsulation](https://www.redhat.com/en/blog/what-geneve) is used for sending packets between nodes. When it happens, NetObserv sees different things. There's the pod-to-pod traffic, for instance, that is identified with the corresponding Pod IPs. That's one flow. And at the same time there's the node-to-node traffic, seen from another interface like `br-ex`, identified with the source and destination Node IPs. Two flows, same packet (encapsulated or not).
+Modern networking is complex and multi-layered. There are more layers than what we currently de-duplicate. In OVN-Kubernetes for instance, a [GENEVE encapsulation](https://www.redhat.com/en/blog/what-geneve) is used for sending packets between nodes. When it happens, NetObserv sees different things. There's the pod-to-pod traffic, for instance, that is identified with the corresponding Pod IPs. That's one flow. And at the same time there's the node-to-node traffic, which is seen from another interface like `br-ex` and identified with the source and destination Node IPs. Two flows, same packet (encapsulated or not).
 
 On top of that, there are also the Kubernetes Services that show up with different IPs - so, different flows: remember that a flow is defined by its IPs - even if that's for the same packet. This is resolved through NAT.
 
@@ -226,7 +226,7 @@ What about this dedicated `mark` field in the [Linux SKB](https://docs.ebpf.io/l
 
 The other track that we are exploring is doing packet finger-printing (with a [PoC here](https://github.com/jotak/netobserv-agent/blob/poc-tracing/bpf/dedup.h#L113)) to identify packets uniquely so we can detect whether they were already seen or not, and which flow they belong to. Early tests look somewhat good, but there are always risks of false-positives and false-negatives, which would generate inaccurate data, such as dismissing legitimate flows because we would wrongly think they are duplicate. Because of its potential unsoundness, we would be reluctant to make it part of the core NetObserv product, but it could be proposed as an experimental feature, at least until it proves being robust.
 
-What would really help us is if there was a writable [SKB](https://docs.kernel.org/networking/skbuff.html) region for custom metadata, similar to [what exists for XDP](https://docs.kernel.org/networking/xdp-rx-metadata.html), allowing us to store our flow keys. It would be a more efficient solution, and more robust. Hopefully, [it might come at some point](https://lpc.events/event/18/contributions/1935/), and we're looking forward to it.
+What would really help us is if there was a writable [SKB](https://docs.kernel.org/networking/skbuff.html) region for custom metadata, similar to [what exists for XDP](https://docs.kernel.org/networking/xdp-rx-metadata.html), allowing us to store our flow keys. It would be a more efficient and robust solution. Hopefully, [it might come at some point](https://lpc.events/event/18/contributions/1935/), and we're looking forward to it.
 
 ## Hope you'll like it
 
