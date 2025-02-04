@@ -143,7 +143,7 @@ The help has been enhanced to provide examples for each command and option. You 
 ```sh
 $ oc netobserv help
 
-Netobserv allows you to capture flows, packets and metrics from your cluster.
+Netobserv CLI allows you to capture flows, packets and metrics from your cluster.
 Find more information at: https://github.com/netobserv/network-observability-cli/
 
 Syntax: netobserv [flows|packets|metrics|follow|stop|copy|cleanup|version] [options]
