@@ -24,7 +24,12 @@ Since we [introduced the Network Observability CLI](./2024-07-25-cli.md), numero
 This update adds several options to the CLI, covering more scenarios and enabling scripting on top of the tool.
 
 ### Operate in the Background
-The `--background` option allows you to start a flow or packet capture without connecting your terminal to the collector pod. This enables you to let the capture run in the background while you work on something else. You can check the capture's progress using the `follow` command and copy the collector output locally using the `copy` command. Once the job is complete, you can `stop` or `cleanup` everything.
+The `--background` option allows you to start a flow or packet capture without connecting your terminal to the **collector pod**. This enables you to let the capture run in the background while you work on something else. 
+You can check the capture's progress using the `follow` command.
+The capture will end automatically when either maximum bytes (50MB) or time (5m) is reached. You can update these accordingly using the `--max-bytes` and `--max-time` options.
+The `stop` command also allows you to end the capture manually.
+In both cases, the collector pod keeps running to let you download the output locally using the `copy` command.
+Once the job is complete, you `cleanup` everything.
 
 ```sh
 oc netobserv flows --background # Run a flow capture in the background
@@ -130,6 +135,9 @@ to focus only on drops.
 On top of the features, you can use all the filtering capabilities mentioned above to focus on what you're looking for. A `NetObserv / On Demand` dashboard will be automatically created, showing the results.
 
 ![dashboard]({page.image('cli-whats-new-1-8/dashboard.png')})
+
+In this mode, the maximum bytes or time options are ignored since there is no collector pod involved. Only the eBPF agents are deployed. 
+You will need to run `stop` or `cleanup` command to remove everything.
 
 ## Help!
 
