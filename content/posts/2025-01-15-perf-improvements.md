@@ -6,7 +6,7 @@ tags: eBPF,Performance,Code
 authors: [jotak]
 ---
 
-_Thanks to: Julien Pinsonneau and Sara Thomas for reviewing_
+_Thanks to: Julien Pinsonneau, Sara Thomas, Steven Lee and Mehul Modi for reviewing_
 
 Last year, 2024, there were a few discussions at Red Hat, R&D related, around the eBPF Agent provided with NetObserv. One of these discussions focused especially on its performances and was a starting point to bring life to ideas. I'll take this opportunity to warmly thank Simone Ferlin-Reiter, Toke Hoiland Jorgensen, Mohamed S. Mahmoud and Donald Hunter for their contributions. Toke took the time to deep-dive in the code and shared his thoughts on the potential improvements.
 
@@ -18,8 +18,10 @@ We will dive into the implementation details later and, for once, start with the
 
 As part of our CI processes and tools, we use [kube-burner](https://github.com/kube-burner/kube-burner) to measure performance and detect regressions. It's almost the same test beds that we already mentioned [in a previous post](https://netobserv.io/posts/light-weight-network-observability-operator-without-loki/), with some slight modifications: from 3 test beds — the 25-nodes, the 65-nodes and the 120-nodes ones, with only the 65-nodes that was stress-testing ingress — we moved to just 2 test beds: 
 
-- Test bed 1 uses a 25-nodes cluster that runs node-density-heavy and ingress-perf workloads.
-- Test bed 2 uses a bigger 250-nodes cluster, running cluster-density and ingress-perf workloads.
+- Test bed 1 uses a 25-nodes cluster that runs [node-density-heavy](https://github.com/kube-burner/kube-burner-ocp?tab=readme-ov-file#node-density-heavy) and [ingress-perf](https://github.com/cloud-bulldozer/ingress-perf) workloads. It has around 5200 pods in 81 namespaces.
+- Test bed 2 uses a bigger 250-nodes cluster, running [cluster-density-v2](https://github.com/kube-burner/kube-burner-ocp?tab=readme-ov-file#cluster-density-v2) and ingress-perf workloads. It has around 14K pods in 1000 namespaces.
+
+NetObserv is configured with 1:1 sampling, thus processing every packet.
 
 Here's how the CPU metrics compare between NetObserv 1.7 and 1.8:
 
@@ -123,7 +125,7 @@ In both cases, some values remained unchanged compared to the baseline: Fastest 
 
 ![Latency distribution]({page.image('perf-improvements-1-8/latency-distribution.png')})
 
-Unlike in 1.7, at p50 1.8 shows no latency overhead compared to the baseline, meaning that half of the requests have no overhead. At p99, the latency overhead in 1.7 was +1 millisecond, in 1.8 it decreased to +0.7 milliseconds.
+Unlike in 1.7, at p50 1.8 shows no latency overhead compared to the baseline, meaning that half of the requests have pretty much no overhead. At p99, the latency overhead in 1.7 was +1 millisecond, in 1.8 it decreased to +0.7 milliseconds.
 
 It's also in terms of maximum queries per second that the overhead is interesting to see.
 
@@ -190,17 +192,17 @@ There have been other improvements identified, more as low-hanging fruits, but s
 
 Those changes triggered a refactoring that doesn't come without consequences and tradeoffs.
 
-- Most importantly, **partial flows**: because now having two different maps, one for the main flows, generated from the TC hook, and another for the enrichments, generated from other hooks, there can sometimes be a mismatch between these two. Especially when the enrichment map keys aren't found in the flows map, the result is a generated partial flow, which is a flow that lacks some information. Namely, the TCP flags, the MAC addresses and the bytes and packets counters are missing in partial flows. It doesn't mean these values are entirely lost; you could still be able to find them in an adjacent flow - it's because flows are evicted periodically, and an eviction might occur precisely at the _wrong moment_ (it's a race condition), with only partial data being available at that time. Another cause for partial flows could be sampling, when the agent is configured with a sampling rate: if for some reason the enrichment data is sampled but the corresponding TC hook packet isn't, this would also result in a partial flow.
+- Most importantly, **partial flows**: because now having two different maps, one for the main flows, generated from the TC hook, and another for the enrichments, generated from other hooks, there can sometimes be a mismatch between these two. Especially when the enrichment map keys aren't found in the flows map, the result is a generated partial flow, which is a flow that lacks some information, namely the TCP flags, the MAC addresses, and the bytes and packets counters. It doesn't mean these values are entirely lost; you could still be able to find them in an adjacent flow - it's because flows are evicted periodically, and an eviction might occur precisely at the _wrong moment_ (it's a race condition), with only partial data being available at that time. Another cause for partial flows is when the agent is configured with a sampling rate greater than one. If, for some reason, the enrichment data is sampled but the corresponding TC hook packet isn't, this would also result in a partial flow.
 
 **Fig. 8: an example of partial flow, with 0 bytes/packets**
 
 ![Partial flow]({page.image('perf-improvements-1-8/partial-flow.png')})
 
-- Limitation in **observed interfaces**: because BPF structure size must be predictable, we cannot store in map all the observed interfaces, we need to set a maximum. This is currently six. If a packet is seen on more than six interfaces, we would only show the first six. Today we consider it sufficient, but we might raise the max later if needed. A Prometheus metrics was added to notify for the maximum reached.
+- Limitation in **observed interfaces**: because BPF structure size must be predictable, we cannot store all the observed interfaces in the map. We need to set a maximum, which is currently six. If a packet is seen on more than six interfaces, we would only show the first six. Today we consider it sufficient, but we might raise the max later if needed. A Prometheus metrics was added to notify for the maximum reached.
 
 ## Next
 
-Better performance is a never ending battle. Especially here in NetObserv, it is critical to run our eBPF probes with the minimal possible impacts on the monitored workloads and on the cluster overall.
+Better performance is a never ending battle. In NetObserv, it is critical to run our eBPF probes with the minimal possible impacts on the monitored workloads and on the cluster overall.
 
 ### Back to the ringbuffer
 
