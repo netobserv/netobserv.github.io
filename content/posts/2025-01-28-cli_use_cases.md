@@ -53,7 +53,7 @@ Found subnets:
     Machines: "10.0.0.0/16"
 ```
 
-Once running, you can cycle to different views using left / right arrow keys and change the displayed enrichment colomns using page up / down ones.
+Once running, you can cycle to different views using the left / right arrow keys and change the displayed enrichment columns using the page up / down keys.
 Also, to adapt to your screen height, you can increase / decrease the number of displayed flows using up / down arrow keys.
 
 ![subnets]({page.image('cli/subnets.png')})
