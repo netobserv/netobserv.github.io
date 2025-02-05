@@ -98,7 +98,7 @@ Alternatively, you could also use the service port:
 --port=3001
 ```
 
-Finally, you can add a node selector label on top
+Finally, you can add a node selector label on top:
 ```sh
 --node-selector=kubernetes.io/hostname:my-node
 ```
