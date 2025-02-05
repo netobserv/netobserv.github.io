@@ -10,7 +10,7 @@ authors: [jpinsonneau]
 
 If you haven't read it yet, take a look at [CLI 1.8 update](./2025-01-23-cli_whats_new_1.8.md) article to list the new introduced features in release 1.8.
 
-For each of the following use cases, you must have `netobserv CLI` installed and you need to be connected to your cluster using:
+For each of the following use cases, you must have the `netobserv CLI` installed and you need to be connected to your cluster using:
 ```sh
 oc login <CLUSTER_API_URL> --username <CLUSTER_ADMIN> --password <PASSWORD>
 ```
