@@ -17,7 +17,7 @@ oc login <CLUSTER_API_URL> --username <CLUSTER_ADMIN> --password <PASSWORD>
 
 To observe what the CLI deploys on your cluster, you can run the `oc events -n netobserv-cli -w` command to watch all the events happening in the `netobserv-cli` namespace.
 
-The result will look like:
+The result look like:
 ```sh
 LAST SEEN   TYPE     REASON             OBJECT                    MESSAGE
 0s          Normal   SuccessfulCreate   DaemonSet/netobserv-cli   Created pod: netobserv-cli-t2vlr
@@ -41,9 +41,9 @@ LAST SEEN   TYPE     REASON             OBJECT                    MESSAGE
 ```
 
 ## North / South and East / West traffic
-The CLI is able to read configurations from `cluster-config-v1` and `network` to identify **Machine**, **Pods**, and **Services** subnets using the `--get-subnets` option. This will automatically add `SrcSubnetLabel` and `DstSubnetLabel` to your flows.
+The CLI is able to read configurations from `cluster-config-v1` and `network` to identify **Machine**, **Pods**, and **Services** subnets using the `--get-subnets` option. This automatically add `SrcSubnetLabel` and `DstSubnetLabel` to your flows.
 
-You will see subnets being configured during the creation of the agents:
+You can see subnets being configured during the creation of the agents:
 ```sh
 creating flow-capture agents:
 opt: get_subnets, value: true
@@ -67,7 +67,7 @@ oc netobserv flows --get-subnets --regexes=SrcSubnetLabel~Pods,DstSubnetLabel~Se
 
 **WARNING: Running regexes filters means that all the flows are captured and enriched before applying this filter stage in the pipeline. To avoid performance impact on your cluster, use eBPF filters such as IPs, Ports and Protocol as most as possible.**
 
-The output will now only show **Pods** to **Services** flows:
+The output is now only showing **Pods** to **Services** flows:
 ![pods subnets]({page.image('cli/pods-subnets.png')})
 
 
@@ -88,7 +88,7 @@ Since we don't know what we are looking for yet, we should enable all the featur
 --enable_all
 ```
 
-By clicking on the pod name, we can see that our current pod IP is `10.129.0.48`. To capture all the traffic going in and out of this pod, we will use the filter:
+By clicking on the pod name, we can see that our current pod IP is `10.129.0.48`. To capture all the traffic going in and out of this pod, we use the filter:
 ```sh
 --peer_ip=10.129.0.48
 ```
@@ -105,12 +105,12 @@ Finally, you can add a node selector label on top:
 
 **WARNING: Running the capture without filtering is also an option, but it is not recommended as it collects all the flows of the cluster. Depending of the size of your cluster, this could be a lot and make the collector pod crash.**
 
-All together, the command to run flow capture with all the features on our pod IP will be:
+All together, the command to run flow capture with all the features on our pod IP is:
 ```sh
 oc netobserv flows --enable_all --peer_ip=10.131.0.19
 ```
 
-The script will connect to your cluster and start deploying eBPF agents and collector pod:
+The script connects to your cluster and start deploying eBPF agents and collector pod:
 ```sh
 Checking dependencies... 
 'yq' is up to date (version v4.43.1).
@@ -142,7 +142,7 @@ pod/collector created
 pod/collector condition met
 ```
 
-Once that done, it will connect to the collector and display its output:
+Once that done, it connects to the collector and display its output:
 ```sh
 ------------------------------------------------------------------------
          _  _     _       _                       ___ _    ___
@@ -163,7 +163,7 @@ INFO[0000] flows table created
 
 At this stage, the collector wait for incoming data. If nothing shows yet, it means that no traffic is captured. Try to open the route of your application or update the filters of the capture.
 
-Once some traffic is captured, the output will look like:
+Once some traffic is captured, the output look like:
 ![cli network events]({page.image('cli/connectivity-scenario-cli-events.png')})
 
 Cycle to the **network events** view. In this capture, we see that the traffic is blocked by a network policy since it reports the `NetpolNamespace` event.
@@ -188,7 +188,7 @@ spec:
 Once you updated your policies, you can give another try to your route until you fix the issue:
 ![cli traffic]({page.image('cli/connectivity-scenario-cli-traffic.png')})
 
-The network event will dissapear and your route should open correctly now. On top of that, you can ensure that the Round Trip Time is correct. 
+The network event disappear and your route should open correctly now. On top of that, you can ensure that the Round Trip Time is correct. 
 If you are still experienting issues with the route, you may update / get rid of the filter(s) and play with live filtering.
 
 - While running a capture, you can place **additionnal live filters** to the view by simply typing keywords on your keyboard such as `nodejs`:
@@ -204,16 +204,16 @@ Once you updated your policies, you can give another try to your route until you
   Those `NxDomain` errors could be from a misconfiguration in your app deployment trying to reach the wrong domain.
 
 - To check which network is involved, you can switch to **Network Name** enrichment and **UDN** display.
-This will show you which network name, interfaces, direction and User Defined Network name involved.
+This is showing you which network name, interfaces, direction and User Defined Network name involved.
 ![cli network]({page.image('cli/connectivity-scenario-cli-network.png')})
 
-Once you are done, simply press `CTRL + C` to exit. Your capture will be copied to your local machine for post mortem analysis.
+Once you are done, simply press `CTRL + C` to exit. Your capture is copied to your local machine for post mortem analysis.
 
 That's the end of the first scenario about connectivity checks !
 
 ## User Defined Network (Tech Preview)
 
-As tech preview, you can enrich flows to get User Defined Network (UDNs) information. To do so, you will need to use the `--enable_udn_mapping` option.
+As tech preview, you can enrich flows to get User Defined Network (UDNs) information. To do so, you can use the `--enable_udn_mapping` option.
 
 To configure your UDNs, [refer to the official documentation](https://docs.openshift.com/container-platform/4.17/networking/multiple_networks/primary_networks/about-user-defined-networks.html).
 
@@ -265,14 +265,14 @@ metadata:
 ```
 
 Note that `eth0` is the default pod network and `ovn-udn1`is the User Defined Network. We are going to filter on its IP: `10.0.0.4`.
-As this IP is not unique across the cluster, we can add a filter on the port `8080` which will be used in this example and the node annotation `kubernetes.io/hostname=ci-ln-cfqkhfb-72292-6l8l5-worker-c-lrr4q` matching the node running this pod.
+As this IP is not unique across the cluster, we can add a filter on the port `8080` which is used in this example and the node annotation `kubernetes.io/hostname=ci-ln-cfqkhfb-72292-6l8l5-worker-c-lrr4q` matching the node running this pod.
 
 All together, the command is as follows:
 ```sh
 oc netobserv flows --enable_udn_mapping --peer_ip=10.0.0.4 --port=8080 --node-selector=kubernetes.io/hostname:ci-ln-cfqkhfb-72292-6l8l5-worker-c-lrr4q
 ```
 
-Once you run the command, it will wait for the flows to come. In this scenario, we simply run a curl between two pods under the same UDN.
+Once you run the command, it waits for the flows to come. In this scenario, we simply run a curl between two pods under the same UDN.
 You can cycle to **UDN mapping** display once you get your flows to see which UDN is involved.
 
 ![udns]({page.image('cli/udns.png')})
@@ -292,7 +292,7 @@ oc netobserv packets --protocol=TCP --port=80
 
 Similarly to the previous scenario, the script connects to your cluster and starts deploying the eBPF agents and collector pod but capturing full packet content this time.
 
-Once first packet is captured, you will see a table with the amount of packets and bytes:
+Once first packet is captured, you see a table with the amount of packets and bytes:
 
 ![cli packets enriched]({page.image('cli/packet-capture-scenario-table-enriched.png')})
 
