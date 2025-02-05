@@ -58,7 +58,7 @@ Also, to adapt to your screen height, you can increase / decrease the number of 
 
 ![subnets]({page.image('cli/subnets.png')})
 
-You can live filter this capture by typing Machines / Pods or Services keyword to only see what you look for here.
+You can live-filter this capture by typing Machines, Pods or Services keywords to only see what you look for here.
 
 However, if you want to capture only a subset of these flows, you can use the regexes filter on top such as:
 ```sh
