@@ -93,7 +93,7 @@ By clicking on the pod name, we can see that our current pod IP is `10.129.0.48`
 --peer_ip=10.129.0.48
 ```
 
-Alternatively, you could also use the service port
+Alternatively, you could also use the service port:
 ```sh
 --port=3001
 ```
