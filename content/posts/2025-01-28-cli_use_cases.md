@@ -188,7 +188,7 @@ spec:
 Once you updated your policies, you can give another try to your route until you fix the issue:
 ![cli traffic]({page.image('cli/connectivity-scenario-cli-traffic.png')})
 
-The network event disappear and your route should open correctly now. On top of that, you can ensure that the Round Trip Time is correct. 
+The network event disappears and your route should open correctly now. On top of that, you can ensure that the Round Trip Time is correct. 
 If you are still experienting issues with the route, you may update / get rid of the filter(s) and play with live filtering.
 
 - While running a capture, you can place **additionnal live filters** to the view by simply typing keywords on your keyboard such as `nodejs`:
