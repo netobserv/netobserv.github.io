@@ -213,7 +213,7 @@ That's the end of the first scenario about connectivity checks !
 
 ## User Defined Network (Tech Preview)
 
-As tech preview, you can enrich flows to get User Defined Network (UDNs) informations. To do so, you will need to use the `--enable_udn_mapping` option.
+As tech preview, you can enrich flows to get User Defined Network (UDNs) information. To do so, you will need to use the `--enable_udn_mapping` option.
 
 To configure your UDNs, [refer to the official documentation](https://docs.openshift.com/container-platform/4.17/networking/multiple_networks/primary_networks/about-user-defined-networks.html).
 
