@@ -103,7 +103,7 @@ Finally, you can add a node selector label on top:
 --node-selector=kubernetes.io/hostname:my-node
 ```
 
-**WARNING: Running the capture without filtering is also an option but not recommended as we are going to collect all the flows of the cluster. Depending of the size of your cluster, this could be a lot and make the collector pod crash.**
+**WARNING: Running the capture without filtering is also an option, but it is not recommended as it collects all the flows of the cluster. Depending of the size of your cluster, this could be a lot and make the collector pod crash.**
 
 All together, the command to run flow capture with all the features on our pod IP will be:
 ```sh
