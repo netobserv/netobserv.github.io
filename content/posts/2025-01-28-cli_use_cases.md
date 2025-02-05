@@ -327,7 +327,7 @@ Then in Wireshark, specify the file path in `Edit→Preferences→Protocols→TL
 You should now have access to decrypted packets !
 
 What about a secure connection between two pods ? 
-For these cases, you need to have a good understanding of what's involved behind the scene. If your application rely on OpenSSL, GnuTLS or NSS TLS library, you should be able to set the `SSLKEYLOGFILE` enviroment variable and extract the result.
+For these cases, you need to have a good understanding of what's involved behind the scene. If your application relies on OpenSSL, GnuTLS or NSS TLS library, you should be able to set the `SSLKEYLOGFILE` enviroment variable and extract the result.
 
 For our nodejs example, you need to either use the cli option [--tls-keylog](https://nodejs.org/api/cli.html#cli_tls_keylog_file) or modify the code and subscribe on [keylog event](https://nodejs.org/api/tls.html#event-keylog). When multiple teams are involved, that may take a while !
 
