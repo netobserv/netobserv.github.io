@@ -15,7 +15,7 @@ For each of the following use cases, you must have the `netobserv CLI` installed
 oc login <CLUSTER_API_URL> --username <CLUSTER_ADMIN> --password <PASSWORD>
 ```
 
-To observ what's our CLI deploys on your cluster, you can run `oc events -n netobserv-cli -w` command to watch all the events happening in the `netobserv-cli` namespace.
+To observe what the CLI deploys on your cluster, you can run the `oc events -n netobserv-cli -w` command to watch all the events happening in the `netobserv-cli` namespace.
 
 The result will look like:
 ```sh
