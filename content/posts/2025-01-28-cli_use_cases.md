@@ -197,7 +197,7 @@ If you are still experienting issues with the route, you may update / get rid of
 - And add as many keywords as you want by pressing enter:
 ![cli live filters]({page.image('cli/connectivity-scenario-cli-live-filters.png')})
 
-- If your deployment involve some DNS resolution, you can switch to the **DNS** display and show latencies and errors:
+- If your deployment involves some DNS resolution, you can switch to the **DNS** display and show latencies and errors:
 Once you updated your policies, you can give another try to your route until you fix the issue:
 ![cli dns]({page.image('cli/connectivity-scenario-cli-dns.png')})
 
