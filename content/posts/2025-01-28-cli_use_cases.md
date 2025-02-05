@@ -211,7 +211,7 @@ Once you are done, simply press `CTRL + C` to exit. Your capture is copied to yo
 
 That's the end of the first scenario about connectivity checks !
 
-## User Defined Network (Tech Preview)
+## User Defined Network (Dev Preview)
 
 As tech preview, you can enrich flows to get User Defined Network (UDNs) information. To do so, you can use the `--enable_udn_mapping` option.
 
