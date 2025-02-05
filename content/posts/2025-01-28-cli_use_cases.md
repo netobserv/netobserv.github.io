@@ -331,7 +331,7 @@ For these cases, you need to have a good understanding of what's involved behind
 
 For our nodejs example, you need to either use the cli option [--tls-keylog](https://nodejs.org/api/cli.html#cli_tls_keylog_file) or modify the code and subscribe on [keylog event](https://nodejs.org/api/tls.html#event-keylog). When multiple teams are involved, that may take a while !
 
-Another alternative is to get a man in the middle approach using a proxy. This can be done using [kubetap](https://soluble-ai.github.io/kubetap/).
+Another alternative is a man-in-the-middle approach using a proxy. This can be done using [kubetap](https://soluble-ai.github.io/kubetap/).
 
 You can install it using krew by running:
 ```sh
