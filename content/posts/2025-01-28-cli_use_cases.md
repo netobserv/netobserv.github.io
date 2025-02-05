@@ -290,7 +290,7 @@ Let's start a packet capture using the following command:
 oc netobserv packets --protocol=TCP --port=80
 ```
 
-Similarly to the previous scenario, the script will connect to your cluster and start deploying eBPF agents and collector pod but capturing full packet content this time.
+Similarly to the previous scenario, the script connects to your cluster and starts deploying the eBPF agents and collector pod but capturing full packet content this time.
 
 Once first packet is captured, you will see a table with the amount of packets and bytes:
 
