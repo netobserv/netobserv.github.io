@@ -267,7 +267,7 @@ metadata:
 Note that `eth0` is the default pod network and `ovn-udn1`is the User Defined Network. We are going to filter on its IP: `10.0.0.4`.
 As this IP is not unique across the cluster, we can add a filter on the port `8080` which will be used in this example and the node annotation `kubernetes.io/hostname=ci-ln-cfqkhfb-72292-6l8l5-worker-c-lrr4q` matching the node running this pod.
 
-All together, it will be like:
+All together, the command is as follows:
 ```sh
 oc netobserv flows --enable_udn_mapping --peer_ip=10.0.0.4 --port=8080 --node-selector=kubernetes.io/hostname:ci-ln-cfqkhfb-72292-6l8l5-worker-c-lrr4q
 ```
