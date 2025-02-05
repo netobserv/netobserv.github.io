@@ -8,7 +8,7 @@ authors: [jotak]
 
 _Thanks to: Julien Pinsonneau, Sara Thomas, Steven Lee and Mehul Modi for reviewing_
 
-Last year, 2024, there were a few discussions at Red Hat, R&D related, around the eBPF Agent provided with NetObserv. One of these discussions focused especially on its performances and was a starting point to bring life to ideas. I'll take this opportunity to warmly thank Simone Ferlin-Reiter, Toke Hoiland Jorgensen, Mohamed S. Mahmoud and Donald Hunter for their contributions. Toke took the time to deep-dive in the code and shared his thoughts on the potential improvements.
+Last year, 2024, there were a few discussions at Red Hat, R&D related, around the eBPF Agent provided with NetObserv. One of these discussions focused especially on its performances and was a starting point to bring life to ideas. I'll take this opportunity to warmly thank Simone Ferlin-Reiter, Toke Høiland-Jørgensen, Mohamed S. Mahmoud and Donald Hunter for their contributions. Toke took the time to deep-dive in the code and shared his thoughts on the potential improvements.
 
 The [eBPF agent](https://github.com/netobserv/netobserv-ebpf-agent/) is the base block from where everything starts in NetObserv, as such it is a critical piece to optimize. That doesn't mean the other pieces should be neglected. [FLP](https://github.com/netobserv/flowlogs-pipeline), be prepared: you're next!
 
