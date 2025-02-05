@@ -272,7 +272,7 @@ All together, it will be like:
 oc netobserv flows --enable_udn_mapping --peer_ip=10.0.0.4 --port=8080 --node-selector=kubernetes.io/hostname:ci-ln-cfqkhfb-72292-6l8l5-worker-c-lrr4q
 ```
 
-Once this is running, it will hang for flows to come. In this scenario, we simply run a curl between two pods under the same UDN.
+Once you run the command, it will wait for the flows to come. In this scenario, we simply run a curl between two pods under the same UDN.
 You can cycle to **UDN mapping** display once you get your flows to see which UDN is involved.
 
 ![udns]({page.image('cli/udns.png')})
