@@ -60,7 +60,7 @@ Also, to adapt to your screen height, you can increase / decrease the number of 
 
 You can live-filter this capture by typing Machines, Pods or Services keywords to only see what you look for here.
 
-However, if you want to capture only a subset of these flows, you can use the regexes filter on top such as:
+However, if you want to capture only a subset of these flows, you can use the regexes filter on top such as in the following example:
 ```sh
 oc netobserv flows --get-subnets --regexes=SrcSubnetLabel~Pods,DstSubnetLabel~Services
 ```
