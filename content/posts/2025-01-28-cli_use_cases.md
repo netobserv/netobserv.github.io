@@ -312,7 +312,7 @@ This is useful to identify traffic content but also to debug a deployment that m
 
 What about encrypted traffic ? 
 
-Most of the time, your traffic will be secured and you will not have access to the data it holds. However, Wireshark has the ability to decrypt the content if you [provide the proper secrets](https://wiki.wireshark.org/TLS#tls-decryption). However, getting these secrets may be tricky depending on where the encryption happens and needs some juggling. 
+Most of the time, your traffic is be secured and you do not have access to the data it holds. However, Wireshark has the ability to decrypt the content if you [provide the proper secrets](https://wiki.wireshark.org/TLS#tls-decryption). However, getting these secrets may be tricky depending on where the encryption happens and needs some juggling. 
 If you are looking for the traffic between your browser and the cluster, you can simply run the following command to capture [pre-master-secret keylog file](https://wiki.wireshark.org/TLS#using-the-pre-master-secret):
 ```sh
 SSLKEYLOGFILE="keylog.txt" chromium-browser &
