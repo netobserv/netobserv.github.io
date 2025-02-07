@@ -6,7 +6,7 @@ tags: eBPF,Performance,Code
 authors: [jotak]
 ---
 
-_Thanks to: Julien Pinsonneau, Sara Thomas, Steven Lee and Mehul Modi for reviewing_
+_Thanks to: Julien Pinsonneau, Sara Thomas, Steven Lee, Mehul Modi and Mohamed S. Mahmoud for reviewing_
 
 Last year, 2024, there were a few discussions at Red Hat, R&D related, around the eBPF Agent provided with NetObserv. One of these discussions focused especially on its performances and was a starting point to bring life to ideas. I'll take this opportunity to warmly thank Simone Ferlin-Reiter, Toke Høiland-Jørgensen, Mohamed S. Mahmoud and Donald Hunter for their contributions. Toke took the time to deep-dive in the code and shared his thoughts on the potential improvements.
 
@@ -171,7 +171,7 @@ One of the challenges when observing traffic is de-duplication. As NetObserv all
 
 Previously, we have been doing this de-duplication in the user space. That is to say, our flows in kernel were identified not truly by their 5-tuple as mentioned previously, but by a larger [12-tuple](https://github.com/netobserv/netobserv-ebpf-agent/blob/c7c2acc6ac36c0c9966c67f668e29995ceb40066/bpf/types.h#L117-L137) that also included the direction (ingress/egress), the interface index, the MAC addresses (to be honest, I can't remember why the MAC addresses were there) and a couple of other fields. That resulted in flows being created in the BPF map for each different traversed interface, increasing the overall map cardinality. The flows were later de-duplicated in the user space, involving a temporary cache, at a cost of CPU and memory. Why did we do it that way? It's again related to the per-CPU map. De-duplication cannot be done properly in the kernel if the CPU processing a packet doesn't have the full picture of the related flow. It needs to know on which interface a packet was first seen, to decide whether to increase counters or not. The user space was the only place having that full picture.
 
-By removing the per-CPU map, we unlock this next improvement: shrinking the map key to a lighter [7-tuple](https://github.com/netobserv/netobserv-ebpf-agent/blob/2c96c420fc5ed223b7b99b00b2705fe84c5c0110/bpf/types.h#L159-L167), performing the de-duplication directly in-kernel, resulting in reducing the map size, the CPU cost to read it, and getting rid of the whole user-space mechanism for de-duplication. Why 7-tuples, by the way? Well, it's only for some ICMP related stuff — not something to worry about, performance-wise, as ICMP traffic is generally negligible (unless your cluster is full of `pings` running everywhere!) and has a smaller flow cardinality (no ports). The most important part was to remove the interface index from the key.
+By removing the per-CPU map, we unlock this next improvement: shrinking the map key to an apparent [7-tuple](https://github.com/netobserv/netobserv-ebpf-agent/blob/2c96c420fc5ed223b7b99b00b2705fe84c5c0110/bpf/types.h#L159-L167), performing the de-duplication directly in-kernel, resulting in reducing the map size, the CPU cost to read it, and getting rid of the whole user-space mechanism for de-duplication. Actually, it's really a 5-tuple, because the 2 extra fields are for ICMP, which doesn't use ports. So it's always 5 fields at most used per flow.
 
 One of the consequences is that we would lose information about each traversed interface. We want to still be able to tell: this sample flow went through `genev_sys_6081`, then `8aa5bd1d532fca8@if2`, and finally `ens5`. So we had to add this information as an array in the map values.
 
@@ -186,7 +186,7 @@ Less flows to fetch thanks to smaller keys, and no user-space deduplication: les
 There have been other improvements identified, more as low-hanging fruits, but still impactful:
 
 - Removing some redundant calls to `bpf_map_update()`
-- Removing `packed` attribute from the eBPF structures
+- Removing `packed` attribute from the eBPF shared structures with userspace (see also an explanation [here](https://github.com/cilium/ebpf/blob/f0eec7efba9dd069f4d937d3096e276c7911a1c0/memory.go#L26-L29)).
 
 ## Side effects
 
@@ -220,7 +220,7 @@ Modern networking is complex and multi-layered. There are more layers than what 
 
 On top of that, there are also the Kubernetes Services that show up with different IPs — so, different flows: remember that a flow is defined by its IPs — even if that's for the same packet. This is resolved through NAT.
 
-The question remains open whether we want to de-duplicate that or not. It may impact not only the eBPF agent, but also how things are displayed in the Console plugin, as we'll need to offer a more layered view of the flows. So it is also a UX challenge. Note that very recently, we also started to cover Service NAT by a different means, through [conntrack](https://netobserv.io/posts/enhancing-netobserv-for-kubernetes-service-flows-using-ebpf/). But that doesn't actually *de-duplicate*, it's an enrichment.
+The question remains open whether we want to de-duplicate that or not. It may impact not only the eBPF agent, but also how things are displayed in the Console plugin, as we'll need to offer a more layered view of the flows. So it is also a UX challenge. Note that very recently, we also started to cover NAT tracking by a different means, through [conntrack](https://netobserv.io/posts/enhancing-netobserv-for-kubernetes-service-flows-using-ebpf/). But that doesn't actually *de-duplicate*, it's an enrichment.
 
 Why would it be tricky to go further? It involves tracing packets across the networking stack, and there's currently no easy way to do it, as far as I can tell. Not only do we need to detect whether a packet was already seen or not, but we also need to keep a reference to its corresponding flow, since we cannot just retrieve it from the observed IPs, as they change.
 
