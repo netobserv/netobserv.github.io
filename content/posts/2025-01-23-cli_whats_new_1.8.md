@@ -8,7 +8,8 @@ authors: [jpinsonneau]
 
 # Network Observability On Demand 1.8 Update
 
-```
+_Thanks to: Joël Takvorian, Mehul Modi and Sara Thomas for reviewing_
+
 ------------------------------------------------------------------------
          _  _     _       _                       ___ _    ___
         | \| |___| |_ ___| |__ ___ ___ _ ___ __  / __| |  |_ _|
