@@ -11,7 +11,7 @@ authors: [jpinsonneau]
 _Thanks to: Mohamed Mahmoud, Joël Takvorian, Sara Thomas and Amogh Rameshappa Devapura for reviewing_
 
 
-If you haven't read it yet, take a look at [CLI 1.8 update](./2025-01-23-cli_whats_new_1.8.md) article to list the new introduced features in release 1.8.
+If you haven't read it yet, take a look at [CLI 1.8 update](../network-observability-on-demand-1-8-update/) article to list the new introduced features in release 1.8.
 
 For each of the following use cases, you must have the `netobserv CLI` installed and you need to be connected to your cluster using:
 ```sh
