@@ -74,6 +74,8 @@ Filtering is crucial to gather precise network data without involving excessive 
 It's now possible to define agents `nodeSelector` to capture on a subset of nodes. You can rely on existing labels or create a dedicated one for this usage. For example, you can run the agents on the node with the `kubernetes.io/hostname:my-node` label with the following command:
 ```sh
 oc netobserv flows --node-selector=kubernetes.io/hostname:my-node
+```
+
 ### eBPF Filters
 Agents recently introduced [the ability to filter](https://github.com/netobserv/netobserv-ebpf-agent/blob/main/docs/flow_filtering.md) on IPs, Ports, Protocol, Action, TCPFlags, and more simultaneously. You can now apply these filters in the CLI as shown below:
 
@@ -127,7 +129,7 @@ oc netobserv metrics --enable_all
 ``` 
 to capture packet drops, DNS and RTT metrics or 
 ```sh
-oc netobserv metrics --enable_pktdrop
+oc netobserv metrics --enable_pkt_drop
 ```
 to focus only on drops.
 
