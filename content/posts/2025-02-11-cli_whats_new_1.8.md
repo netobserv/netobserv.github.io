@@ -65,7 +65,7 @@ Found subnets:
     Machines: "10.0.0.0/16"
 ```
 
-![subnet labels]({page.image('cli-whats-new-1-8/subnets.png')})
+![subnet labels]({page.image('cli-whats-new-1-8/subnetzzzzzzzzzzzz.png')})
 
 ## Enhanced Data Filtering
 Filtering is crucial to gather precise network data without involving excessive resources and storage. The CLI focuses on this area, allowing you to deploy agents only where needed and fine-tune what's captured.
