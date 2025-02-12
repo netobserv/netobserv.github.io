@@ -20,7 +20,7 @@ _Thanks to: Joël Takvorian, Mehul Modi and Sara Thomas for reviewing_
 ------------------------------------------------------------------------
 ```
 
-Since we [introduced the Network Observability CLI](./2024-07-25-cli.md), numerous features have been added. This article covers the improvements in version 1.8 and provide some concrete examples.
+Since we [introduced the Network Observability CLI](../network-observability-on-demand/), numerous features have been added. This article covers the improvements in version 1.8 and provide some concrete examples.
 
 ## New Options Available
 This update adds several options to the CLI, covering more scenarios and enabling scripting on top of the tool.
