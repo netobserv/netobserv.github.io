@@ -27,7 +27,7 @@ Here's how the CPU metrics compare between NetObserv 1.7 and 1.8:
 
 **Fig. 1: eBPF agent user-space CPU cores usage, averaged per node**
 
-![User-space CPU]({page.image('perf-improvements-1-8/user-space-cpu.png')})
+![User-space CPU](./user-space-cpu.png)
 
 The drop is quite impressive, between -40% and -57%. If we consider all the NetObserv dependencies, which include Flowlogs-pipeline, Loki and Kafka, the decrease ranges between -11% and -25%.
 
@@ -42,13 +42,13 @@ Here I used two profiles, or scenarios:
 
 **Fig. 2: eBPF agent kernel-space CPU percentage, on a single node**
 
-![Kernel-space CPU]({page.image('perf-improvements-1-8/kernel-space-cpu.png')})
+![Kernel-space CPU](./kernel-space-cpu.png)
 
 It's maybe less impressive, but is still _circa_ -20%, which can make a difference. In fact, it _does_ make a difference, because we have seen the overall cluster throughput slightly increase with these changes in our Test bed 1 (which is more stressed than Test bed 2 in terms of ingress traffic per node). To put it differently, NetObserv shows less overhead in stressed situations. More on that later.
 
 **Fig. 3: Total cluster traffic in Test bed 1**
 
-![Total traffic]({page.image('perf-improvements-1-8/total-traffic.png')})
+![Total traffic](./total-traffic.png)
 
 However, there's a catch: more traffic means... more flows to observe. In some ways, we get hit by our improvements. While we observed +18% traffic in the cluster, there's a parallel +11% memory increase in NetObserv because there is more to observe. It can be mitigated in multiple ways, such as with sampling, or by configuring the new filtering and conditional sampling options that we are also adding in this release.
 
@@ -56,7 +56,7 @@ The performance enhancements also impact the kernel memory usage. As we'll see l
 
 **Fig. 4: eBPF agent kernel-space memory usage, on a single node**
 
-![Kernel-space memory]({page.image('perf-improvements-1-8/kernel-space-memory.png')})
+![Kernel-space memory](./kernel-space-memory.png)
 
 _NB: the "wide load" profile used here corresponds to 3000 workers rate-limited at 2 qps, using a more distributed pattern across pods/nodes/namespaces._
 
@@ -123,7 +123,7 @@ In both cases, some values remained unchanged compared to the baseline: Fastest 
 
 **Fig. 5: latency distribution across baseline and versions (in seconds)**
 
-![Latency distribution]({page.image('perf-improvements-1-8/latency-distribution.png')})
+![Latency distribution](./latency-distribution.png)
 
 Unlike in 1.7, at p50 1.8 shows no latency overhead compared to the baseline, meaning that half of the requests have pretty much no overhead. At p99, the latency overhead in 1.7 was +1 millisecond, in 1.8 it decreased to +0.7 milliseconds.
 
@@ -131,7 +131,7 @@ It's also in terms of maximum queries per second that the overhead is interestin
 
 **Fig. 6: QPS across baseline and versions**
 
-![QPS]({page.image('perf-improvements-1-8/qps.png')})
+![QPS](./qps.png)
 
 Since this is not rate-limited, _hey_ generates as much load as it can with its 50 workers. It shows a QPS increase of +5.6% compared to NetObserv 1.7.
 
@@ -147,7 +147,7 @@ Among the different map types, there is [BPF_MAP_TYPE_HASH](https://docs.ebpf.io
 
 **Fig. 7: comparison between BPF_MAP_TYPE_HASH and BPF_MAP_TYPE_PERCPU_HASH**
 
-![Map types]({page.image('perf-improvements-1-8/map-types.png')})
+![Map types](./map-types.png)
 
 They are quite similar, except that the latter has, for every key, one value per CPU. In other words, data processed by different CPUs lands in different buckets. When it comes to observing packets, you may think there is no need for the per-CPU map; since we want to aggregate packets into network flows, the per-CPU segregation doesn't make sense, and we don't care about which CPU processed the packet. Of course, we would need to handle concurrent access: if two packets are processed by two CPUs, there could be a concurrent write if they relate to the same flow. [Spin locks](https://docs.ebpf.io/linux/concepts/concurrency/#spin-locks) are there for this reason.
 
@@ -163,7 +163,7 @@ This is for a large part what triggered the memory improvement mentioned above:
 
 **Fig. 4 (again): eBPF agent kernel-space memory usage, on a single node**
 
-![Kernel-space memory]({page.image('perf-improvements-1-8/kernel-space-memory.png')})
+![Kernel-space memory](./kernel-space-memory.png)
 
 ### Shrinking map keys and de-duplication
 
@@ -179,7 +179,7 @@ Less flows to fetch thanks to smaller keys, and no user-space deduplication: les
 
 **Fig. 1 (again): eBPF agent user-space CPU cores usage, averaged per node**
 
-![User-space CPU]({page.image('perf-improvements-1-8/user-space-cpu.png')})
+![User-space CPU](./user-space-cpu.png)
 
 ### Other improvements
 
@@ -196,7 +196,7 @@ Those changes triggered a refactoring that doesn't come without consequences and
 
 **Fig. 8: an example of partial flow, with 0 bytes/packets**
 
-![Partial flow]({page.image('perf-improvements-1-8/partial-flow.png')})
+![Partial flow](./partial-flow.png)
 
 - Limitation in **observed interfaces**: because BPF structure size must be predictable, we cannot store all the observed interfaces in the map. We need to set a maximum, which is currently six. If a packet is seen on more than six interfaces, we would only show the first six. Today we consider it sufficient, but we might raise the max later if needed. A Prometheus metrics was added to notify for the maximum reached.
 
