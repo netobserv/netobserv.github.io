@@ -6,8 +6,11 @@ tags: eBPF,DNS,Monitoring,Troubleshooting
 authors: [jpinsonneau,memodi,msherif1234]
 ---
 
-<div class="heading-info">
-Check out the revised version of this post on the Red Hat blog: <a href='https://www.redhat.com/en/blog/network-observability-per-flow-dns-tracking'>Network Observability per flow DNS tracking</a>.
+<div class="admonition admonition-info">
+  <p class="admonition-title"><i class="fa fa-lightbulb"></i>Update</p>
+  <p>
+    Check out the revised version of this post on the Red Hat blog: <a href='https://www.redhat.com/en/blog/network-observability-per-flow-dns-tracking'>Network Observability per flow DNS tracking</a>.
+  </p>
 </div>
 
 ![logo]({page.image('dns-tracking/dns-tracking-logo.png')})
