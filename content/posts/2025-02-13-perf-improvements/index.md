@@ -234,4 +234,4 @@ What would really help us is if there was a writable [SKB](https://docs.kernel.o
 
 ## Hope you'll like it
 
-With these performance improvements, we hope it's going to lower the barrier for network observability adoption — more than ever, NetObserv awaits you — and will come as good news for everyone already using it. Speaking of resource consumption, I briefly mentioned the new filtering & sampling features that also come in 1.8: they allow you to fine-tune what you want to observe or not, and at which sampling ratio. This will be the occasion of another article.
+With these performance improvements, we hope it's going to lower the barrier for network observability adoption — more than ever, NetObserv awaits you — and will come as good news for everyone already using it. Speaking of resource consumption, I briefly mentioned the new filtering & sampling features that also come in 1.8: they allow you to fine-tune what you want to observe or not, and at which sampling ratio. This is the occasion of [another article](../enhancing-netobserv-by-introducing-multi-rules-flow-filtering-capability-in-ebpf/).
