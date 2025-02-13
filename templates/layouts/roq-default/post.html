@@ -8,16 +8,26 @@ layout: theme-layouts/roq-default/post
 .page-share {
   visibility: hidden;
 }
-.heading-info {
-	font-size: 15pt;
-	background-color: #e7ffdc;
-	border-left: 5px solid #338a26;
-	padding-left: 1.1rem;
-	margin-left: 1rem;
-	font-style: italic;
-	color: #ada8a8;
-	padding-top: 0.3rem;
-	padding-bottom: 0.3rem;
+.admonition {
+  padding: 0.5rem 1rem;
+  border-left: .25em solid black;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.admonition-title {
+  line-height: 1;
+}
+.admonition-title .fa {
+  margin-right: 0.3rem;
+}
+.admonition > :last-child {
+  margin-bottom: 0;
+}
+.admonition-info {
+  border-left-color: #0969da;
+}
+.admonition-info .admonition-title {
+  color: #0969da;
 }
 .wrapper {
   max-width: 1500px;
