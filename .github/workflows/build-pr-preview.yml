@@ -14,9 +14,7 @@ jobs:
         uses: quarkiverse/quarkus-roq@v1
         with:
           maven-executable: 'mvn'
-          maven-build-args: '-DskipTests -Dquarkus.profile=gh-pages'
           github-pages: 'false'
-          setup-java: 'false'
 
       - name: Store PR id
         run: |
