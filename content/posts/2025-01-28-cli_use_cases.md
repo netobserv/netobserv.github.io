@@ -166,10 +166,16 @@ INFO[0000] flows table created
 
 At this stage, the collector wait for incoming data. If nothing shows yet, it means that no traffic is captured. Try to open the route of your application or update the filters of the capture.
 
-Once some traffic is captured, the output look like:
+- If you are using a standard cluster, cycle to the **packet drops** view. In this capture, we see that the traffic is dropped by OVS:
+
+![cli drop state and cause]({page.image('cli/connectivity-scenario-cli-drop-sate-cause.png')})
+
+You will need to investigate to get the root cause but it's probably a configuration such as a network policy.
+
+- If you are using `TechPreview` feature, cycle to the **network events** view. In this capture, we see that the traffic is blocked by a network policy:
+
 ![cli network events]({page.image('cli/connectivity-scenario-cli-events.png')})
 
-Cycle to the **network events** view. In this capture, we see that the traffic is blocked by a network policy since it reports the `NetpolNamespace` event.
 Edit your network policies and give another try.
 
 Behind the scenes in our scenario, we used to have a deny all on the pod label:
@@ -178,7 +184,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: deny-nodejs
-  namespace: sample-app
+  namespace: connectivity-scenario
 spec:
   podSelector:
     matchLabels:
@@ -191,7 +197,7 @@ spec:
 Once you updated your policies, you can give another try to your route until you fix the issue:
 ![cli traffic]({page.image('cli/connectivity-scenario-cli-traffic.png')})
 
-The network event disappears and your route should open correctly now. On top of that, you can ensure that the Round Trip Time is correct. 
+The drop / network event disappears and your route should open correctly now. On top of that, you can ensure that the Round Trip Time is correct. 
 If you are still experiencing issues with the route, you may update / get rid of the filter(s) and play with live filtering.
 
 - While running a capture, you can place **additionnal live filters** to the view by simply typing keywords on your keyboard such as `nodejs`:
