@@ -61,6 +61,10 @@
 
 // Responsive design
 @media (max-width: 768px) {
+  pre code.hljs {
+    white-space: inherit !important;
+  }
+
   .event {
     padding: 15px;
   }
