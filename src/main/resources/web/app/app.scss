@@ -1,3 +1,42 @@
+
+.page-share {
+  visibility: hidden;
+}
+.admonition {
+  padding: 0.5rem 1rem;
+  border-left: .25em solid black;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.admonition-title {
+  line-height: 1;
+}
+.admonition-title .fa {
+  margin-right: 0.3rem;
+}
+.admonition > :last-child {
+  margin-bottom: 0;
+}
+.admonition-info {
+  border-left-color: #0969da;
+}
+.admonition-info .admonition-title {
+  color: #0969da;
+}
+.wrapper {
+  max-width: 1500px;
+}
+.post, .article-page, .page-content {
+	width: 100%;
+}
+pre code.hljs {
+  white-space: pre;
+  background-color: #222;
+}
+p:has(>img) {
+  text-align: center;
+}
+
 .giscus {
   padding: 10px;
 }
