@@ -31,6 +31,13 @@ layout: theme-layouts/roq-default/post
   </div>
 </header>
 
+{#if page.data.rhDevBlogURL??}
+{#crosspost-rh title=page.title url=page.data.rhDevBlogURL isDevBlog=true /}
+{/if}
+{#if page.data.rhBlogURL??}
+{#crosspost-rh title=page.title url=page.data.rhBlogURL /}
+{/if}
+
 {#insert /}
 
 {#article-end}

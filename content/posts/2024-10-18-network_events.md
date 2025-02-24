@@ -4,14 +4,8 @@ title: "Monitoring OVN Networking Events using Network Observability"
 description: OVN network events provide enriched information such as network policy drops / accepts
 tags: Monitoring,Network,NetworkPolicy,OVN
 authors: [msherif1234]
+rhDevBlogURL: https://developers.redhat.com/articles/2024/11/19/monitor-ovn-networking-events-using-network-observability
 ---
-
-<div class="admonition admonition-info">
-  <p class="admonition-title"><i class="fa fa-lightbulb"></i>Update</p>
-  <p>
-    Check out the revised version of this post on the Red Hat developers blog: <a href='https://developers.redhat.com/articles/2024/11/19/monitor-ovn-networking-events-using-network-observability'>Monitor OVN networking events using Network Observability</a>.
-  </p>
-</div>
 
 <p align="center">
   <img src="{page.image('network-events/network-events-logo-drawio.png')}" alt="logo" width="25%"/>

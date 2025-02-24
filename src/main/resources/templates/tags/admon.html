@@ -1,0 +1,14 @@
+<div class="admonition admonition-{type ?: "info"}">
+  {#fragment id=faClass rendered=false}
+  {#when type??}
+    {#is "info"}
+      fa fa-lightbulb
+    {#else}
+      fa fa-lightbulb
+  {/when}
+  {/}
+  <p class="admonition-title"><i class="{#include $faClass /}"></i>{title}</p>
+  <p>
+    {nested-content}
+  </p>
+</div>

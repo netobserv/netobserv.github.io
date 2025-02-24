@@ -4,14 +4,8 @@ title: "Network Observability secondary interface support"
 description: "Are you blind to traffic on secondary interfaces? Of course not"
 tags: Monitoring,Network,Multus,SRIOV
 authors: [msherif1234]
+rhBlogURL: https://www.redhat.com/fr/blog/network-observability-secondary-interface-support
 ---
-
-<div class="admonition admonition-info">
-  <p class="admonition-title"><i class="fa fa-lightbulb"></i>Update</p>
-  <p>
-    Check out the revised version of this post on the Red Hat blog: <a href='https://www.redhat.com/fr/blog/network-observability-secondary-interface-support'>Network Observability secondary interface support</a>.
-  </p>
-</div>
 
 Network observability for secondary interfaces with Multus and SR-IOV plugins
 in Kubernetes can be a complex task, but it's crucial for monitoring and
