@@ -7,9 +7,9 @@ authors: [stleerh]
 rhDevBlogURL:
 ---
 
-_Thanks to Joel Takvorian, Mohamed S. Mahmoud, and Julien Pinsonneau for reviewing._
+_Thanks to Joel Takvorian, Mohamed S. Mahmoud, Julien Pinsonneau, Mike Fiedler, Sara Thomas, and Mehul Modi for reviewing._
 
-Network observability is one of the most critical and must-have components in your Kubernetes cluster.  When networking stops working or slows down, your productivity is essentially grinded to a halt.  With that said, let me introduce you to Network Observability 1.8, which aligns with Red Hat [OpenShift Container Platform (OCP) 4.18](https://docs.openshift.com/container-platform/4.18/release_notes/ocp-4-18-release-notes.html).  While it supports older versions of OCP and any Kubernetes cluster, many of the new features require 4.18 and specifically, OVN-Kubernetes as your Container Network Interface (CNI).
+Network observability is one of the most critical and must-have components in your Kubernetes cluster.  When networking stops working or slows down, your productivity essentially grinds to a halt.  With that said, let me introduce you to Network Observability 1.8, which aligns with Red Hat [OpenShift Container Platform (OCP) 4.18](https://docs.openshift.com/container-platform/4.18/release_notes/ocp-4-18-release-notes.html).  While it supports older versions of OCP and any Kubernetes cluster, many of the new features require 4.18 and specifically, OVN-Kubernetes as your Container Network Interface (CNI).
 
 If you read [my blogs](https://developers.redhat.com/author/steven-lee) on this topic, I tend to give a sneak peek on Developer Preview (DP) features as well as Technology Preview (TP) features.  In both cases, they should not be used in production until they reach General Availability (GA).  I also cover only the new features, so if you want an overview of everything in Network Observability, check out [About Network Observability](https://docs.openshift.com/container-platform/4.18/observability/network_observability/network-observability-overview.html) in the Red Hat documentation.
 
@@ -21,11 +21,11 @@ To begin, you should have an OCP cluster, preferably 4.18 so you can test the ne
 
 This release is unusual in that there are just two items I will cover in the GA category.  They are packet translation and eBPF resource reduction.  The rest are the upcoming features that fall into the Developer Preview and Technology Preview categories.
 
-There were also significant changes in the Network Observability CLI, a kubectl plug-in that lets you use Network Observability from the command line, separate from the operator.  I've talked about this in the past, but it's gotten a lot bigger, so you can now read all about it in [Network Observability On Demand 1.8 Update](https://netobserv.io/posts/network-observability-on-demand-1-8-update/).
+There were also significant changes in the Network Observability CLI, a kubectl plug-in that lets you use Network Observability from the command line, separate from the operator.  I've talked about this in the past, but it has grown with many great new features, so you can now read all about it in [Network Observability On Demand 1.8 Update](https://netobserv.io/posts/network-observability-on-demand-1-8-update/).
 
 ### Packet Translation
 
-When a client accesses a pod through its Kubernetes service, it does a reverse proxy to the server running on a pod.  In OpenShift web console, go to **Observe > Network Traffic, Traffic flows** tab.  The table shows two separate flows, one from the client to the service and another from the client to the pod.  This makes tracing the flow fairly difficult.  Figure 1 shows an Nginx server accessing another Nginx server on a different namespace.
+When a client accesses a pod through its Kubernetes service, it does a reverse proxy to the server running on a pod.  In the OpenShift web console, go to **Observe > Network Traffic, Traffic flows** tab.  The table shows two separate flows, one from the client to the service and another from the client to the pod.  This makes tracing the flow fairly difficult.  Figure 1 shows an Nginx server accessing another Nginx server on a different namespace.
 
 ![Flows table without Packet Translation](flows-before_xlate.png)<br>
 Figure 1: Flows table without Packet Translation
@@ -58,7 +58,7 @@ oc expose deployment/nginx --port=80 --target-port=80
 oc expose svc/nginx
 ```
 
-<p style="text-align: center">Listing 2: Create an Nginx web server</p>
+<p style="text-align: center">Listing 2: Create an Nginx web server deployment</p>
 
 For more detailed information on Packet Translation, see the article on [Enhancing NetObserv for Kubernetes Service Flows using eBPF](https://netobserv.io/posts/enhancing-netobserv-for-kubernetes-service-flows-using-ebpf/).
 
@@ -142,7 +142,7 @@ eBPF flow filter was first introduced in Network Observability 1.6.  It lets you
 
 Instead of one filter rule, you can now have up to 16 rules, thus removing a major limitation of this feature.  The rule that is matched is based on the most specific CIDR match, that is the one with the longest prefix.  Hence, no two rules can have the same CIDR.  After that, if the rest of the rule is matched, the action, accept or reject, is taken.  If the rest of the rule is not matched, it is simply rejected; it does not attempt to match another rule.
 
-For example, suppose there is a rule with CIDR 10.0.0.0/16 and another with 10.0.1.0/24, then if the address is 10.0.1.128, it would match the second rule because that's more specific (24-bit prefix vs. 16-bit prefix).  Suppose the second rule also has **tcpFlags: SYN** and **action: Accept**.  Then if it's a SYN packet, it's accepted, else it's rejected.
+For example, suppose there is a rule with CIDR 10.0.0.0/16 and another with 10.0.1.0/24, then if the address is 10.0.1.128, it would match the second rule because that's more specific (24-bit prefix vs. 16-bit prefix).  Suppose the second rule also has **tcpFlags: SYN** and **action: Accept**.  Then if it's a SYN packet, it's accepted, otherwise it's rejected and it doesn't attempt to apply the first rule.
 
 #### Peer CIDR
 
@@ -177,11 +177,11 @@ spec:
 
 <p style="text-align: center">Listing 5: Flow filter with different sampling value</p>
 
-The last rule with CIDR 0.0.0.0/0 is necessary because without it, it will only process the internal traffic packets.  If sampling is not specified, it uses the sampling value from FlowCollector.
+The last rule with CIDR 0.0.0.0/0 is necessary to explicitly tell it to process the rest of the packets.  This is because once you define a flow filter rule, the default behavior of using the FlowCollector's sampling value to determine what packets to process no longer applies.  It will simply use the flow filter rules on what to accept or reject and reject the rest by default.  If sampling is not specified in a rule, it uses the FlowFilter's sampling value.
 
 #### Include packet drops
 
-Another new option is **pktDrops**.  With **pktDrops: true** and **action: Accept**, it includes the packet only if it's dropped.  The prerequisite is that the eBPF feature, **PacketDrop** is enabled, which requires eBFP to be in **privileged** mode.  Note this currently is not supported if you enable the NetworkEvent feature.  Listing 6 shows an example configuration.
+Another new option is **pktDrops**.  With **pktDrops: true** and **action: Accept**, it includes the packet only if it's dropped.  The prerequisite is that the eBPF feature, **PacketDrop** is enabled, which requires eBFP to be in **privileged** mode.  Note this currently is not supported if you enable the **NetworkEvent** feature.  Listing 6 shows an example configuration.
 
 ```
 spec:
@@ -207,7 +207,7 @@ For more information and use cases on eBPF Flow Filter, see the article on [Enha
 
 ### UDN Observability
 
-Kubernetes networking consists of a flat Layer 3 network and a single IP address space where every pod can communicate with any other pod.  In a number of use cases, this is undesirable.  OVN-Kubernetes provides another model called [User-Defined Networks](https://docs.openshift.com/container-platform/4.18/networking/multiple_networks/primary_networks/about-user-defined-networks.html) (UDN).  It supports microsegmentation where each network segment, which could be Layer 2 or Layer 3, is isolated from one another.
+Kubernetes networking consists of a flat Layer 3 network and a single IP address space where every pod can communicate with any other pod.  In a number of use cases, this is undesirable.  OVN-Kubernetes provides another model called [User-Defined Networks](https://docs.openshift.com/container-platform/4.18/networking/multiple_networks/primary_networks/about-user-defined-networks.html) (UDN).  It supports microsegmentation where each network segment, which could be Layer 2 or Layer 3, is isolated from one another.  Support for UDN in Network Observability includes changes in the flow table and topology.
 
 To enable this feature in FlowCollector, enter `oc edit flowcollector` and configure the following in the **ebpf** section:
 
@@ -236,9 +236,9 @@ metadata:
 
 <p style="text-align: center">Listing 8: Namespace for UDN</p>
 
-This creates a new namespace with the label **k8s.ovn.org/primary-user-defined-network** set to an empty string.  One cannot modify an existing namespace, because labels can only be added at creation time.
+This creates a new namespace with the label **k8s.ovn.org/primary-user-defined-network** set to an empty string.  A new namespace has to be created, because it's not allowed to add certain labels like this one to an existing namespace.
 
-You can use `oc apply` with the content in Listing 8, or copy and paste this into OpenShift web console.  To do the latter, click the **+** icon in the upper right corner next to the **?** icon, and select **Import YAML**.  Paste the YAML in and click **Create**.
+You can use `oc apply` with the content in Listing 8, or copy and paste this into the OpenShift web console.  To do the latter, click the **+** icon in the upper right corner next to the **?** icon, and select **Import YAML**.  Paste the YAML in and click **Create**.
 
 Now create a UserDefinedNetwork instance (Listing 9).  Again, use `oc apply` or paste into OpenShift web console.
 
@@ -302,7 +302,7 @@ spec:
 
 <p style="text-align: center">Listing 11: Enable eBPFManager feature in FlowCollector</p>
 
-It must specify an interface, such as **br-ex**, which is the OVS external bridge interface.  This lets eBPF Manager know where to attach the TCx hook.
+It must specify an interface, such as **br-ex**, which is the OVS external bridge interface.  This lets eBPF Manager know where to attach the TCx hook.  Normally, the interfaces are auto-discovered, so if you don't specify all the interfaces, it won't get all the flows.  This is work in progress.
 
 To verify that this is working, go to **Operators > Installed Operators**.  Click **eBPF Manager Operator** and then the **All instances** tab.  There should a BpfApplication named **netobserv** and a pair of BpfProgram, one for TCx ingress and another for TCx egress, for each node.  There might be more if you enable other eBPF Agent features.
 
