@@ -3,9 +3,9 @@ entries:
   netobserv-operator:
   - apiVersion: v2
     appVersion: 1.8.0-community
-    created: "2025-03-10T17:45:58.266924169+01:00"
+    created: "2025-03-10T18:47:12.199083914+01:00"
     description: Network Observability in Kubernetes based on eBPF.
-    digest: 582c05641b034138f94e4857dddcdf8c6fd9372f1c250786a77892a803924a11
+    digest: 95a50e7776c6fa5d5ff5d2986a5d83700e29e73dcdd04d7fc4c0d5c70a604192
     home: https://netobserv.io/
     icon: https://netobserv.io/static/assets/images/netobserv.svg
     keywords:
@@ -39,4 +39,4 @@ entries:
     urls:
     - https://netobserv.io/static/helm/netobserv-operator-1.8.0-community.tgz
     version: 1.8.0-community
-generated: "2025-03-10T17:45:58.263657101+01:00"
+generated: "2025-03-10T18:47:12.195894342+01:00"
