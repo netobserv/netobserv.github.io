@@ -10,5 +10,5 @@ entries:
     type: application
     urls:
     - https://netobserv.io/static/helm/netobserv-0.0.2.tgz
-    version: 0.0.2
+    version: 1.8.0-community
 generated: "2025-03-10T15:03:17.888863082+01:00"
