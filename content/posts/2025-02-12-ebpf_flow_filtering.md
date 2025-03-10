@@ -269,4 +269,4 @@ This approach is critical for scalability, cost reduction, and real-time network
 
 We hope you liked this article!
 Netobserv is an open source project [available on github](https://github.com/netobserv).
-Feel free to share your [ideas](https://github.com/netobserv/discussions/categories/ideas), [use cases](https://github.com/netobserv/discussions/categories/show-and-tell) or [ask the community for help](https://github.com/netobserv/discussions/categories/q-a).
+Feel free to share your [ideas](https://github.com/orgs/netobserv/discussions/categories/ideas), [use cases](https://github.com/orgs/netobserv/discussions/categories/show-and-tell) or [ask the community for help](https://github.com/orgs/netobserv/discussions/categories/q-a).

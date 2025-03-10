@@ -205,4 +205,4 @@ and enhance security.
 
 We hope you liked this article!
 NetObserv is an open source project [available on github](https://github.com/netobserv).
-Feel free to share your [ideas](https://github.com/netobserv/discussions/categories/ideas), [use cases](https://github.com/netobserv/discussions/categories/show-and-tell) or [ask the community for help](https://github.com/netobserv/discussions/categories/q-a).
+Feel free to share your [ideas](https://github.com/orgs/netobserv/discussions/categories/ideas), [use cases](https://github.com/orgs/netobserv/discussions/categories/show-and-tell) or [ask the community for help](https://github.com/orgs/netobserv/discussions/categories/q-a).
