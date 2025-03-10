@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  netobserv:
+  - apiVersion: v2
+    appVersion: 1.8.0-community
+    created: "2025-03-10T15:03:17.893182314+01:00"
+    description: Network Observability in Kubernetes based on eBPF.
+    digest: 42d21ca4572d4c93067fb2b5b44bc1da4e75a777b6086cab3e50e72005f21e48
+    name: netobserv
+    type: application
+    urls:
+    - https://netobserv.io/static/helm/netobserv-0.0.2.tgz
+    version: 0.0.2
+generated: "2025-03-10T15:03:17.888863082+01:00"
