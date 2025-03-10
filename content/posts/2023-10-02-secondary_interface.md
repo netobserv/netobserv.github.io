@@ -154,4 +154,4 @@ packets as an example
 
 NetObserv is an open source project [available on github](https://github.com/netobserv).
 Feel free to share your
-[ideas](https://github.com/netobserv/network-observability-operator/discussions/categories/ideas), [use cases](https://github.com/netobserv/network-observability-operator/discussions/categories/show-and-tell) or [ask the community for help](https://github.com/netobserv/network-observability-operator/discussions/categories/q-a).
+[ideas](https://github.com/netobserv/discussions/categories/ideas), [use cases](https://github.com/netobserv/discussions/categories/show-and-tell) or [ask the community for help](https://github.com/netobserv/discussions/categories/q-a).
