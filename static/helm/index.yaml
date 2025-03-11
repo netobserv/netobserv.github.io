@@ -38,7 +38,7 @@ entries:
     type: application
     urls:
     - https://netobserv.io/static/helm/netobserv-operator-1.8.1-community.tgz
-    version: 1.8.1-community
+    version: 1.8.1
   - apiVersion: v2
     appVersion: 1.8.0-community
     created: "2025-03-11T12:32:14.799962482+01:00"
@@ -76,5 +76,5 @@ entries:
     type: application
     urls:
     - https://netobserv.io/static/helm/netobserv-operator-1.8.0-community.tgz
-    version: 1.8.0-community
+    version: 1.8.0
 generated: "2025-03-11T12:32:14.79647498+01:00"
