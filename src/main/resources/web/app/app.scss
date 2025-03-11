@@ -26,13 +26,6 @@
 .wrapper {
   max-width: 1500px;
 }
-.post, .article-page, .page-content {
-	width: 100%;
-}
-pre code.hljs {
-  white-space: pre;
-  background-color: #222;
-}
 p:has(>img) {
   text-align: center;
 }
