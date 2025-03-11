@@ -4,7 +4,6 @@ title: "What's new in Network Observability 1.8"
 description: "New features: Packet Translation, eBPF resource reduction, Network Events, eBPF flow filter enhancements, UDN Observability, eBPF Manager support"
 tags: network,observability,new,xlate,OVN,UDN,eBPF
 authors: [stleerh]
-rhDevBlogURL:
 ---
 
 _Thanks to Joel Takvorian, Mohamed S. Mahmoud, Julien Pinsonneau, Mike Fiedler, Sara Thomas, and Mehul Modi for reviewing._
@@ -37,7 +36,7 @@ Figure 2: Flows table with Packet Translation
 
 To enable this feature in FlowCollector, enter `oc edit flowcollector` and configure the following in the **ebpf** section:
 
-```
+```yaml
 spec:
   agent:
     ebpf:
@@ -50,7 +49,7 @@ spec:
 
 To create a basic Nginx web server, enter the following commands on the command line.  I created two of them, one with the namespace "chiefs" and another with namespace "eagles".
 
-```
+```bash
 oc new-project chiefs
 oc adm policy add-scc-to-group anyuid system:authenticated
 oc create deployment nginx --image=nginx
@@ -90,7 +89,7 @@ With OVN-Kubernetes and Network Events, you can see what's happening with a pack
 
 On OVN-Kubernetes, this is disabled by default since this is a Technology Preview feature, so enable it by adding the feature gate named **OVNObservability**.  On the command line, enter `oc edit featuregate` and change the **spec** section to:
 
-```
+```yaml
 spec:
   featureSet: CustomNoUpgrade
   customNoUpgrade:
@@ -104,7 +103,7 @@ This can take upwards of *10+ minutes* for this to take effect, so be patient.  
 
 To enable this feature in FlowCollector, enter `oc edit flowcollector` and configure the following in the **ebpf** section:
 
-```
+```yaml
 spec:
   agent:
     ebpf:
@@ -154,7 +153,7 @@ In summary, use `cidr` for the client side address and `peerCIDR` for the server
 
 Each rule can have its own sampling rate.  For example, you might want the eBPF Agent to sample all external traffic on source and destination, but for internal traffic, it's sufficient to sample at 50.  Listing 5 shows how this can be done, assuming the default IP settings of 10.128.0.0/14 for pods and 172.30.0.0/16 for services.
 
-```
+```yaml
 spec:
   agent:
     type: eBPF
@@ -183,7 +182,7 @@ The last rule with CIDR 0.0.0.0/0 is necessary to explicitly tell it to process 
 
 Another new option is **pktDrops**.  With **pktDrops: true** and **action: Accept**, it includes the packet only if it's dropped.  The prerequisite is that the eBPF feature, **PacketDrop** is enabled, which requires eBFP to be in **privileged** mode.  Note this currently is not supported if you enable the **NetworkEvent** feature.  Listing 6 shows an example configuration.
 
-```
+```yaml
 spec:
   agent:
     type: eBPF
@@ -211,7 +210,7 @@ Kubernetes networking consists of a flat Layer 3 network and a single IP address
 
 To enable this feature in FlowCollector, enter `oc edit flowcollector` and configure the following in the **ebpf** section:
 
-```
+```yaml
 spec:
   agent:
     ebpf:
@@ -225,7 +224,7 @@ spec:
 
 Let's create a user-defined network based on a namespace (Listing 8).
 
-```
+```yaml
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -242,7 +241,7 @@ You can use `oc apply` with the content in Listing 8, or copy and paste this int
 
 Now create a UserDefinedNetwork instance (Listing 9).  Again, use `oc apply` or paste into OpenShift web console.
 
-```
+```yaml
 apiVersion: k8s.ovn.org/v1
 kind: UserDefinedNetwork
 metadata:
@@ -260,9 +259,9 @@ spec:
 
 Now if you add a pod into this namespace, it will automatically have a secondary interface that is part of the UDN.  You can confirm this by entering the commands in Listing 10.
 
-```
+```bash
 oc project 49ers
-pod=$(oc get --no-headers pods | awk '{print $1;}') # get pod name
+pod=$(oc get --no-headers pods | awk '{ print $1;}') # get pod name
 oc describe pod/$pod  # should see two interfaces mentioned in Annotations
 ```
 
@@ -289,7 +288,7 @@ First, install the eBPF Manager Operator from **Operators > OperatorHub**.  This
 
 Then install Network Observability and configure the FlowCollector resource in Listing 11.  Because this is a Developer Preview feature, delete the FlowCollector instance if you already have one and create a new instance, rather than edit an existing one.
 
-```
+```yaml
 spec:
   agent:
     ebpf:
