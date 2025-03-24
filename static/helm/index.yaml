@@ -39,6 +39,14 @@ entries:
     urls:
     - https://netobserv.io/static/helm/netobserv-operator-1.8.2.tgz
     version: 1.8.2
+    annotations:
+      artifacthub.io/operator: "true"
+      artifacthub.io/operatorCapabilities: "Deep Insights"
+      artifacthub.io/screenshots: |
+        - title: Topology view
+          url: https://netobserv.io/static/assets/images/about/topology-main.png
+        - title: Flow details
+          url: https://netobserv.io/static/assets/images/about/network-traffic-main.png
   - apiVersion: v2
     appVersion: 1.8.1-community
     created: "2025-03-20T12:54:15.6755431+01:00"
