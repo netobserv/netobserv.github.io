@@ -15,7 +15,9 @@ jotak:
   avatar: "https://github.com/jotak.png"
   profile: "https://framapiaf.org/@jotak"
   nickname: "jotak"
-  bio: "Bio coming soon..."
+  bio: |
+    I'm a software engineer working at Red Hat since 2016, based in Provence, France.
+    I've been in observability for many years (APM, Hawkular, Kiali...), before we started NetObserv.
 jpinsonneau:
   name: "Julien Pinsonneau"
   avatar: "https://github.com/jpinsonneau.png"
