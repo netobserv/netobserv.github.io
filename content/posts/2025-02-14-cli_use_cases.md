@@ -4,6 +4,7 @@ title: "Network Observability On Demand Use Cases"
 description: Command line interface usage for concrete scenarios
 tags: CLI,Monitoring,Troubleshooting
 authors: [jpinsonneau]
+rhDevBlogURL: https://developers.redhat.com/articles/2025/03/20/demonstration-network-observability-cli
 ---
 
 # Network Observability On Demand use cases
