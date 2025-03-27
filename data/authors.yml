@@ -3,40 +3,42 @@ Amoghrd:
   avatar: "https://github.com/Amoghrd.png"
   profile: "https://github.com/Amoghrd"
   nickname: "Amoghrd"
-  bio: "Bio coming soon..."
+  bio: ""
 dushyantbehl:
   name: "Dushyant Behl"
   avatar: "https://github.com/dushyantbehl.png"
   profile: "https://github.com/dushyantbehl"
   nickname: "dushyantbehl"
-  bio: "Bio coming soon..."
+  bio: ""
 jotak:
   name: "Joël Takvorian"
   avatar: "https://github.com/jotak.png"
   profile: "https://framapiaf.org/@jotak"
   nickname: "jotak"
-  bio: "Bio coming soon..."
+  bio: |
+    I'm a software engineer working at Red Hat since 2016, based in Provence, France.
+    I've been in observability for many years (APM, Hawkular, Kiali...), before we started NetObserv.
 jpinsonneau:
   name: "Julien Pinsonneau"
   avatar: "https://github.com/jpinsonneau.png"
   profile: "https://github.com/jpinsonneau"
   nickname: "jpinsonneau"
-  bio: "Bio coming soon..."
+  bio: ""
 memodi:
   name: "Mehul Modi"
   avatar: "https://github.com/memodi.png"
   profile: "https://github.com/memodi"
   nickname: "memodi"
-  bio: "Bio coming soon..."
+  bio: ""
 msherif1234:
   name: "Mohamed S. Mahmoud"
   avatar: "https://github.com/msherif1234.png"
   profile: "https://github.com/msherif1234"
   nickname: "msherif1234"
-  bio: "Bio coming soon..."
+  bio: ""
 stleerh:
   name: "Steven Lee"
   avatar: "https://github.com/stleerh.png"
   profile: "https://github.com/stleerh"
   nickname: "stleerh"
-  bio: "Bio coming soon..."
+  bio: ""

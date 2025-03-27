@@ -22,3 +22,18 @@ It is known and distributed in Red Hat OpenShift as the [Network Observability o
 ## Overview dashboard
 
 ![Overview charts]({page.image('about/overview-dashboard.png')})
+
+# Blog authors
+
+<div class="authors">
+  <!-- authors.yml is in the data/ -->
+  {#for id in lists:shuffle(cdi:authors.fields)}
+    {#let author=cdi:authors.get(id)}
+    <!-- the author-card tag is defined in the default Roq theme -->
+    {#author-card name=author.name avatar=author.avatar nickname=author.nickname profile=author.profile}
+      {#if author.bio}
+        {author.bio}
+      {/if}
+    {/author-card}
+  {/for}
+</div>
