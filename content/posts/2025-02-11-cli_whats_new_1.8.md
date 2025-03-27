@@ -4,6 +4,7 @@ title: "Network Observability On Demand 1.8 Update"
 description: Command line interface improvements in version 1.8
 tags: CLI,Monitoring,Troubleshooting
 authors: [jpinsonneau]
+rhDevBlogURL: https://developers.redhat.com/articles/2025/03/20/7-new-features-network-observability-cli-18
 ---
 
 # Network Observability On Demand 1.8 Update
