@@ -9,8 +9,13 @@ layout: theme-layouts/roq-default/main
   .menu li .fa-info {
     padding-left: 4px;
   }
+  .search-button {
+    margin-left: 15px;
+    background: none;
+  }
 </style>
 
+{#search-overlay /}
 {#insert /}
 
 {#description}
@@ -21,6 +26,8 @@ layout: theme-layouts/roq-default/main
 
 {#footer}
 <footer>
+  <div id="search-button" class="search-button"><i class="fa-solid fa-magnifying-glass"></i> Search the blog</div>
+
   {#include partials/roq-default/sidebar-contact /}
   <a rel="me" href="https://hachyderm.io/@netobserv" style="visibility: hidden">Mastodon</a>
   <section class="support">
