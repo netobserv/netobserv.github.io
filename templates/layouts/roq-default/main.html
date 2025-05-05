@@ -9,8 +9,27 @@ layout: theme-layouts/roq-default/main
   .menu li .fa-info {
     padding-left: 4px;
   }
+  .search-button {
+    margin-left: 15px;
+    background: none;
+    color: #515151;
+    display: block;
+    font-size: 18px;
+    transition: all .35s cubic-bezier(.13,.43,.54,1.82);
+  }
+  .search-button i {
+    margin-right: 20px;
+    width: 18px;
+  }
+  .search-button:hover {
+    color: #333030;
+  }
+  .search-button:hover i {
+    transform: scale(1.1);
+  }
 </style>
 
+{#search-overlay /}
 {#insert /}
 
 {#description}
@@ -21,6 +40,8 @@ layout: theme-layouts/roq-default/main
 
 {#footer}
 <footer>
+  <div id="search-button" class="search-button"><i class="fa-solid fa-magnifying-glass"></i>Search the blog</div>
+
   {#include partials/roq-default/sidebar-contact /}
   <a rel="me" href="https://hachyderm.io/@netobserv" style="visibility: hidden">Mastodon</a>
   <section class="support">
