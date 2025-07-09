@@ -60,11 +60,15 @@ With eBPF instrumentation, NetObserv enriches flow records with two fields relat
 
 ---
 
-## IPsec Insights in the UI
+## IPsec Insights
 
-The NetObserv user interface provides visibility into IPsec operations as part of flow records:
+The NetObserv user interface offers detailed visibility into IPsec operations through enriched flow records:
 
 ![IPsec Flows in UI](ipsec-flows.png)
+
+Additionally, the traffic overview section provides insights into the percentage of IPsec traffic, along with per-node statistics for IPsec flow rates.
+
+![IPsec Flows Overview](ipsec-dashboard.png)
 
 ---
 
@@ -88,7 +92,7 @@ spec:
 
 ## Availability
 
-The IPsec feature is available OCP 4.19 and NetObserv release 1.9.
+The IPsec feature is available in NetObserv release 1.9.
 
 
 ## Conclusion
