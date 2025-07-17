@@ -37,12 +37,12 @@ spec:
 
 ### Network Observability - IPsec feature
 
-In **Observe > Network Traffic, Traffic flows tab**, it adds a new column "IPSec Status" that has the possible values of "success", "error", or "n/a" (Figure 2).
+In **Observe > Network Traffic, Traffic flows tab**, it adds a new column **IPSec Status** that has the possible values of "success", "error", or "n/a" (Figure 2).
 
 ![Flows table with IPsec status](flows-ipsec_status.png)<br>
 Figure 2: Flows table with IPSec Status column
 
-IPsec flows always appear as node-to-node traffic, but they are actually encapsulated pod-to-pod or host-to-pod traffic.  There are two types of encapsulation used for IPsec-encrypted flows.  The first is ESP encapsulation, which is the traditional IPsec mode.  ESP packets don't have ports, hence the ports are n/a.  The second is UDP encapsulation.  In the table, the destination port is 6081, so they are OVN Geneve tunnel traffic.  If you only see UDP encapsulated traffic (no ESP), then you must have configured `encapsulation: Always` when configuring IPsec.
+IPsec flows always appear as node-to-node traffic, but they are actually encapsulated pod-to-pod or host-to-pod traffic.  There are two types of encapsulation used for IPsec-encrypted flows.  The first is ESP encapsulation, which is the traditional IPsec mode.  ESP packets don't have ports, hence the ports are `n/a`.  The second is UDP encapsulation.  In the table, the destination port is 6081, so they are OVN Geneve tunnel traffic.  If you only see UDP encapsulated traffic (no ESP), then you must have configured `encapsulation: Always` when configuring IPsec.
 
 In **Observe > Dashboards, Network / Main dashboard** dropdown, it shows the percentage of traffic encrypted and the IPsec traffic rate (Figure 3).
 
@@ -115,16 +115,16 @@ However, Network Observability will report an "AxiosError" if using Loki. Wait a
 
 ## Flowlogs-pipeline filter
 
-Flowlogs-pipeline filter lets you filter data after it has been enriched with Kubernetes information.  It can filter logs (Loki data), metrics (Prometheus data), or logs to be exported, which corresponds to the outputTarget field (Figure 4) when configuring a FlowCollector instance.  In the FlowCollectors form view, scroll down to the **Processor configuration** section and click to open it.  Then click **Filters** and then **Add Filters**.  You can also set a different sampling value than the one used by the eBPF Agent.
+Flowlogs-pipeline filter lets you filter data after it has been enriched with Kubernetes information.  It can filter logs (Loki data), metrics (Prometheus data), or logs to be exported, which corresponds to the **outputTarget** field (Figure 4) when configuring a FlowCollector instance.  In the FlowCollector form view, scroll down to the **Processor configuration** section and click to open it.  Then click **Filters** and then **Add Filters**.  You can also set a different sampling value than the one used by the eBPF Agent.
 
 The query uses a simple query language that supports 8 comparison operators, the 6 standard ones (`=`, `!=`, `>`, `>=`, `<`, `<=`), plus two more to match or not match a regular expression (`=~`, `!~`).  It can check if a field exists or not (`with(field)`, `without(field)`.  Finally, the query language allows `and` and `or` with parentheses to specify precedence for more complex expressions.
 
 ![Flowlogs-pipeline filters config](flowlogs-filters-config.png)<br>
 Figure 4: Flowlogs-pipeline filters configuration
 
-Don't confuse this with the eBPF flow filter, which happens at a much earlier stage at the packet level.  The drawback is that flowlogs pipeline filter doesn't benefit as much as eBPF flow filter because part of the processing of flows has already happened.  To get a list of field names for the query, click a row in the Traffic flows table and then click the **Raw** tab.
+Don't confuse this with the eBPF flow filter, which happens at a much earlier stage at the packet level.  Flowlogs-pipeline filter doesn't benefit as much from a resource savings as eBPF flow filter because part of the processing of flows has already happened.  To get a list of field names for the query, click a row in the Traffic flows table and then click the **Raw** tab.
 
-Here's an example query to include only "netobserv" traffic.
+Here's a query to include only "netobserv" traffic.
 
 ```
 SrcK8S_Namespace="netobserv" or DestK8S_Namespace="netobserv"
@@ -135,7 +135,7 @@ For more information, see [FLP filtering language](https://github.com/netobserv/
 
 ## UDN Mapping (GA)
 
-The eBPF feature **UDNMapping** reached General Availability (GA).  Network Observability added support for the ClusterUserDefinedNetwork.  In 1.8, it only supported UserDefinedNetwork.  ClusterUserDefinedNetwork allows pods in different namespaces to communicate with each other using the cluster UDN.  To learn more about how to set up a UDN, see the article [User defined networks in Red Hat OpenShift Virtualization](https://www.redhat.com/en/blog/user-defined-networks-red-hat-openshift-virtualization).
+The eBPF feature **UDNMapping** reached General Availability (GA).  Network Observability added support for the ClusterUserDefinedNetwork object.  In 1.8, it only supported UserDefinedNetwork.  ClusterUserDefinedNetwork allows pods in different namespaces to communicate with each other using the cluster UDN.  To learn more about how to set up a UDN, see the article [User defined networks in Red Hat OpenShift Virtualization](https://www.redhat.com/en/blog/user-defined-networks-red-hat-openshift-virtualization).
 
 
 ## Network Observability CLI enhancements
@@ -157,7 +157,7 @@ oc netobserv help  # for general help
 
 With flows, it displays a text-based traffic flows table.  With metrics, you are given a link that opens the OpenShift web console and displays numbers and graphs.  And with packets, you also get flows, and it saves a pcap file that can be loaded in with a tool such as Wireshark.  All of this data can be stored locally upon exit.
 
-Network Observability CLI deploys in its own namespace and is automatically removed once the CLI exits.  To manually exit, press ctrl-c.
+Network Observability CLI deploys in its own namespace and is automatically removed once the CLI exits.  To manually exit, press ctrl-c.  It asks if you want to save the data in the directory **./output** and then exits.
 
 The rest of this section covers the new features in Network Observability CLI 1.9.  This version catches up with all of the eBPF features that were introduced in Network Observability, including the latest IPsec tracking.  The new options are `--enable_ipsec`, `--enable_network_events`, and `--enable_udn_mapping`.  There is a new `--sampling` option to set the sampling ratio, which defaults to 1.  The `--regexes` option has been removed in favor of the `--query` option.  It allows you to enter an expression similar to what you can build with the filter UI in **Observe > Network Traffic**.  Here's the command that enables IPsec tracking and displays flows where the IPsec encryption was successful.  It uses a sample ratio of 1:10.
 
@@ -194,4 +194,4 @@ In the past, the latest Network Observability was backwards-compatible with all 
 
 ## Summary
 
-This is another solid release from the Network Observability team.  If you use IPsec, you can get insight into this type of traffic.  Querying was added in both flowlogs-pipeline and the Network Observability CLI.  If you want to easily capture flows, metrics, and packets, Network Observability CLI is the tool for you!  Write to us on the [discussion board](https://github.com/netobserv/network-observability-operator/discussions) if you have any feedback or suggestions for improvements.
+This is another solid release from the Network Observability team.  If you use IPsec, you can get insight into this type of traffic.  A filter query was added in both flowlogs-pipeline and the Network Observability CLI.  If you want to easily capture flows, metrics, and packets, Network Observability CLI is the tool for you!  Write to us on the [discussion board](https://github.com/netobserv/network-observability-operator/discussions) if you have any feedback or suggestions for improvements.
