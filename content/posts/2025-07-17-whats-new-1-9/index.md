@@ -202,14 +202,20 @@ And follow its progression with:
  oc logs collector -n netobserv-cli -f
 ```
 
-Finally, the pcapng file was enhanced to include enrichment data as comments.  The command below starts the packet capture.  Upon exit, save the capture output.  Run Wireshark on this file, which is in the **./output/pcap** directory.  Select a row and click the **Packet comments** section to open up this section (Figure 6).
+Finally, the pcapng file was enhanced to include enrichment data as comments.  The command below starts the packet capture.  Upon exit, save the capture output.
 
 ```
-$ oc netobserv packets --port=443
+oc netobserv packets --port=443
+```
 
+Now run Wireshark on this file, which is in the **./output/pcap** directory.  Update with your output filename.
+
+```
 # Update with your output filename
-$ wireshark output/pcap/2025-07-22T212639Z.pcapng
+wireshark output/pcap/2025-07-22T212639Z.pcapng
 ```
+
+When Wireshark comes up, select a row and click the **Packet comments** section to open up this section (Figure 6).
 
 ![Wireshark - Packet capture file with comments](wireshark-pcapng_file.png)<br>
 Figure 6: Wireshark - Packet capture file with comments
