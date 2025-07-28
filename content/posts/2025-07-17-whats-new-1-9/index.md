@@ -159,20 +159,20 @@ Network Observability CLI deploys in its own namespace and is automatically remo
 
 The rest of this section covers the new features in Network Observability CLI 1.9.  Here are the new options:
 
-| Option                    | Description                         |
-| ------------------------- | ----------------------------------- |
-| `--enable_ipsec`          | Enable eBPF IPsec tracking feature  |
-| `--enable_network_events` | Enable eBPF Network Events feature  |
-| `--enable_udn_mapping`    | Enable eBPF UDN Mapping feature     |
-| `--sampling`              | Set sampling ratio, defaults to 1   |
-| `--query`                 | Define a query filter               |
-| `--exclude_interfaces`    | List of interfaces to exclude       |
-| `--include_list`          | List of metric names (metrics only) |
-| `--yaml`                  | Generate a FlowCollector YAML       |
+| Option                    | Description                          |
+| ------------------------- | ------------------------------------ |
+| `--enable_ipsec`          | Enable eBPF IPsec tracking feature   |
+| `--enable_network_events` | Enable eBPF Network Events feature   |
+| `--enable_udn_mapping`    | Enable eBPF UDN Mapping feature      |
+| `--sampling`              | Set sampling interval, defaults to 1 |
+| `--query`                 | Define a query filter                |
+| `--exclude_interfaces`    | List of interfaces to exclude        |
+| `--include_list`          | List of metric names (metrics only)  |
+| `--yaml`                  | Generate a FlowCollector YAML        |
 
-This version catches up with all of the eBPF features that were introduced in Network Observability, including the latest IPsec tracking.  These are the options that begin with `--enable`.  The new `--sampling` option sets the sampling ratio and defaults to 1, which is unlike Network Observability Operator which defaults to 50.  The `--regexes` option has been removed in favor of the `--query` option.  It allows you to enter an expression, similar to the filter UI in **Observe > Network Traffic**.
+This version catches up with all of the eBPF features that were introduced in Network Observability, including the latest IPsec tracking.  These are the options that begin with `--enable`.  The new `--sampling` option sets the sampling interval and defaults to 1, which is unlike Network Observability Operator which defaults to 50.  The `--regexes` option has been removed in favor of the `--query` option.  It allows you to enter an expression, similar to the filter UI in **Observe > Network Traffic**.
 
-Here's an example command that enables IPsec tracking and displays flows where the IPsec encryption was successful.  It uses a sampling ratio of 1:10.
+Here's an example command that enables IPsec tracking and displays flows where the IPsec encryption was successful.  It uses a sampling interval of 10.
 
 ```
 oc netobserv flows --query='IPSecStatus="success"' --enable_ipsec --sampling=10
