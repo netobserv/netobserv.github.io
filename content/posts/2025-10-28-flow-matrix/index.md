@@ -133,7 +133,7 @@ Because `Flags` comes as a list of strings, we need to flatten it before we can 
 
 Finally, the remapping operation is optional but is provided as a syntactic sugar when manipulating later the metric with `promQL`, the Prometheus query language. Because we are creating here a metric named `workload-syn-in`, that is to say, focused on the incoming traffic to our namespace of interest, we're renaming the `Dst*` labels in a more workload-centric fashion and the `Src*` as the opposite side.
 
-With this config, the query will look like this: `netobserv_workload_syn_in{namespace="my-namespace"}`.
+With this config, the query will look like this: `netobserv_workload_syn_in{ namespace="my-namespace"}`.
 
 We create then another metric, almost identical, except for the remapping, focused on outgoing traffic:
 
@@ -172,7 +172,7 @@ spec:
     DstPort: port
 ```
 
-With promQL looking like: `netobserv_workload_syn_out{namespace="my-namespace"}.`
+With promQL looking like: `netobserv_workload_syn_out{ namespace="my-namespace"}.`
 
 You could really create just 1 metric here instead of 2, without the remapping. It's just that the `promQL` is a little less simple to reason about when you have to juggle between Src and Dst fields.
 
@@ -181,7 +181,7 @@ You could really create just 1 metric here instead of 2, without the remapping. 
 To get all the outgoing traffic, open your Prometheus console and run:
 
 ```
-sum(rate(netobserv_workload_syn_out{namespace="netobserv"}[1m])) by (workload, kind, port, to_kind, to_namespace, to_subnet_label, to_workload)
+sum(rate(netobserv_workload_syn_out{ namespace="netobserv"}[1m])) by (workload, kind, port, to_kind, to_namespace, to_subnet_label, to_workload)
 ```
 
 (Replace "netobserv" with any namespace you're interested in)
@@ -197,7 +197,7 @@ When in doubt, we can fallback on the regular Traffic flows view of the plugin t
 For the incoming traffic:
 
 ```
-sum(rate(netobserv_workload_syn_in{namespace="netobserv"}[1m])) by (workload, kind, port, from_kind, from_namespace, from_subnet_label, from_workload)
+sum(rate(netobserv_workload_syn_in{ namespace="netobserv"}[1m])) by (workload, kind, port, from_kind, from_namespace, from_subnet_label, from_workload)
 ```
 
 ![workload-syn-in](./workload-syn-in.png)
@@ -207,7 +207,7 @@ Here we immediately notice that many nodes are talking to `flowlogs-pipeline`, w
 For nodes:
 
 ```
-sum(rate(netobserv_workload_syn_in{namespace="netobserv",from_kind="Node"}[1m])) by (workload, kind, port, from_subnet_label)
+sum(rate(netobserv_workload_syn_in{ namespace="netobserv",from_kind="Node"}[1m])) by (workload, kind, port, from_subnet_label)
 ```
 
 As you can see, we do _not_ aggregate by `from_workload`, thus removing the noise of which node the traffic originates from - we don't care about that, knowing that it comes from nodes in general should be sufficient.
@@ -221,7 +221,7 @@ Which leaves us with just two entries, and more specifically two ports:
 And finally, for non-nodes:
 
 ```
-sum(rate(netobserv_workload_syn_in{namespace="netobserv",from_kind!="Node"}[1m])) by (workload, kind, port, from_kind, from_namespace, from_subnet_label, from_workload)
+sum(rate(netobserv_workload_syn_in{ namespace="netobserv",from_kind!="Node"}[1m])) by (workload, kind, port, from_kind, from_namespace, from_subnet_label, from_workload)
 ```
 
 ![workload-syn-in-no-nodes](./workload-syn-in-no-nodes.png)
