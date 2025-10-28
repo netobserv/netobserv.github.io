@@ -16,7 +16,7 @@ In fact, there is probably _too much_ information, making it potentially hard to
 
 Let's have this use-case: using NetObserv to understand its own relationships with other components. Considering you have installed NetObserv, Loki and the FlowCollector resource with **sampling set to 1**.
 
-The `FlowMetrics` API does not require Loki, however it's still recomended to have for better troubleshooting. Installing Loki for testing purpose is as simple as that: 
+The `FlowMetrics` API does not require Loki, however it's still recommended to have for better troubleshooting. Installing Loki for testing purpose is as simple as that: 
 
 ```bash
 oc create namespace netobserv
@@ -30,7 +30,7 @@ The first thing you can do is to look at the Traffic flows view in the Console p
 
 ![Raw flows table](./raw-flows-table.png)
 
-We see here some nodes talking to `flowslogs-pipeline`, or `netobserv-plugin` talking to the Loki gateway... Everything can be displayed here, but there's also a lot of redundant information, there is the noise of the source ports (which become destination ports in the responses), it's a flat view that requires a lot of scrolling to capture all the meaningful bits. Moreover, the data it taken from Loki, which is not great if you want weeks of data. We need something more concise.
+Here we see some nodes talking to `flowslogs-pipeline`, or `netobserv-plugin` talking to the Loki gateway... Everything can be displayed here, but there's also a lot of redundant information, there is the noise of the source ports (which become destination ports in the responses), it's a flat view that requires a lot of scrolling to capture all the meaningful bits. Moreover, the data is pulled from Loki, which is not great if you want weeks of data. We need something more concise.
 
 The topology view helps for sure: it aggregates some of the data, for instance per owner (workload) instead of per pod.
 
@@ -112,7 +112,7 @@ In fact, in this case, we don't really care about the metric value. What we care
   - Flags
 ```
 
-Labels are what is going to be aggregated on. When several flows are recorded with the exact same set of labels, the corresponding metric counter is incremented. If any of those label differs from the previously recorded flows, it results in a new time-series that starts at 1.
+Labels are what is going to be aggregated on. When several flows are recorded with the exact same set of labels, the corresponding metric counter is incremented. If any of those labels differ from the previously recorded flows, it results in a new time-series that starts at 1.
 
 This list of labels is roughly what we described above, plus the `SrcSubnetLabel` / `DstSubnetLabel` which I'll explain later, and the `Flags` (TCP flags) which we need for flattening+filtering as explained below.
 
@@ -239,21 +239,21 @@ We just see here the OpenShift Console calling our plugin on port 9001, and Open
 
 ### What about external traffic?
 
-We will cover more in details, in another blog post, how to identify external traffic in NetObserv metrics.
+We will cover more in detail, in another blog post, how to identify external traffic in NetObserv metrics.
 
 But to make it short here, when the traffic is going to a public / cluster external IP, NetObserv doesn't know what it is so you will see mostly empty fields in the related metrics:
 
 ![empty-fields](./empty-fields.png)
 
-... that is, unless you help NetObserv understanding what it is.
+... that is, unless you help NetObserv understand what it is.
 
-Of course, that means you need to know what's the external workloads or services that your workloads are talking to. We can figure that out by going to the Traffic flows tab of the Console plugin.
+Of course, that means you need to know what are the external workloads or services that your workloads are talking to. We can figure that out by going to the Traffic flows tab of the Console plugin.
 
 Setting filters with the desired Source Namespace and Destination Kind to an empty double-quoted string (`""`), will show what we want. Additionally, we can change the visible columns to show the Destination IP (click on "Show advanced options" then "Manage columns").
 
 ![external-ips](./investigate-ips.png)
 
-I can see here IPs such as 3.5.205.175. A `whois` reminds me that it's Amazon S3 behind that.
+There are IPs such as 3.5.205.175. A `whois` reminds me that it's Amazon S3 behind that.
 
 Let's reconfigure our `FlowCollector` with the Amazon S3 IP ranges, so that NetObserv is aware of it.
 
@@ -283,8 +283,8 @@ If you have more undetermined traffic, rinse and repeat until you identify every
 
 ## Summary and additional notes
 
-With this use-case and the FlowMetrics API, we've been able to identify precisely, and in a concise way, which workloads we are talking to. We clearly identify both the ingress and egress traffic, which will help creating our network policy. Some additional aspects to take into account:
+With this use-case and the FlowMetrics API, we've been able to identify precisely, and in a concise way, which workloads we are talking to. We clearly identify both the ingress and egress traffic, which help create a network policy. Some additional aspects to take into account:
 
-- After having created the `FlowMetrics`, you should probably restart the pods that you want to monitor, so that they re-establish all the connections. This is especially needed if they use long-standing connection, where the SYN packets that we monitor isn't going to be resend.
-- We focused here on TCP connections. You can monitor UDP in a similar way, except that you won't have the SYN trick for removing the noise with source ports. The `Proto` field hold the L4 protocol ([UDP is 17](https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers)).
+- After having created the `FlowMetrics`, you should probably restart the pods that you want to monitor, so that they re-establish all the connections. This is especially needed if they use long-standing connections, where the SYN packets that we monitor aren't going to be sent again.
+- We focused here on TCP connections. You can monitor UDP in a similar way, except that you won't have the SYN trick for removing the noise with source ports. The `Proto` field holds the L4 protocol ([UDP is 17](https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers)).
 - When you create a network policy for OVN, you can use the Network Events feature, alongside with a TechPreview OpenShift cluster, to troubleshoot network policy allowed and denied traffic. [This previous post](https://netobserv.io/posts/monitoring-ovn-networking-events-using-network-observability/) tells you more about it.
