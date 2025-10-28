@@ -14,7 +14,15 @@ In fact, there is probably _too much_ information, making it potentially hard to
 
 ## A use-case: NetObserv own network flow matrix
 
-Let's consider this use-case: using NetObserv to understand its own relationships with other components.
+Let's have this use-case: using NetObserv to understand its own relationships with other components. Considering you have installed NetObserv, Loki and the FlowCollector resource with **sampling set to 1**.
+
+The `FlowMetrics` API does not require Loki, however it's still recomended to have for better troubleshooting. Installing Loki for testing purpose is as simple as that: 
+
+```bash
+oc create namespace netobserv
+oc apply -f https://raw.githubusercontent.com/netobserv/documents/5410e65b8e05aaabd1244a9524cfedd8ac8c56b5/examples/zero-click-loki/1-storage.yaml -n netobserv
+oc apply -f https://raw.githubusercontent.com/netobserv/documents/5410e65b8e05aaabd1244a9524cfedd8ac8c56b5/examples/zero-click-loki/2-loki.yaml -n netobserv
+```
 
 ### The "out-of-the-box" approach
 
@@ -88,6 +96,7 @@ spec:
 ```
 
 We're going to count every flow received that satisfies the filters. The other types are `Gauge` and `Histogram`, which are not relevant for the purpose.
+In fact, in this case, we don't really care about the metric value. What we care about is the relationship between labels. So it doesn't matter too much which metric type we're setting here.
 
 ```yaml
   labels:
@@ -116,7 +125,7 @@ You can read more about all the available fields [here](https://github.com/netob
     value: SYN
 ```
 
-Because `Flags` comes as a list of strings, we need to flatten it before we can execute a filter based on it. Without the flatten operation, the `Flags` would appear as a list such as `SYN,ACK,RST`. When flattened, a flow with `Flags=SYN,ACK,RST` is transformed into three flows (`Flags=SYN`, `Flags=ACK` and `Flags=RST`). The filter operation keeps only the SYN one, which stands for establishing a TCP connection from a client to a server.
+Because `Flags` comes as a list of strings, we need to flatten it before we can filter. Without the flatten operation, the `Flags` would appear as a list such as `Flags=SYN,ACK,RST`. When flattened, that flow is mapped into three flows (`Flags=SYN`, `Flags=ACK` and `Flags=RST`). The filter operation keeps only the SYN one, which stands for the TCP connection being established between a client and a server.
 
 ```yaml
   remap:
@@ -131,11 +140,11 @@ Because `Flags` comes as a list of strings, we need to flatten it before we can 
     DstPort: port
 ```
 
-Finally, the remapping operation is optional but is provided as a syntactic sugar when manipulating later the metric with `promQL`, the Prometheus query language. Because we are creating here a metric named `workload-syn-in`, that is to say, focused on the incoming traffic to our namespace of interest, we're renaming the `Dst*` labels in a more workload-centric fashion and the `Src*` as the opposite side.
+Finally, the remapping operation is optional but is provided as a syntactic sugar when manipulating later the metric with `promQL`, the Prometheus query language. Because we are creating here a metric named `workload-syn-in`, that is to say, focused on the incoming traffic to our namespace of interest, we're renaming the `Dst*` labels in a more workload-centric fashion and the `Src*` as the opposite side prefixed with `from_`.
 
-With this config, the query will look like this: `netobserv_workload_syn_in{ namespace="my-namespace"}`.
+With this config, the query looks like: `netobserv_workload_syn_in{ namespace="my-namespace"}`.
 
-We create then another metric, almost identical, except for the remapping, focused on outgoing traffic:
+We create then another metric, almost identical, except for the remapping, focused on the outgoing traffic:
 
 ```yaml
 apiVersion: flows.netobserv.io/v1alpha1
@@ -271,3 +280,11 @@ Now, back to the metrics, you will see this name appearing under the label `to_s
 ![aws-s3](./aws-s3.png)
 
 If you have more undetermined traffic, rinse and repeat until you identify everything, and then you should have all the required pieces for your network policy.
+
+## Summary and additional notes
+
+With this use-case and the FlowMetrics API, we've been able to identify precisely, and in a concise way, which workloads we are talking to. We clearly identify both the ingress and egress traffic, which will help creating our network policy. Some additional aspects to take into account:
+
+- After having created the `FlowMetrics`, you should probably restart the pods that you want to monitor, so that they re-establish all the connections. This is especially needed if they use long-standing connection, where the SYN packets that we monitor isn't going to be resend.
+- We focused here on TCP connections. You can monitor UDP in a similar way, except that you won't have the SYN trick for removing the noise with source ports. The `Proto` field hold the L4 protocol ([UDP is 17](https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers)).
+- When you create a network policy for OVN, you can use the Network Events feature, alongside with a TechPreview OpenShift cluster, to troubleshoot network policy allowed and denied traffic. [This previous post](https://netobserv.io/posts/monitoring-ovn-networking-events-using-network-observability/) tells you more about it.
