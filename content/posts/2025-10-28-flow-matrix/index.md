@@ -112,7 +112,7 @@ In fact, in this case, we don't really care about the metric value. What we care
   - Flags
 ```
 
-Labels are what is going to be aggregated on. When several flows are recorded with the exact same set of labels, the corresponding metric counter is incremented. If any of those labels differ from the previously recorded flows, it results in a new time-series that starts at 1.
+Labels are what flows are going to be aggregated on. When several flows are recorded with the exact same set of labels, the corresponding metric counter is incremented. If any of those labels differ from the previously recorded flows, it results in a new time-series that starts at 1.
 
 This list of labels is roughly what we described above, plus the `SrcSubnetLabel` / `DstSubnetLabel` which I'll explain later, and the `Flags` (TCP flags) which we need for flattening+filtering as explained below.
 
