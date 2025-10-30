@@ -30,7 +30,7 @@ The first thing you can do is to look at the Traffic flows view in the Console p
 
 ![Raw flows table](./raw-flows-table.png)
 
-Here we see some nodes talking to `flowslogs-pipeline`, or `netobserv-plugin` talking to the Loki gateway... Everything can be displayed here, but there's also a lot of redundant information, there is the noise of the source ports (which become destination ports in the responses), it's a flat view that requires a lot of scrolling to capture all the meaningful bits. Moreover, the data is pulled from Loki, which is not great if you want weeks of data. We need something more concise.
+Here we see some nodes talking to `flowslogs-pipeline`, or `netobserv-plugin` talking to the Loki gateway... Everything can be displayed here, but there's also a lot of redundant information, there is the noise of the source ports (which become destination ports in the responses), it's a flat view requiring a lot of scrolling to capture all the meaningful bits. Moreover, the data is pulled from Loki, which is not great if you want weeks of data. We need something more concise.
 
 The topology view helps for sure: it aggregates some of the data, for instance per owner (workload) instead of per pod.
 
