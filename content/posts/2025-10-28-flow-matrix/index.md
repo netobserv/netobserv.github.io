@@ -16,7 +16,7 @@ In fact, there is probably _too much_ information, making it potentially hard to
 
 Let's have this use-case: using NetObserv to understand its own relationships with other components. Considering you have already installed NetObserv, Loki and the FlowCollector resource with **sampling set to 1**.
 
-The `FlowMetrics` API does not require Loki, however it's still recommended to have for better troubleshooting. Installing Loki for testing purpose is as simple as that: 
+The `FlowMetrics` API does not require Loki, however it's still recommended, for better troubleshooting. Installing Loki for testing purpose is as simple as: 
 
 ```bash
 oc create namespace netobserv
