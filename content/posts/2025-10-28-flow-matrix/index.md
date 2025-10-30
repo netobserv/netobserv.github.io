@@ -95,7 +95,7 @@ spec:
   type: Counter
 ```
 
-We're going to count every flow received that satisfies the filters. The other types are `Gauge` and `Histogram`, which are not relevant for the purpose.
+We're going to count every flow received that satisfies the filters. The other types are `Gauge` and `Histogram`, which are not relevant for this purpose.
 In fact, in this case, we don't really care about the metric value. What we care about is the relationship between labels. So it doesn't matter too much which metric type we're setting here.
 
 ```yaml
