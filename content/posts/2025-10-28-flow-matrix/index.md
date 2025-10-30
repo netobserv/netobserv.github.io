@@ -211,7 +211,7 @@ sum(rate(netobserv_workload_syn_in{ namespace="netobserv"}[1m])) by (workload, k
 
 ![workload-syn-in](./workload-syn-in.png)
 
-Here we immediately notice that many nodes are talking to `flowlogs-pipeline`, which creates some noise, so I'll split the query into two: one for the nodes and another for the rest. Another possibility would be to create two different FlowMetrics, one being dedicated to the traffic coming from nodes.
+Here we immediately notice that many nodes are talking to `flowlogs-pipeline`, which creates some noise, so let's split the query into two: one for the nodes and another for the rest. Another possibility would be to create two different FlowMetrics, one being dedicated to the traffic coming from nodes.
 
 For nodes:
 
