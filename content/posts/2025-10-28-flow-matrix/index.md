@@ -253,7 +253,7 @@ Setting filters with the desired Source Namespace and Destination Kind to an emp
 
 ![external-ips](./investigate-ips.png)
 
-There are IPs such as 3.5.205.175. A `whois` reminds me that it's Amazon S3 behind that.
+There are IPs such as 3.5.205.175. A `whois` shows that it's Amazon S3 behind that.
 
 Let's reconfigure our `FlowCollector` with the Amazon S3 IP ranges, so that NetObserv is aware of it.
 
