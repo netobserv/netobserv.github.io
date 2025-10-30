@@ -183,7 +183,7 @@ spec:
 
 With promQL looking like: `netobserv_workload_syn_out{ namespace="my-namespace"}.`
 
-You could really create just 1 metric here instead of 2, without the remapping. It's just that the `promQL` is a little less simple to reason about when you have to juggle between Src and Dst fields.
+You could really create just 1 metric here instead of 2, without the remapping but the `promQL` is a little less simple to reason about when you have to juggle between Src and Dst fields.
 
 ### Viewing the result
 
