@@ -14,7 +14,7 @@ In fact, there is probably _too much_ information, making it potentially hard to
 
 ## A use-case: NetObserv own network flow matrix
 
-Let's have this use-case: using NetObserv to understand its own relationships with other components. Considering you have already installed NetObserv, Loki and the FlowCollector resource with **sampling set to 1**.
+Let’s consider this use case: using NetObserv to understand its own relationships with other components. Considering you have already installed NetObserv, Loki and the FlowCollector resource with **sampling set to 1**.
 
 The `FlowMetrics` API does not require Loki, however it's still recommended, for better troubleshooting. Installing Loki for testing purpose is as simple as: 
 
