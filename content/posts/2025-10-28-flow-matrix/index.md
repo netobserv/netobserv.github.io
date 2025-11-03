@@ -2,11 +2,11 @@
 layout: :theme/post
 title: "Identifying network flow matrix with NetObserv"
 description: "NetObserv provides all the data you need to build your network flow matrix, which helps you build network policies"
-tags: network,flow,matrix,network policy,FlowMetrics
+tags: flow,matrix,networkpolicy,flowmetrics,metrics,prometheus
 authors: [jotak]
 ---
 
-_Thanks to: placeholder for reviewers_
+_Thanks to: Amogh Rameshappa Devapura and Leandro Beretta for reviewing_
 
 The NetObserv eBPF agents can observe all the traffic going through your cluster. They extract all the meaningful metadata which is then used to represent the network topology. There's everything you need there to understand who's talking to who in your cluster.
 
@@ -30,7 +30,7 @@ The first thing you can do is to look at the Traffic flows view in the Console p
 
 ![Raw flows table](./raw-flows-table.png)
 
-Here we see some nodes talking to `flowslogs-pipeline`, or `netobserv-plugin` talking to the Loki gateway... Everything can be displayed here, but there's also a lot of redundant information, there is the noise of the source ports (which become destination ports in the responses), it's a flat view requiring a lot of scrolling to capture all the meaningful bits. Moreover, the data is pulled from Loki, which is not great if you want weeks of data. We need something more concise.
+Here we see some nodes talking to `flowslogs-pipeline`, or `netobserv-plugin` talking to the Loki gateway, and more. All the information is accessible from there, but not in the most suitable way. It's a flat view, lacking of aggregation, with redundancies, and also with undesired noise e.g. with source ports (which become destination ports in responses). Moreover, the data is pulled from Loki, which is not great if you want weeks of data. We need something more concise.
 
 The topology view helps for sure: it aggregates some of the data, for instance per owner (workload) instead of per pod.
 
@@ -286,5 +286,5 @@ If you have more undetermined traffic, rinse and repeat until you identify every
 With this use-case and the FlowMetrics API, we've been able to identify precisely, and in a concise way, which workloads we are talking to. We clearly identify both the ingress and egress traffic, which help create a network policy. Some additional aspects to take into account:
 
 - After having created the `FlowMetrics`, you should probably restart the pods that you want to monitor, so that they re-establish all the connections. This is especially needed if they use long-standing connections, where the SYN packets that we monitor aren't going to be sent again.
-- We focused here on TCP connections. You can monitor UDP in a similar way, except that you won't have the SYN trick for removing the noise with source ports. The `Proto` field holds the L4 protocol ([UDP is 17](https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers)).
+- We focused here on TCP connections. You can monitor UDP in a similar way, except that you won't have the SYN trick for removing the noise with source ports. The `Proto` field holds the L4 protocol and can be used for filtering ([UDP number is 17](https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers)).
 - When you create a network policy for OVN, you can use the Network Events feature, alongside with a TechPreview OpenShift cluster, to troubleshoot network policy allowed and denied traffic. [This previous post](https://netobserv.io/posts/monitoring-ovn-networking-events-using-network-observability/) tells you more about it.
