@@ -144,7 +144,7 @@ Finally, the remapping operation is optional but is provided as a syntactic suga
 
 With this config, the query looks like: `netobserv_workload_syn_in{ namespace="my-namespace"}`.
 
-We create then another metric, almost identical, except for the remapping, focused on the outgoing traffic:
+We then create another metric, almost identical, except for the remapping, focused on the outgoing traffic:
 
 ```yaml
 apiVersion: flows.netobserv.io/v1alpha1
