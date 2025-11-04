@@ -11,7 +11,7 @@ entries:
           url: https://netobserv.io/static/assets/images/about/network-traffic-main.png
     apiVersion: v2
     appVersion: 1.10.0-community
-    created: "2025-11-04T17:03:20.348557245+01:00"
+    created: "2025-11-04T17:39:59.04667514+01:00"
     dependencies:
     - condition: install.prom
       name: prometheus
@@ -22,7 +22,7 @@ entries:
       repository: https://grafana.github.io/helm-charts
       version: ~2.10.2
     description: Network Observability in Kubernetes based on eBPF.
-    digest: 427a3ae2f73f9eaeb8fd5164b2a0bdbd4783d596852ff276c9e61cf1fefac5d9
+    digest: aa374894577eec7499db5203bf061dc1ac29f2d399bd43fa9908ed48914ac73e
     home: https://netobserv.io/
     icon: https://netobserv.io/static/assets/images/netobserv.svg
     keywords:
@@ -342,4 +342,4 @@ entries:
     urls:
     - https://netobserv.io/static/helm/netobserv-operator-1.8.0.tgz
     version: 1.8.0
-generated: "2025-11-04T17:03:20.315286753+01:00"
+generated: "2025-11-04T17:39:59.020561827+01:00"
