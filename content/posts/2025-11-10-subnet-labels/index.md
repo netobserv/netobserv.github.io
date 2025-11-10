@@ -178,6 +178,10 @@ It is a good practice to use a common prefix for all labels on external traffic,
 
 You can go ahead and mark all the known external traffic in a similar way: databases, VMs, web services, etc.
 
+{#admon title="Info"}
+Granted, in the current release of NetObserv, going through every Subnet Labels configuration might be cumbersome. `FlowCollector` is a centralized API, typically managed by cluster admins, whereas knowing the various subnet dependencies might be more in the perimeter of application teams. We are currently working on a new feature that allows delegating that kind of configuration, so stay tuned!
+{/}
+
 Once we've created that label, we need to update our `FlowMetric` examples that filter on subnet label absence.
 
 ```bash
