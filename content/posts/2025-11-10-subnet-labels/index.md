@@ -10,7 +10,7 @@ _Thanks to: (placeholder) for reviewing_
 
 Often times, people who are installing NetObserv are especially looking for a solution that monitors the traffic from and to the cluster. For them, in-cluster traffic monitoring only comes as a secondary consideration. NetObserv does not process external traffic in any particular way, by default, internal and external traffic are just regular network traffic, period. 
 
-The eBPF agents know nothing about the network topology. They see packets, extract the IP addresses and metadata, do some aggregation, and forward that to `flowlogs-pipeline`. They can operate in various contexts, even though we're mostly interested in Kubernetes here, you can run them on your Linux PC if you wish, they're context-agnostic.
+The eBPF agents know nothing about the network topology. They see packets, extract the IP addresses and metadata, do some aggregation, and forward that to `flowlogs-pipeline`. They can operate in various contexts, even though we're mostly interested in Kubernetes here, you can run them on your Linux PC if you wish, they're context-agnostic for everything beyond the host.
 
 `flowlogs-pipeline` is context-aware, depending on its configuration. It's the one that knows about Kubernetes, and it uses that knowledge to enrich the network flows with pod names, namespaces, and so on.
 
@@ -20,25 +20,9 @@ But again, it doesn't know with absolute certainty what IP should be considered 
 
 As per [the doc](https://github.com/netobserv/network-observability-operator/blob/main/docs/FlowCollector.md#flowcollectorspecprocessorsubnetlabels), subnet labels "allow to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic. When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`."
 
-In OpenShift, NetObserv will check the Cluster Network Operator configuration to know which CIDRs are configured for Pods, Services and Nodes. You can verify that:
+In OpenShift, NetObserv checks the Cluster Network Operator configuration to know which CIDRs are configured for Pods, Services and Nodes, then it configures `flowlogs-pipeline` accordingly. You can verify that in the generated configmap:
 
 ```bash
-# "network" resource is from the cluster network operator configuration
-$ kubectl get networks cluster -ojsonpath='{.spec}' | jq
-{
-  (...),
-  "clusterNetwork": [
-    {
-      "cidr": "10.128.0.0/14",
-      "hostPrefix": 23
-    }
-  ],
-  "serviceNetwork": [
-    "172.30.0.0/16"
-  ]
-}
-
-# now, the resulting config map for flowlogs-pipeline
 $ kubectl get cm -n netobserv flowlogs-pipeline-config -ojsonpath='{.data.config\.json}' | jq '.parameters[1].transform.network.subnetLabels'
 [
   {
@@ -62,16 +46,15 @@ $ kubectl get cm -n netobserv flowlogs-pipeline-config -ojsonpath='{.data.config
 ]
 ```
 
-You see from where the "Pods" and "Services" CIDRs are taken. The "Machines" subnet source is different, it comes from the initial k8s configuration.
+Those are the same values that you can find in the `cluster` resource from `networks.config.openshift.io`
 
 When you open the Console plugin and configure columns to show the subnet labels, this is what you get:
 
 ![Subnet labels by default](./subnet-labels-default.png)
 
-Every time `flowlogs-pipeline` has to process a network flow, it checks if the IP belongs to any of the defined subnet, and if so, it associates with the flow the related label.
+Every time `flowlogs-pipeline` has to process a network flow, it checks if the IP belongs to any of the defined subnet, and if so, it associates the flow with the related label.
 
-
-Although the CIDR configuration mentioned above is the default when running on OpenShift, you can change it as much as you want. For instance, to add more machine networks, you can write in `FlowCollector`:
+This is not just for OpenShift. If you're not running on OpenShift, or if you want to customize the default setup for OpenShift, you can perfectly configure different CIDRs. For instance, to add more machine networks, you can write in `FlowCollector`:
 
 ```yaml
 spec:
