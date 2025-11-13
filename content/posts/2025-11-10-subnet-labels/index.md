@@ -88,7 +88,22 @@ kubectl apply -n netobserv -f https://raw.githubusercontent.com/netobserv/networ
 
 (More examples available [here](https://github.com/netobserv/network-observability-operator/tree/main/config/samples/flowmetrics), including for external traffic latency)
 
-These metrics leverage the absence of Subnet Labels in order to track external traffic. In Prometheus, you can query them with `promQL` such as:
+These metrics leverage the absence of Subnet Labels in order to track external traffic. They also consider Subnet Labels prefixed with `EXT:` as external traffic. If you look at their definition, you'll see these rules expressed as that: 
+
+```yaml
+  filters:
+  - field: DstSubnetLabel
+    matchType: Absence
+  - field: DstSubnetLabel
+    matchType: MatchRegex
+    value: "^EXT:.*"
+```
+
+{#admon title="Info"}
+In `FlowMetrics`, when there are several filters for the same key, those filters are OR'ed, ie. the match is satisfied if one at least is satisfied. Filters on different keys are AND'ed.
+{/}
+
+In Prometheus, you can query them with the following `promQL`:
 
 ```
 topk(10, sum(rate(netobserv_cluster_external_egress_bytes_total{ SrcK8S_Namespace!="" }[2m])) by (SrcK8S_Namespace, SrcK8S_OwnerName))
@@ -154,50 +169,15 @@ We can inject them in our `subnetLabels` config:
         - 3.5.224.0/22
         - 13.36.84.48/28
         - 13.36.84.64/28
-        name: EXT-AWS_S3_eu-west-3
+        name: EXT:AWS_S3_eu-west-3
 ```
 
-It is a good practice to use a common prefix for all labels on external traffic, such as "EXT-" here, in order to distinguish external and internal subnet labels.
+It is a good practice to use a common prefix for all labels on external traffic, such as "EXT:" here, in order to distinguish external and internal subnet labels. As we've seen before, this prefix is used in the sample metrics definitions for external traffic.
 
 You can go ahead and mark all the known external traffic in a similar way: databases, VMs, web services, etc.
 
 {#admon title="Info"}
 Granted, in the current release of NetObserv, going through every Subnet Labels configuration might be cumbersome. `FlowCollector` is a centralized API, typically managed by cluster admins, whereas knowing the various subnet dependencies might be more in the perimeter of application teams. We are currently working on a new feature that allows delegating that kind of configuration, so stay tuned!
-{/}
-
-Once we've created that label, we need to update our `FlowMetric` examples that filter on subnet label absence.
-
-```bash
-kubectl edit flowmetric flowmetric-cluster-external-egress-traffic -n netobserv
-```
-
-So instead of:
-
-```yaml
-  labels: [SrcK8S_HostName,SrcK8S_Namespace,SrcK8S_OwnerName,SrcK8S_OwnerType]
-  filters:
-  - field: DstSubnetLabel
-    matchType: Absence
-```
-
-we would use now:
-
-```yaml
-  labels: [SrcK8S_HostName,SrcK8S_Namespace,SrcK8S_OwnerName,SrcK8S_OwnerType,DstSubnetLabel]
-  filters:
-  - field: DstSubnetLabel
-    matchType: Absence
-  - field: DstSubnetLabel
-    matchType: MatchRegex
-    value: "^EXT-.*"
-```
-
-so that traffic to our new label is considered as external. We can also add `DstSubnetLabel` to the list of labels in the generated metric, for a finer granularity of the destinations.
-
-A similar change can be done for the ingress traffic.
-
-{#admon title="Info"}
-In `FlowMetrics`, when there are several filters for the same key, those filters are OR'ed, ie. the match is satisfied if one at least is satisfied. Filters on different keys are AND'ed.
 {/}
 
 With this setup, we are finally able to understand where the traffic is flowing to:
