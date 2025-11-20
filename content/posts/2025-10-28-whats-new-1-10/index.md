@@ -16,49 +16,40 @@ The starting point is that you have Red Hat OpenShift web console running and th
 
 ## FlowCollector Setup UI
 
-After [installing Network Observability Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_observability/installing-network-observability-operators), you can create a FlowCollector custom resource or instance.  This allows you to configure the many parameters of network observability.  In this release, there is a new 4-step wizard described below that simplifies the creation of this resource.
+After [installing the Network Observability Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_observability/installing-network-observability-operators), you should create a FlowCollector custom resource or instance.  This allows you to configure the many parameters of network observability.  In this release, there is a new 4-step wizard that simplifies the creation of this resource (Figure 1).
 
-### Step 1: Overview
+![FlowCollector Wizard](flowcollector-wizard.png)<br>
+Figure 1: FlowCollector Wizard
 
-This gives an overview of what FlowCollector is and some basic configuration.  The field, **Deploy policies**, will be covered in the section "Improve Security with Network Policies".  If you prefer the traditional Form view or the YAML view, since many parameters are not shown in the wizard, click the **FlowCollector form** link in the second paragraph.
+Step 1 gives an overview of what FlowCollector is and some basic configuration.  The field, **Deploy policies**, will be covered in the section "Improve Security with Network Policies".  If you prefer the traditional Form view or YAML view, since many parameters are not shown in the wizard, click the **FlowCollector form** link in the second paragraph.
 
-![FlowCollector Setup - Step 1](flowcollector-p1.png)<br>
-Figure 1: FlowCollector Setup - Step 1
+Step 2 lets you choose the **Deployment model**, where you can enable Kafka, which is typically necessary for large clusters.  This is also where you can enable various eBPF features, many of which help with troubleshooting.  And finally, you can choose to include zone information.
 
-### Step 2: Processing
+Step 3 configures Loki to store flow logs.  Although optional, [without Loki](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_observability/installing-network-observability-operators#network-observability-without-loki_network_observability), there will not be a traffic flows table as only metrics will be stored.  The default Loki mode is **LokiStack** instead of **Monolithic**.
 
-The **Deployment model** is where you can enable Kafka if desired.  This is typically necessary for large clusters.  You can also enable various eBPF features, many of which help with troubleshooting.
-
-![FlowCollector Setup - Step 2](flowcollector-p2.png)<br>
-Figure 2: FlowCollector Setup - Step 2
-
-### Step 3: Loki
-
-To store flow logs, you need Loki. [Without Loki](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_observability/installing-network-observability-operators#network-observability-without-loki_network_observability), there will not be a traffic flows table as only metrics will be stored.  The default Loki mode is **LokiStack** instead of **Monolithic**.
-
-![FlowCollector Setup - Step 3](flowcollector-p3.png)<br>
-Figure 3: FlowCollector Setup - Step 3
-
-### Step 4: Consumption
-
-The last step provides guidance on setting the sampling interval.
-
-![FlowCollector Setup - Step 4](flowcollector-p4.png)<br>
-Figure 4: FlowCollector Setup - Step 4
+Step 4 provides guidance on setting the sampling interval.
 
 ### FlowCollector status
 
 Once you click **Submit** in step 4, it shows a graphical status as FlowCollector initializes and comes up.
 
 ![FlowCollector Status](flowcollector-status.png)<br>
-Figure 5: FlowCollector Status
+Figure 2: FlowCollector Status
 
 ## FlowMetric Setup UI
 
-Like the FlowCollector Setup, there is a new 4-step wizard for FlowMetric Setup.  The FlowMetric CRD lets you define your own custom metrics.  The four steps are **Overview**, **Metric** to define the metric name and type, **Data** to specify the direction and filters, and a **Review** panel before applying the change.  Figure 6 shows what the first step looks like.  The other steps are not shown.
+Like the FlowCollector Setup, there is a new 4-step wizard for FlowMetric Setup (Figure 3).  The FlowMetric CRD lets you define your own custom metrics.
 
-![FlowMetric Setup - Step 1](flowmetric-p1.png)<br>
-Figure 6: FlowMetric Setup - Step 1
+![FlowMetric Wizard](flowmetric-wizard.png)<br>
+Figure 3: FlowMetric Wizard
+
+Step 1 provides an overview of custom metrics.  You start off by giving the metric a resource name and a namespace.
+
+Step 2 asks for information about the metric, such as the metric name, type (Counter, Histogram, or Gauge), the [name of the field](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_observability/json-flows-format-reference) used by this metric called **Value field**, and an optional list of Prometheus labels.
+
+Step 3 asks for the direction of the flow and a list of filters to determine what flows you're interested in.
+
+Step 4 displays the manifest (YAML) that will be applied, with the option to edit this before saving.
 
 ## Improve Security with Network Policies
 
@@ -91,10 +82,10 @@ spec:
       - DNSTracking
 ```
 
-Refresh the browser page and go to **Observe > Alerting**.  Click the **Alerting rules** tab.  In the dropdown for **Name**, change it to **Label**.  Enter `app=netobserv`.  You should see the three **DNSErrors_** alerts, in addition to the four **NetObserv** alerts (Figure 7).  If not, wait a few seconds.  If it still doesn't show up, make sure the changes were accepted in FlowCollector.
+Refresh the browser page and go to **Observe > Alerting**.  Click the **Alerting rules** tab.  In the dropdown for **Name**, change it to **Label**.  Enter `app=netobserv`.  You should see the three **DNSErrors_** alerts, in addition to the four **NetObserv** alerts (Figure 4).  If not, wait a few seconds.  If it still doesn't show up, make sure the changes were accepted in FlowCollector.
 
 ![Alerting Rules](alerting_rules-dns.png)<br>
-Figure 7: Alerting Rules
+Figure 4: Alerting Rules
 
 Here is the FlowCollector configuration if you want to see all the predefined alerts.  You must also enable **privileged** mode for PacketDrop.
 
@@ -117,25 +108,25 @@ Underneath the covers, it creates a PrometheusRule object.  To see what that loo
 
 The second Technology Preview is a network health dashboard.  The same environmental variable, EXPERIMENTAL_ALERTS_HEALTH, also used for Custom Alerts (see listing above), enables this feature.
 
-Refresh the browser, and now there is a new menu panel at **Observe > Network Health** (Figure 8).
+Refresh the browser, and now there is a new menu panel at **Observe > Network Health** (Figure 5).
 
 ![Network Health Dashboard](network_health.png)<br>
-Figure 8: Network Health Dashboard
+Figure 5: Network Health Dashboard
 
-At the top of the Network Health dashboard, it gives an overall summary of the network health.  Below that, there are three tabs named **Global**, **Nodes**, and **Namespaces**.  The **Global** tab shows the global rule violations (Figure 9).  In this screenshot, it reports "Too many DNS errors".
+At the top of the Network Health dashboard, it gives an overall summary of the network health.  Below that, there are three tabs named **Global**, **Nodes**, and **Namespaces**.  The **Global** tab shows the global rule violations (Figure 6).  In this screenshot, it reports "Too many DNS errors".
 
 ![Network Health - Global](network_health-global-dns_err.png)<br>
-Figure 9: Network Health - Global
+Figure 6: Network Health - Global
 
-The **Nodes** tab shows rule violations at the node level (Figure 10).  There are none in this screenshot.
+The **Nodes** tab shows rule violations at the node level(Figure 7).  There are none in this screenshot.
 
 ![Network Health - Nodes](network_health-nodes.png)<br>
-Figure 10: Network Health - Nodes
+Figure 7: Network Health - Nodes
 
 The **Namespaces** tab shows rule violations at the namespace level.
 
 ![Network Health - Namespaces](network_health-namespaces.png)<br>
-Figure 11: Network Health - Namespaces
+Figure 8: Network Health - Namespaces
 
 ## Network Observability CLI 1.10
 
@@ -148,24 +139,24 @@ I'll go over the three main modes and describe the changes in this release.  If 
 
 ### Flows
 
-To see the traffic flows table, enter `oc netobserv flows`, and add any other options to the command.  By default, it runs in dark mode (Figure 12).
+To see the traffic flows table, enter `oc netobserv flows`, and add any other options to the command.  By default, it runs in dark mode (Figure 9).
 
 ![Network Observability CLI - Flows](cli-flows_table.png)<br>
-Figure 12: Network Observability CLI - Flows
+Figure 9: Network Observability CLI - Flows
 
 The blue square at the top has a number of controls.  The triangle is a new play/pause button that's accessible with the mouse.  This is a nice addition to be able to pause the data.  Note that while it's paused, data is still being collected.
 
 Below the play/pause button are the "-" and "+" buttons.  Each row corresponds to decreasing or increasing the value on that same row.  Therefore, the first set of buttons decreases or increases how many rows to display.  The next row, **Display**, cycles through the eBPF features.  The last row, **Enrichment**, shows different columns.
 
-The **Manage columns** button is new (Figure 13).  It lets you select a set of columns to display.  Select or deselect a column using the Enter key (not the mouse).
+The **Manage columns** button is new (Figure 10).  It lets you select a set of columns to display.  Select or deselect a column using the Enter key (not the mouse).
 
 ![Network Observability CLI - Manage columns](cli-manage_columns.png)<br>
-Figure 13: Network Observability CLI - Manage columns
+Figure 10: Network Observability CLI - Manage columns
 
-The filter field at the bottom of the screen was improved.  As you type into this field, it provides auto-suggestions in a dropdown choicelist (Figure 14).  You can also enter multiple filters.
+The filter field at the bottom of the screen was improved.  As you type into this field, it provides auto-suggestions in a dropdown choicelist (Figure 11).  You can also enter multiple filters.
 
 ![Network Observability CLI - Filters](cli-filter.png)<br>
-Figure 14: Network Observability CLI - Filters
+Figure 11: Network Observability CLI - Filters
 
 Use the tab key to toggle between the flows table and the filter field.  While in the table, you can move around using the `h,j,k,l` keys, for those of you who are familiar with vi!
 
@@ -178,21 +169,21 @@ To view the metrics, enter `oc netobserv metrics --enable_all` plus any other op
 In the previous release, you could only see graphs with the OpenShift web console.    Now there are text-based graphs!
 
 ![Network Observability CLI - Metrics](cli-metrics.png)<br>
-Figure 15: Network Observability CLI - Metrics
+Figure 12: Network Observability CLI - Metrics
 
 In the blue box, you can increase or decrease the number of points in the graph by increments of 5,  You can also cycle through the different sets of graphs in the **Display** row.  If you want the OpenShift web console to display the graphs like before, add the `--background` option.
 
-There is a **Manage panels** button that lets you choose the graphs you want to display (Figure 16).  Select or deselect a panel using the Enter key (not the mouse).
+There is a **Manage panels** button that lets you choose the graphs you want to display (Figure 13).  Select or deselect a panel using the Enter key (not the mouse).
 
 ![Network Observability CLI - Manage panels](cli-manage_panels.png)<br>
-Figure 16: Network Observability CLI - Manage panels
+Figure 13: Network Observability CLI - Manage panels
 
 ### Packets
 
-To view packets, enter `oc netobserv packets <filter>`.  A filter is required such as `oc netobserv packets --port=443`.  If you want to inspect a packet, you can do that directly now without having to resort to an external tool like Wireshark (Figure 17).  Press tab to go to the table.  Move to the particular row and press Enter.
+To view packets, enter `oc netobserv packets <filter>`.  A filter is required such as `oc netobserv packets --port=443`.  If you want to inspect a packet, you can do that directly now without having to resort to an external tool like Wireshark (Figure 14).  Press tab to go to the table.  Move to the particular row and press Enter.
 
 ![Network Observability CLI - Packets](cli-packets.png)<br>
-Figure 17: Network Observability CLI - Packets
+Figure 14: Network Observability CLI - Packets
 
 ## Summary
 
