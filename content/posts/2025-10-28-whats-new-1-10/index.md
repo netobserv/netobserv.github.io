@@ -34,7 +34,7 @@ Figure 2: FlowCollector Setup - Step 2
 
 ### Step 3: Loki
 
-To store flow logs, you need Loki. Without it, there will not be a traffic flows table as only metrics will be stored.  The default Loki mode is **LokiStack** instead of **Monolithic**.
+To store flow logs, you need Loki. [Without Loki](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_observability/installing-network-observability-operators#network-observability-without-loki_network_observability), there will not be a traffic flows table as only metrics will be stored.  The default Loki mode is **LokiStack** instead of **Monolithic**.
 
 ![FlowCollector Setup - Step 3](flowcollector-p3.png)<br>
 Figure 3: FlowCollector Setup - Step 3
@@ -62,7 +62,7 @@ Figure 6: FlowMetric Setup - Step 1
 
 ## Improve Security with Network Policies
 
-To improve the security hygiene of your cluster, it is highly recommended that you apply a network policy to allow only the necessary traffic between Network Observability and other pods for both ingress and egress.  In this release, the network policies are created and enabled by default in step 2 of the FlowCollector Setup.
+To improve the security hygiene of your cluster, it is highly recommended that you apply a network policy to allow only the necessary traffic between Network Observability and other pods for both ingress and egress.  In this release, when the Container Network Interface (CNI) plugin is OVN-Kubernetes, the network policies are created and enabled by default as shown in step 2 of the FlowCollector Setup.
 
 If you use Loki or Kafka, it's recommended that you put these components in a different namespace for better isolation.  When using the FlowCollector wizard, it will automatically update the network policy accordingly.  Otherwise, you have to make sure the Network Observability network policy, located at **Networking > NetworkPolicies**, is allowed to communicate with Loki and/or Kafka.
 
@@ -96,7 +96,7 @@ Refresh the browser page and go to **Observe > Alerting**.  Click the **Alerting
 ![Alerting Rules](alerting_rules-dns.png)<br>
 Figure 7: Alerting Rules
 
-Here is the FlowCollector configuration if you want to see all the predefined alerts.  It must also enable **privileged** mode for PacketDrop.
+Here is the FlowCollector configuration if you want to see all the predefined alerts.  You must also enable **privileged** mode for PacketDrop.
 
 ```yaml
 spec:
@@ -111,13 +111,11 @@ spec:
       privileged: true
 ```
 
-Underneath the covers, it is creating a PrometheusRule object.  To see what that looks like, enter `oc get prometheusrules -n netobserv -o yaml`.  If you want to change some of the thresholds or the duration for these alerts, edit these rules with `oc edit prometheusrules -n netobserv`.  If you get really ambitious, you can even write your own custom alerts!
-
-See [Alerts in the NetObserv Operator](https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md) for more information on this feature.
+Underneath the covers, it creates a PrometheusRule object.  To see what that looks like, enter `oc get prometheusrules -n netobserv -o yaml`.  However, if you want to modify a predefined alert, you must [edit FlowCollector as described here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_observability/network-observability-alerts_nw-observe-network-traffic#network-observability-configuring-predefined-alerts_network-observability-alerts).  If you get ambitious, you can also write your own custom alerts!  See [Alerts in the NetObserv Operator](https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md) for more information on this feature.
 
 ## Technology Preview: Network Health Dashboard
 
-The second Technology Preview is a network health dashboard.  Using the same environmental variable, EXPERIMENTAL_ALERTS_HEALTH, as Custom Alerts (see listing above), it also enables this feature.
+The second Technology Preview is a network health dashboard.  The same environmental variable, EXPERIMENTAL_ALERTS_HEALTH, also used for Custom Alerts (see listing above), enables this feature.
 
 Refresh the browser, and now there is a new menu panel at **Observe > Network Health** (Figure 8).
 
@@ -201,3 +199,5 @@ Figure 17: Network Observability CLI - Packets
 In Network Observability CLI, there were significant improvements in the user interface and ease of use. The UI was completely revised and supports the mouse.  Columns in the flow table and selection of graphs to display for metrics are customizable.  It is now able to display graphs and packet captures without resorting to external programs.
 
 In Network Observability, it is easier to create a FlowCollector and FlowMetric instance.  It is more secure with the use of network policies.  The custom alerts and Network Health Dashboard, while still in Technology Preview, are signs of things to come.  As we move beyond insights into analysis, give us feedback on this and other topics on the [discussion board](https://github.com/netobserv/network-observability-operator/discussions).
+
+_Special thanks to Joel Takvorian, Julien Pinsonneau, and Amogh Rameshappa Devapura for reviewing._
