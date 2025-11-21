@@ -118,12 +118,12 @@ At the top of the Network Health dashboard, it gives an overall summary of the n
 ![Network Health - Global](network_health-global-dns_err.png)<br>
 Figure 6: Network Health - Global
 
-The **Nodes** tab shows rule violations at the node level(Figure 7).  There are none in this screenshot.
+The **Nodes** tab shows rule violations at the node level (Figure 7).  There are none in this screenshot.
 
 ![Network Health - Nodes](network_health-nodes.png)<br>
 Figure 7: Network Health - Nodes
 
-The **Namespaces** tab shows rule violations at the namespace level.
+The **Namespaces** tab shows rule violations at the namespace level (Figure 8).
 
 ![Network Health - Namespaces](network_health-namespaces.png)<br>
 Figure 8: Network Health - Namespaces
@@ -131,6 +131,7 @@ Figure 8: Network Health - Namespaces
 ## Network Observability CLI 1.10
 
 Network Observability CLI 1.10 gets a new facelift in this release.  While it's still a text-based user interface, you can now use the mouse to interact with the program!  It is an `oc` plugin that captures, displays, and saves flows, metrics, or packet information.
+
 Follow the [installation instructions](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_observability/network-observability-cli#network-observability-cli-install_netobserv-cli-install) to set this up on your local computer.  It runs independent of whether you have Network Observability Operator installed or not.
 
 Before you run the program, it's best to widen your terminal to 100+ characters and 40+ rows for a better display.  Then enter `oc netobserv` followed by one of `flows`, `metrics`, or `packets <filter>`.  Append `help` to the command to get online help.
@@ -158,20 +159,20 @@ The filter field at the bottom of the screen was improved.  As you type into thi
 ![Network Observability CLI - Filters](cli-filter.png)<br>
 Figure 11: Network Observability CLI - Filters
 
-Use the tab key to toggle between the flows table and the filter field.  While in the table, you can move around using the `h,j,k,l` keys, for those of you who are familiar with vi!
+Use the tab key to toggle between the flows table and the filter field.  While in the table, you can move around using the `h`,`j`,`k`,`l` keys, for those of you who are familiar with vi!
 
 Tip: Oftentimes, Network Observability CLI will exit before I am done.  To increase the time it runs, add the `--max-bytes` option such as `--max-bytes=500000000` (500 MB).  Of course, you will need to have enough disk space to store the temporary data.
 
 ### Metrics
 
-To view the metrics, enter `oc netobserv metrics --enable_all` plus any other options to the command.  The `--enable_all` is optional and turns on all eBPF features, otherwise many of the graphs will be blank.
+To view the metrics, enter `oc netobserv metrics --enable_all` plus any other options to the command.  The `--enable_all` is optional and turns on all eBPF features.  Otherwise, many of the graphs will be blank.
 
 In the previous release, you could only see graphs with the OpenShift web console.    Now there are text-based graphs!
 
 ![Network Observability CLI - Metrics](cli-metrics.png)<br>
 Figure 12: Network Observability CLI - Metrics
 
-In the blue box, you can increase or decrease the number of points in the graph by increments of 5,  You can also cycle through the different sets of graphs in the **Display** row.  If you want the OpenShift web console to display the graphs like before, add the `--background` option.
+In the blue box, you can increase or decrease the number of points in the graph by increments of 5.  You can also cycle through the different sets of graphs in the **Display** row.  If you want the OpenShift web console to display the graphs like before, add the `--background` option.
 
 There is a **Manage panels** button that lets you choose the graphs you want to display (Figure 13).  Select or deselect a panel using the Enter key (not the mouse).
 
@@ -191,4 +192,4 @@ In Network Observability CLI, there were significant improvements in the user in
 
 In Network Observability, it is easier to create a FlowCollector and FlowMetric instance.  It is more secure with the use of network policies.  The custom alerts and Network Health Dashboard, while still in Technology Preview, are signs of things to come.  As we move beyond insights into analysis, give us feedback on this and other topics on the [discussion board](https://github.com/netobserv/network-observability-operator/discussions).
 
-_Special thanks to Joel Takvorian, Julien Pinsonneau, and Amogh Rameshappa Devapura for reviewing._
+_Special thanks to Joel Takvorian, Julien Pinsonneau, and Amogh Rameshappa Devapura for reviewing this article._
