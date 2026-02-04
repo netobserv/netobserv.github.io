@@ -6,7 +6,7 @@ tags: network,observability,health,alert,recording,deployment,filter,dns,loki,ga
 authors: [stleerh]
 ---
 
-Welcome to another installment of **What's new in Network Observability**.  This article covers Network Observability 1.11, which was released in the same time frame as [Red Hat OpenShift Container Platform (OCP) 4.21](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21).  However, it is also backwards-compatible with the older supported versions of OCP.  While there is an upstream version of Network Observability, I will focus on using it with OCP.
+Welcome to another installment of **What's new in Network Observability**.  This article covers Network Observability 1.11, which was released in the same time frame as [Red Hat OpenShift Container Platform (OCP) 4.21](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21).  However, it is also backwards-compatible with the older supported versions of OCP.  While there is an upstream version of Network Observability, I will focus on using it with OpenShift web console.
 
 Network Observability provides insights to your network traffic across your entire cluster.  It collects and aggregates network flow data using eBPF technology.  The data is enriched with Kubernetes context and is stored in the form of Loki logs and/or Prometheus metrics.  You can visualize this in the form of graphs, tables, and a topology view.  It not only provides deep visibility but can help troubleshoot problems related to packet drops, latencies, DNS errors, and more.
 
