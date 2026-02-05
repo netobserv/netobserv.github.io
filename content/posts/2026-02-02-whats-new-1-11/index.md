@@ -17,7 +17,7 @@ This article highlights the new features in 1.11.  If you’re interested in ear
 
 - Service deployment model
 - FlowCollectorSlice CRD
-- Zero-click Loki
+- Zero-click Loki (demo)
 - DNS name
 - Improvements in network health
 - Recording rules
@@ -64,7 +64,7 @@ spec:
     name: websvc
 ```
 
-The FlowCollectorSlice instances won't take effect unless they are enabled in the FlowCollector.  In OpenShift web console, configure this in the **Processor configuration** in **Slices configuration**.  On the terminal, enter `oc edit flowcollector`, and configure the following under the **processor** section:
+The FlowCollectorSlice instances won't take effect unless they are enabled in the FlowCollector.  In OpenShift web console, click **Processor configuration** and then **Slices configuration** to configure this.  Alternatively, on the terminal, enter `oc edit flowcollector`, and configure the following under the **processor** section:
 
 ```yaml
 spec:
@@ -86,7 +86,7 @@ spec:
 
 The **collectionMode** must be set to `AllowList` for **namespacesAllowList** to take effect.  The first element of **namespacesAllowList** is an exact match for `webapp`.  The second element specifies a regular expression because it's between the forward slashes.
 
-## Zero-click Loki
+## Zero-click Loki (demo)
 
 Deploying a FlowCollector instance was made easier with the introduction of a wizard in 1.9.  If you want to test Network Observability with Loki enabled, you still have to create a Loki instance and provide storage.
 
@@ -113,7 +113,7 @@ spec:
         DNSTracking
 ```
 
-It now retrieves the DNS name.  In OpenShift web console, go to **Observe > Network Traffic** and click the **Traffic flows** tab.  Click **Show advanced options** and then **Manage columns**.  Scroll down and enable `DNS Name` to add this column.  Now you will see this column (Figure 3).
+It now retrieves the DNS name.  Technically, in a DNS query, it is the QNAME field.  In OpenShift web console, go to **Observe > Network Traffic** and click the **Traffic flows** tab.  Click **Show advanced options** and then **Manage columns**.  Scroll down and enable `DNS Name` to add this column.  Now you will see this column (Figure 3).
 
 ![Traffic flows - DNS Name](traffic_flows-dns_name.png)<br>
 Figure 3. This is the Traffic flows table with the DNS Name column.
@@ -183,10 +183,10 @@ The dialog is mostly self-explanatory, so I won't get into details.  The right a
 
 You are able to make changes to the configured filter expressions, including changing the field value.  For example, suppose you have "Namespace equals netobserv".  The "Namespace" means source or destination namespace.  Click the dropdown for "netobserv" and select **As source**.  This changes the field to be Source Namespace only.  Changing the field value might move the entire expression to a new location, because you can't have the same field name repeated twice in the entire expression.
 
-A field name with multiple values means it must match any one of the values (*OR* condition).  In between the fields is typically an *AND* condition but can be changed to *OR*.  There's a special case where *Bidirectional* might be a choice.  For example, suppose you have "Source Namespace equals netobserv" *AND* "Destination Namespace equals openshift-dns".  If you change AND to "Bidirectional", which means the source and destination could be swapped, then it changes the Source and Destination labels to **Endpoint A** and **Endpoint B** (Figure 8).
+A field name with multiple values means it must match any one of the values (*OR* condition).  In between the fields is typically an *AND* condition but can be changed to *OR*.  There's a special case where *Bidirectional* might be a choice.  For example, suppose you have "Source Namespace equals netobserv" *AND* "Destination Namespace equals openshift-dns".  If you change AND to "Bidirectional", then it also includes the traffic when the source and destination are swapped.  For the UI, the Source and Destination labels change to **Endpoint A** and **Endpoint B** respectively (Figure 8).
 
 ![Network Traffic - Filter expression](network_traffic-filter_expression.png)<br>
-Figure 8. It shows the behavior of Bidirectional in the filter expression.
+Figure 8. This is how the UI is changed when you specify Bidirectional between two filter expressions.
 
 ### Quick filters
 
@@ -217,10 +217,12 @@ If the subnet label name is blank or **EXT:**, then it is considered external tr
 Network Observability recognizes the Kubernetes Gateway object.  The owner of a pod is often times a Deployment, but if the owner of the Deployment is a Gateway, such as if Red Hat OpenShift Service Mesh 3 or Istio is installed, then Network Observability will show this owner object as a gateway instead (Figure 10).  To view the Gateway traffic, it provides a link to the Gateway resource page.
 
 ![Topology - Gateweay](topology-gateway_icon.png)<br>
-Figure 10. The Topology tab shows a gateway icon.
+Figure 10. The Topology view shows a gateway icon.
 
 ## Summary
 
 This release provides features that allow you to have better control on how resources are used with the Service deployment model and the FlowCollector CRD.  There were improvements in the Network Health dashboard and support of recording rules.  Ease-of-use improvements were made in the UI filters and a zero-click Loki setup.  And finally, the DNS name was added and the Kubernetes Gateway object is now recognized.
 
 We want to make a bigger push to serve the community, so if there's something on your wishlist, go to the [discussion board](https://github.com/netobserv/network-observability-operator/discussions) and let us know what you have in mind!  Until next time...
+
+_Special thanks to Julien Pinsonneau, Olivier Cazade, and Amogh Rameshappa Devapura for reviewing this article._
