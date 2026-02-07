@@ -88,9 +88,7 @@ The **collectionMode** must be set to `AllowList` for **namespacesAllowList** to
 
 ## Zero-click Loki (demo)
 
-Deploying a FlowCollector instance was made easier with the introduction of a wizard in 1.9.  If you want to test Network Observability with Loki enabled, you still have to create a Loki instance and provide storage.
-
-The zero-click Loki feature adds a new parameter, **installDemoLoki**, which when set to `true`, creates a Loki in monolithic mode and a Persistent Volume Claim (PVC).
+If you want to test Network Observability with Loki enabled, you still have to create a Loki instance and provide storage.  The zero-click Loki feature adds a new parameter, **installDemoLoki**, which when set to `true`, creates a Loki in monolithic mode and a Persistent Volume Claim (PVC).
 
 ```yaml
 spec:
@@ -99,7 +97,7 @@ spec:
       installDemoLoki: true
 ```
 
-The PVC is 1 GiB of ephemeral storage.  Now you're able to get a running Network Observability to try out instantly!  As the parameter name indicates, use this only for demo purposes, since monolithic Loki will not scale.
+The PVC is 1 GiB of ephemeral storage.  Now you're able to get a running Network Observability to try out instantly!  As the parameter name indicates, *use this only for demo purposes and not production*, since monolithic Loki will not scale.
 
 ## DNS name
 
@@ -129,7 +127,7 @@ Network Health dashboard and custom alerts reached General Availability (GA) in 
 The health violations were also integrated into the topology view in the **Observe > Network Traffic** panel under the Topology tab.  Select an object to view the details, and if there are any violations, there will be a Health tab (Figure 4).
 
 ![Topology - Pod Health](topology-health_tab.png)<br>
-Figure 4. The Topology view shows the health violation by the namespace.
+Figure 4. The Topology view shows the health violation in the namespace scope.
 
 ## Recording rules
 
@@ -214,15 +212,17 @@ If the subnet label name is blank or **EXT:**, then it is considered external tr
 
 ## Kubernetes Gateway object
 
-Network Observability recognizes the Kubernetes Gateway object.  The owner of a pod is often times a Deployment, but if the owner of the Deployment is a Gateway, such as if Red Hat OpenShift Service Mesh 3 or Istio is installed, then Network Observability will show this owner object as a gateway instead (Figure 10).  To view the Gateway traffic, it provides a link to the Gateway resource page.
+Network Observability recognizes the Kubernetes Gateway object.  The owner of a pod is often times a Deployment, but if the owner of the Deployment is a Gateway, such as if [Red Hat OpenShift Service Mesh 3](https://www.redhat.com/en/technologies/cloud-computing/openshift/what-is-openshift-service-mesh) or Istio is installed, then Network Observability will show this owner object with a gateway icon instead (Figure 10).  To view the Gateway traffic, it provides a link to the Gateway resource page.
 
 ![Topology - Gateweay](topology-gateway_icon.png)<br>
 Figure 10. The Topology view shows a gateway icon.
 
+Speaking of icons, they've been refreshed and updated to better represent the Kubernetes object.
+
 ## Summary
 
-This release provides features that allow you to have better control on how resources are used with the Service deployment model and the FlowCollector CRD.  There were improvements in the Network Health dashboard and support of recording rules.  Ease-of-use improvements were made in the UI filters and a zero-click Loki setup.  And finally, the DNS name was added and the Kubernetes Gateway object is now recognized.
+This release provides features that give you better control on how resources are used with the Service deployment model and the FlowCollector CRD.  There were improvements to the Network Health dashboard and support for recording rules.  Usability enhancements were made in the UI filters, along with a zero-click Loki setup for demonstration purposes.  Finally, the DNS name was added and the Kubernetes Gateway object is now recognized.
 
-We want to make a bigger push to serve the community, so if there's something on your wishlist, go to the [discussion board](https://github.com/netobserv/network-observability-operator/discussions) and let us know what you have in mind!  Until next time...
+We want to make a bigger push to serve the community, so if there's something on your wishlist, go to the [discussion board](https://github.com/netobserv/network-observability-operator/discussions), and let us know what you have in mind!  Until next time...
 
 _Special thanks to Julien Pinsonneau, Olivier Cazade, and Amogh Rameshappa Devapura for reviewing this article._
