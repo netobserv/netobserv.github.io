@@ -221,7 +221,7 @@ Speaking of icons, they've been refreshed and updated to better represent the Ku
 
 ## Summary
 
-This release provides features that give you better control on how resources are used with the Service deployment model and the FlowCollector CRD.  There were improvements to the Network Health dashboard and support for recording rules.  Usability enhancements were made in the UI filters, along with a zero-click Loki setup for demonstration purposes.  Finally, the DNS name was added and the Kubernetes Gateway object is now recognized.
+This release provides features that give you better control on how resources are used with the Service deployment model and the new FlowCollectorSlice CRD.  There were improvements to the Network Health dashboard and support for recording rules.  Usability enhancements were made in the UI filters, along with a zero-click Loki setup for demonstration purposes.  Finally, the DNS name was added and the Kubernetes Gateway object is now recognized.
 
 We want to make a bigger push to serve the community, so if there's something on your wishlist, go to the [discussion board](https://github.com/netobserv/network-observability-operator/discussions), and let us know what you have in mind!  Until next time...
 
