@@ -33,7 +33,9 @@ In the **Deployment model** field, there is a new **Service** option.  It deploy
 ![FlowCollector Wizard - Service deployment model](flowcollector_wizard-service.png)<br>
 Figure 1. The "Deployment model" field provides a new "Service" option.
 
-The other options, **Direct** and **Kafka**, both deploy as a DaemonSet, and hence runs a FlowCollector pod on each node with **Direct** meaning no Apache Kafka.  This is typically reasonable, but there are scenarios where you might want less pods. It could be because there are a large number of nodes, lighter traffic, or FlowCollector is configured to collect less data (e.g. high sampling value).  The default setting is Service model with three FlowCollector pods, so make sure you have enough pods to function properly or switch to the other deployment models.
+The Service model is sort of in between the two existing models, Direct and Kafka.  The Direct model deploys as a DaemonSet, so it runs a FlowCollector pod on each node.  The Kafka model is just like the Service model, except it supports Apache Kafka for better scalability.  View the [architectural diagrams of each model](https://github.com/netobserv/network-observability-operator/blob/main/docs/Architecture.md#service-deployment-model) for more details.
+
+The default setting is Service model with three FlowCollector pods.  You may need more pods if your cluster has heavy traffic or uses a low sampling interval (that is, samples more data).  For large clusters, it is still recommended to use the Kafka model.
 
 ## FlowCollectorSlice CRD
 
@@ -41,7 +43,7 @@ While the Service model allows you to specify the number of FlowCollector pods, 
 
 A new custom resource definition (CRD) named FlowCollectorSlice lets you define one or more instances that include a namespace and optionally a sampling value and a list of subnet labels.  A subnet label is simply a CIDR (e.g. 10.128.0.1/32) that's given a human-readable name.  In the future, more parameters can be added.  If you think of a project (or tenant) that consists of one or more namespaces, then each project can set their own sampling value and labels.
 
-Before we dig into this, I want to say that in OpenShift, there's at least two ways of configuring something.  You can use the OpenShift web console and go to the appropriate panel and fill out a form.  You can also click the **+** at the top next to your username, select **Import YAML**, and paste YAML into the window.  Alternatively, you can run the `oc` command, such as `oc apply -f <file>` where <file> is the YAML file.  In some cases, I'll show both, but other times for brevity or simplicity, I will only show one method.
+Before we dive into this, I want to point out that in OpenShift, there are at least two ways to configure something.  You can use the OpenShift web console and go to the appropriate panel and fill out a form.  You can also click the "**+**" at the top next to your username, select **Import YAML**, and paste YAML into the window.  Alternatively, you can run the `oc` command, such as `oc apply -f <file>` where *&lt;file&gt;* is the YAML file.  In some cases, I'll show both, but other times for brevity or simplicity, I will only show one method.
 
 In Figure 2, it shows the form view in OpenShift web console on creating a FlowCollectorSlice.
 
@@ -97,7 +99,7 @@ spec:
       installDemoLoki: true
 ```
 
-The PVC is 1 GiB of ephemeral storage.  Now you're able to get a running Network Observability to try out instantly!  As the parameter name indicates, *use this only for demo purposes and not production*, since monolithic Loki will not scale.
+The PVC is 10 GiB of ephemeral storage.  Now you're able to get a running Network Observability to try out instantly!  As the parameter name indicates, *use this only for demo purposes and not production*, since monolithic Loki will not scale.
 
 ## DNS name
 
@@ -108,7 +110,7 @@ spec:
   agent:
     ebpf:
       features:
-        DNSTracking
+      - DNSTracking
 ```
 
 It now retrieves the DNS name.  Technically, in a DNS query, it is the QNAME field.  In OpenShift web console, go to **Observe > Network Traffic** and click the **Traffic flows** tab.  Click **Show advanced options** and then **Manage columns**.  Scroll down and enable `DNS Name` to add this column.  Now you will see this column (Figure 3).
@@ -147,7 +149,7 @@ Both the recording rules and alerts fall under the umbrella of **healthRules**. 
 
 To configure this on the terminal, enter `oc edit flowcollector`, and look for the **metrics** section.  Example:
 
-```
+```yaml
 spec:
   processor:
     metrics:
@@ -166,7 +168,7 @@ spec:
                 critical: "15"
 ```
 
-The **mode** field determines whether it's a recording rule or alert.  This is configured under **healthRules** or **variants**.  If it is specified in **variants**, it overrides the setting in **healthRules**.
+The **mode** field determines whether it's a recording rule or alert.  This is configured under **healthRules** or **variants**.  If it is specified in **variants**, it overrides the setting in **healthRules**.  For more details on health rules, including how to adjust the thresholds, view the [runbooks](https://github.com/openshift/runbooks/tree/master/alerts/network-observability-operator) for Network Observability Operator.
 
 ## Enhanced filters
 
@@ -181,7 +183,7 @@ The dialog is mostly self-explanatory, so I won't get into details.  The right a
 
 You are able to make changes to the configured filter expressions, including changing the field value.  For example, suppose you have "Namespace equals netobserv".  The "Namespace" means source or destination namespace.  Click the dropdown for "netobserv" and select **As source**.  This changes the field to be Source Namespace only.  Changing the field value might move the entire expression to a new location, because you can't have the same field name repeated twice in the entire expression.
 
-A field name with multiple values means it must match any one of the values (*OR* condition).  In between the fields is typically an *AND* condition but can be changed to *OR*.  There's a special case where *Bidirectional* might be a choice.  For example, suppose you have "Source Namespace equals netobserv" *AND* "Destination Namespace equals openshift-dns".  If you change AND to "Bidirectional", then it also includes the traffic when the source and destination are swapped.  For the UI, the Source and Destination labels change to **Endpoint A** and **Endpoint B** respectively (Figure 8).
+A field name with multiple values means it must match any one of the values (*OR* condition).  In between the fields is typically an *AND* condition but can be changed to *OR*.  There's a special case where *Bidirectional* might be a choice.  For example, suppose you have "Source Namespace equals netobserv" *AND* "Destination Namespace equals openshift-dns".  If you change *AND* to *Bidirectional*, then it also includes the traffic when the source and destination are swapped.  For the UI, the Source and Destination labels change to **Endpoint A** and **Endpoint B** respectively (Figure 8).
 
 ![Network Traffic - Filter expression](network_traffic-filter_expression.png)<br>
 Figure 8. This is how the UI is changed when you specify Bidirectional between two filter expressions.
@@ -197,7 +199,7 @@ Figure 9. This shows the two new Quick filters.
 
 Similarly "External egress" is the traffic where the source is inside the cluster and the destination is outside of the cluster.  Again, there is an HAProxy in between and so the second flow that goes outside of the cluster is only considered external egress traffic.
 
-How does this actually work?  It leverages subnet labels.  There's a parameter under **spec.processor.subnetLabels** named **openShiftAutoDetect** that must be set to `true`, which is the default.  This identifies all CIDRs with a predefined value such as **Pods**, **Services**, **Machines**, **n/a**, or a custom name that you give it.  The default value for an external CIDR is blank.  If you give it a custom name, you must prefix it with **EXT:** in order for the quick filter to work.  Why?  Because if you look at the implementation of the quick filter, it is:
+How does this actually work?  It leverages subnet labels.  There's a parameter under **spec.processor.subnetLabels** named **openShiftAutoDetect** that must be set to `true`, which is the default.  This identifies all CIDRs with a predefined value such as **Pods**, **Services**, **Machines**, **n/a**, or a custom name that you give it.  The default value for an external CIDR is blank.  If you give it a custom name, you must prefix it with **EXT:** (notice the colon) in order for the quick filter to work.  Why?  Because if you look at the implementation of the quick filter, it is:
 
 ```yaml
     - filter:
@@ -214,7 +216,7 @@ If the subnet label name is blank or **EXT:**, then it is considered external tr
 
 Network Observability recognizes the Kubernetes Gateway object.  The owner of a pod is often times a Deployment, but if the owner of the Deployment is a Gateway, such as if [Red Hat OpenShift Service Mesh 3](https://www.redhat.com/en/technologies/cloud-computing/openshift/what-is-openshift-service-mesh) or Istio is installed, then Network Observability will show this owner object with a gateway icon instead (Figure 10).  To view the Gateway traffic, it provides a link to the Gateway resource page.
 
-![Topology - Gateweay](topology-gateway_icon.png)<br>
+![Topology - Gateway](topology-gateway_icon.png)<br>
 Figure 10. The Topology view shows a gateway icon.
 
 Speaking of icons, they've been refreshed and updated to better represent the Kubernetes object.
@@ -225,4 +227,4 @@ This release provides features that give you better control on how resources are
 
 We want to make a bigger push to serve the community, so if there's something on your wishlist, go to the [discussion board](https://github.com/netobserv/network-observability-operator/discussions), and let us know what you have in mind!  Until next time...
 
-_Special thanks to Julien Pinsonneau, Olivier Cazade, and Amogh Rameshappa Devapura for reviewing this article._
+_Special thanks to Julien Pinsonneau, Olivier Cazade, Amogh Rameshappa Devapura, Leandro Beretta, and Joel Takvorian for reviewing this article._
