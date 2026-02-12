@@ -61,9 +61,9 @@ metadata:
 spec:
   sampling: 1
   subnetLabels:
-  - cidrs:
-    - 172.30.40.45/32
-    name: websvc
+    - cidrs:
+        - 172.30.40.45/32
+      name: websvc
 ```
 
 The FlowCollectorSlice instances won't take effect unless they are enabled in the FlowCollector.  In OpenShift web console, click **Processor configuration** and then **Slices configuration** to configure this.  Alternatively, on the terminal, enter `oc edit flowcollector`, and configure the following under the **processor** section:
@@ -110,7 +110,7 @@ spec:
   agent:
     ebpf:
       features:
-      - DNSTracking
+        - DNSTracking
 ```
 
 It now retrieves the DNS name.  Technically, in a DNS query, it is the QNAME field.  In OpenShift web console, go to **Observe > Network Traffic** and click the **Traffic flows** tab.  Click **Show advanced options** and then **Manage columns**.  Scroll down and enable `DNS Name` to add this column.  Now you will see this column (Figure 3).
@@ -219,7 +219,7 @@ Network Observability recognizes the Kubernetes Gateway object.  The owner of a 
 ![Topology - Gateway](topology-gateway_icon.png)<br>
 Figure 10. The Topology view shows a gateway icon.
 
-Speaking of icons, they've been refreshed and updated to better represent the Kubernetes object.
+Speaking of icons, they've been refreshed and updated to better represent the Kubernetes objects.
 
 ## Summary
 
