@@ -1,19 +1,19 @@
 ---
 layout: :theme/post
-title: "What's new in Network Observability 1.11"
+title: "What's new in network observability 1.11"
 description: "Cover new features in FlowCollector, network health, DNS, UI filters, Loki"
 tags: network,observability,health,alert,recording,deployment,filter,dns,loki,gateway
 authors: [stleerh]
 ---
 
-Welcome to another installment of **What's new in Network Observability**.  This article covers Network Observability 1.11, which was released in the same time frame as [Red Hat OpenShift Container Platform (OCP) 4.21](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21).  However, it is also backwards-compatible with the older supported versions of OCP.  While there is an upstream version of Network Observability, I will focus on using it with OpenShift web console.
+Welcome to another installment of **What's new in network observability**.  This article covers Network Observability 1.11, which was released in the same time frame as [Red Hat OpenShift Container Platform (OCP) 4.21](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21).  However, it is also backwards-compatible with the older supported versions of OCP.  While there is an upstream version of Network Observability, I will focus on using it with OpenShift web console.
 
 Network Observability provides insights to your network traffic across your entire cluster.  It collects and aggregates network flow data using eBPF technology.  The data is enriched with Kubernetes context and is stored in the form of Loki logs and/or Prometheus metrics.  You can visualize this in the form of graphs, tables, and a topology view.  It not only provides deep visibility but can help troubleshoot problems related to packet drops, latencies, DNS errors, and more.
 
 To try this out, you need a Kubernetes cluster, preferably an OpenShift cluster,
 and the `oc` or `kubectl` command line on your computer.  Follow the instructions to [install the Network Observability Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/network_observability/installing-network-observability-operators).
 
-This article highlights the new features in 1.11.  If you’re interested in earlier versions, see my previous [What’s new in Network Observability](https://developers.redhat.com/author/steven-lee) articles.  Below is a summary of the changes that are discussed in the rest of this article.
+This article highlights the new features in 1.11.  If you’re interested in earlier versions, see my previous [What’s new in network observability](https://developers.redhat.com/author/steven-lee) articles.  Below is a summary of the changes that are discussed in the rest of this article.
 
 - Service deployment model
 - FlowCollectorSlice CRD
@@ -45,7 +45,7 @@ A new custom resource definition (CRD) named FlowCollectorSlice lets you define 
 
 Before we dive into this, I want to point out that in OpenShift, there are at least two ways to configure something.  You can use the OpenShift web console and go to the appropriate panel and fill out a form.  You can also click the "**+**" at the top next to your username, select **Import YAML**, and paste YAML into the window.  Alternatively, you can run the `oc` command, such as `oc apply -f <file>` where *&lt;file&gt;* is the YAML file.  In some cases, I'll show both, but other times for brevity or simplicity, I will only show one method.
 
-In Figure 2, it shows the form view in OpenShift web console on creating a FlowCollectorSlice.
+In Figure 2, it shows the form view in OpenShift web console on creating a FlowCollectorSlice.  You can get to this panel from **Ecosystem > Installed Operators**.  In the **Network Observability** row, click the **FlowCollectorSlice** link.
 
 ![FlowCollectorSlice](flowcollector_slice.png)<br>
 Figure 2. Create a FlowCollectorSlice instance.
@@ -90,7 +90,7 @@ The **collectionMode** must be set to `AllowList` for **namespacesAllowList** to
 
 ## Zero-click Loki (demo)
 
-If you want to test Network Observability with Loki enabled, you still have to create a Loki instance and provide storage.  The zero-click Loki feature adds a new parameter, **installDemoLoki**, which when set to `true`, creates a Loki in monolithic mode and a Persistent Volume Claim (PVC).
+If you want to test Network Observability with Loki enabled, you still have to create a Loki instance and provide storage.  The zero-click Loki feature adds a new parameter, **installDemoLoki**, which when set to `true`, creates a Loki in monolithic mode and a Persistent Volume Claim (PVC).  If using OpenShift web console, this is the third page (Loki) of the FlowCollector Wizard.  Set the **Mode** to `Monolithic` and enable **installDemoLoki**.  Here is how you do it with YAML.
 
 ```yaml
 spec:
@@ -103,7 +103,7 @@ The PVC is 10 GiB of ephemeral storage.  Now you're able to get a running Networ
 
 ## DNS name
 
-Network Observability can track DNS information if the `DNSTracking` feature is enabled.  In OpenShift web console, this is in the **Agent configuration** section of the FlowCollector form.  The YAML is shown below.
+Network Observability can track DNS information if the `DNSTracking` feature is enabled.  In OpenShift web console, this is in the **Agent configuration** section of the FlowCollector form or the second page of the FlowCollector Wizard (Figure 1).  Here is the YAML configuration below.
 
 ```yaml
 spec:
