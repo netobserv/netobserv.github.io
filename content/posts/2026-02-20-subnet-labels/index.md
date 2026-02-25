@@ -6,17 +6,17 @@ tags: subnet,labels,cardinality,external,metrics,flowmetrics
 authors: [jotak]
 ---
 
-_Thanks to: (placeholder) for reviewing_
+_Thanks to: Mike Fiedler for reviewing_
 
 Often times, people who are installing NetObserv are especially looking for a solution that monitors the traffic from and to the cluster. For them, in-cluster traffic monitoring only comes as a secondary consideration. NetObserv does not process external traffic in any particular way, by default, internal and external traffic are just regular network traffic, period. 
 
-The eBPF agents know nothing about the network topology. They see packets, extract the IP addresses and metadata, do some aggregation, and forward that to `flowlogs-pipeline`. They can operate in various contexts, even though we're mostly interested in Kubernetes here, you can run them on your Linux PC if you wish, they're context-agnostic for everything beyond the host.
+The eBPF agents know nothing about the network topology. They see packets, extract the IP addresses and metadata, do some aggregation, and forward that to `flowlogs-pipeline`. The agents can operate in multiple contexts, even though we're mostly interested in Kubernetes here, you can run them on your Linux PC if you wish. They are context-agnostic for everything above the host networking stack.
 
 `flowlogs-pipeline` is context-aware, depending on its configuration. It's the one that knows about Kubernetes, and it uses that knowledge to enrich the network flows with pod names, namespaces, and so on.
 
 But again, it doesn't know with absolute certainty what IP should be considered cluster-internal, and what should be cluster-external. It's actually the NetObserv operator that can provide this information based on the `FlowCollector` configuration, via `spec.processor.subnetLabels`.
 
-## What's subnet labels?
+## What are subnet labels?
 
 As per [the doc](https://github.com/netobserv/network-observability-operator/blob/main/docs/FlowCollector.md#flowcollectorspecprocessorsubnetlabels), subnet labels "allow to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic. When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`."
 
@@ -79,7 +79,7 @@ In the Console plugin, you can for example filter for empty Destination Subnet L
 
 It gives you all the traffic to external workloads or services.
 
-You can also create `FlowMetrics` resources dedicated to outside traffic. Thanksfully, we provide some examples that should work out of the box with the default subnet labels:
+You can also create `FlowMetrics` resources dedicated to outside traffic. Thankfully, we provide some examples that should work out of the box with the default subnet labels:
 
 ```bash
 kubectl apply -n netobserv -f https://raw.githubusercontent.com/netobserv/network-observability-operator/refs/heads/main/config/samples/flowmetrics/cluster_external_egress_traffic.yaml
@@ -119,7 +119,7 @@ Or in the OpenShift Console, navigate to Observe > Dashboards > NetObserv / Main
 
 All good so far, however this doesn't answer the question: where is this traffic flowing to (or from) ?
 
-At this point, if we don't search into the per-flow details, we don't know. With the `FlowMetrics` API, we _could_ add the destination IPs as a metric label, however this is not recommended, because it results in a very high metrics cardinality, making your Prometheus index ballooning. If you try it, the `FlowMetrics` webhook will warn you about it. Let's try something different...
+At this point, if we don't search into the per-flow details, we don't know. With the `FlowMetrics` API, we _could_ add the destination IPs as a metric label, however this is not recommended, because it results in a very high metrics cardinality, causing your Prometheus index to balloon. If you try it, the `FlowMetrics` webhook will warn you about it. Let's try something different...
 
 We'll take an example. The above picture shows that the OpenShift image registry has a regular ~500 KBps traffic rate to external IPs.
 
@@ -138,7 +138,7 @@ Let's do 1, clicking on the "Resource" scope, on the left:
 
 ![Image registry topology per resource](./topology-resources.png)
 
-Waw, that's plenty of different IPs! Ok, that helps a bit, but it's certainly not the best possible visualization.
+Wow, that's plenty of different IPs! Ok, that helps a bit, but it's certainly not the best possible visualization.
 
 A `whois` on any of these IPs tells us that it's Amazon S3 under the cover. So let's ask Amazon what CIDRs are used in our region:
 
