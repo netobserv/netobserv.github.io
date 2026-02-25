@@ -100,7 +100,7 @@ These metrics leverage the absence of Subnet Labels in order to track external t
 ```
 
 {#admon title="Info"}
-In `FlowMetrics`, when there are several filters for the same key, those filters are OR'ed, ie. the match is satisfied if one at least is satisfied. Filters on different keys are AND'ed.
+In **FlowMetrics**, when there are several filters for the same key, those filters are OR'ed, ie. the match is satisfied if one at least is satisfied. Filters on different keys are AND'ed.
 {/}
 
 In Prometheus, you can query them with the following `promQL`:
@@ -172,12 +172,12 @@ We can inject them in our `subnetLabels` config:
         name: EXT:AWS_S3_eu-west-3
 ```
 
-It is a good practice to use a common prefix for all labels on external traffic, such as "EXT:" here, in order to distinguish external and internal subnet labels. As we've seen before, this prefix is used in the sample metrics definitions for external traffic.
+It is recommended to use the "EXT:" prefix for all labels on external traffic, in order to distinguish external and internal subnet labels. As we've seen before, this pattern is used in the sample metrics definitions to match external traffic. It's also used in Traffic Health for external traffic trends, and in the Quick Filters of the web console.
 
 You can go ahead and mark all the known external traffic in a similar way: databases, VMs, web services, etc.
 
 {#admon title="Info"}
-Granted, in the current release of NetObserv, going through every Subnet Labels configuration might be cumbersome. `FlowCollector` is a centralized API, typically managed by cluster admins, whereas knowing the various subnet dependencies might be more in the perimeter of application teams. We are currently working on a new feature that allows delegating that kind of configuration, so stay tuned!
+Granted, in the past releases of NetObserv, going through every Subnet Labels configuration could be cumbersome. **FlowCollector** is a centralized API, typically managed by cluster admins, whereas knowing the various subnet dependencies might be more in the perimeter of application teams. In 1.11, there is a new API called **FlowCollectorSlice** that allows delegating that kind of configuration: non-admin users can now own a **FlowCollectorSlice** and add their specific subnet labels.
 {/}
 
 With this setup, we are finally able to understand where the traffic is flowing to:
@@ -198,4 +198,4 @@ We've seen:
 - How to leverage it in metrics with the `FlowMetrics` API.
 - And finally how to visualize that with a Prometheus console or with the NetObserv Console plugin.
 
-As always, you can reach out to the development team on Slack (#netobserv-project on https://slack.cncf.io/) or via our [discussion pages](https://github.com/orgs/netobserv/discussions).
+As always, you can reach out to the development team on Slack ([#netobserv-project](https://cloud-native.slack.com/archives/C08HHHDA9ND) on https://slack.cncf.io/) or via our [discussion pages](https://github.com/orgs/netobserv/discussions).
