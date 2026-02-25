@@ -100,7 +100,7 @@ These metrics leverage the absence of Subnet Labels in order to track external t
 ```
 
 {#admon title="Info"}
-In **FlowMetrics**, when there are several filters for the same key, those filters are OR'ed, ie. the match is satisfied if one at least is satisfied. Filters on different keys are AND'ed.
+In FlowMetrics, when there are several filters for the same key, those filters are OR'ed, ie. the match is satisfied if one at least is satisfied. Filters on different keys are AND'ed.
 {/}
 
 In Prometheus, you can query them with the following `promQL`:
@@ -177,7 +177,7 @@ It is recommended to use the "EXT:" prefix for all labels on external traffic, i
 You can go ahead and mark all the known external traffic in a similar way: databases, VMs, web services, etc.
 
 {#admon title="Info"}
-Granted, in the past releases of NetObserv, going through every Subnet Labels configuration could be cumbersome. **FlowCollector** is a centralized API, typically managed by cluster admins, whereas knowing the various subnet dependencies might be more in the perimeter of application teams. In 1.11, there is a new API called **FlowCollectorSlice** that allows delegating that kind of configuration: non-admin users can now own a **FlowCollectorSlice** and add their specific subnet labels.
+Granted, in the past releases of NetObserv, going through every Subnet Labels configuration could be cumbersome. FlowCollector is a centralized API, typically managed by cluster admins, whereas knowing the various subnet dependencies might be more in the perimeter of application teams. In 1.11, there is a new API called FlowCollectorSlice that allows delegating that kind of configuration: non-admin users can now own a FlowCollectorSlice and add their specific subnet labels.
 {/}
 
 With this setup, we are finally able to understand where the traffic is flowing to:
