@@ -33,15 +33,15 @@ In the **Deployment model** field, there is a new **Service** option.  It deploy
 ![FlowCollector Wizard - Service deployment model](flowcollector_wizard-service.png)<br>
 Figure 1. The "Deployment model" field provides a new "Service" option.
 
-The Service model is sort of in between the two existing models, Direct and Kafka.  The Direct model deploys as a DaemonSet, so it runs a FlowCollector pod on each node.  The Kafka model is just like the Service model, except it supports Apache Kafka for better scalability.  View the [architectural diagrams of each model](https://github.com/netobserv/network-observability-operator/blob/main/docs/Architecture.md#service-deployment-model) for more details.
+The Service model is sort of in between the two existing models, Direct and Kafka.  The Direct model deploys as a DaemonSet, so it runs a flowlogs-pipeline pod on each node.  The Kafka model is just like the Service model, except it supports Apache Kafka for better scalability.  View the [architectural diagrams of each model](https://github.com/netobserv/network-observability-operator/blob/main/docs/Architecture.md#service-deployment-model) for more details.
 
-The default setting is Service model with three FlowCollector pods.  You may need more pods if your cluster has heavy traffic or uses a low sampling interval (that is, samples more data).  For large clusters, it is still recommended to use the Kafka model.
+The default setting is Service model with three flowlogs-pipeline pods.  You may need more pods if your cluster has heavy traffic or uses a low sampling interval (that is, samples more data).  For large clusters, it is still recommended to use the Kafka model.
 
 ## FlowCollectorSlice CRD
 
-While the Service model allows you to specify the number of FlowCollector pods, you still don't have much control over what and how much packet data to ingest.  In 1.8, the eBPF flow filter feature allowed you to specify a CIDR, peer CIDR, and a sampling interval, but that is very low-level.  Instead, what we want is to be able to do this at the namespace level so that it can support multitenancy.
+While the Service model allows you to specify the number of flowlogs-pipeline pods, you still don't have much control over what and how much packet data to ingest.  In 1.8, the eBPF flow filter feature allowed you to specify a CIDR, peer CIDR, and a sampling interval, but that is very low-level.  Instead, what we want is to be able to do this at the namespace level so that it can support multitenancy.
 
-A new custom resource definition (CRD) named FlowCollectorSlice lets you define one or more instances that include a namespace and optionally a sampling value and a list of subnet labels.  A subnet label is simply a CIDR (e.g. 10.128.0.1/32) that's given a human-readable name.  In the future, more parameters can be added.  If you think of a project (or tenant) that consists of one or more namespaces, then each project can set their own sampling value and labels.
+A new custom resource definition (CRD) named FlowCollectorSlice lets you define one or more instances that include a namespace and optionally a sampling value and a list of subnet labels.  A subnet label is simply a CIDR (e.g. 10.128.0.1/32) that's given a human-readable name.  If you think of a project (or tenant) that consists of one or more namespaces, then each project can set their own sampling value and labels.  Unlike the FlowCollector CRD, which is configured by the cluster-admin, a typical use case for FlowCollectorSlice is to give [RBAC](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/authentication_and_authorization/using-rbac) access to a non-admin user, such as a project admin, so they can configure a FlowCollectorSlice instance for their namespaces.
 
 Before we dive into this, I want to point out that in OpenShift, there are at least two ways to configure something.  You can use the OpenShift web console and go to the appropriate panel and fill out a form.  You can also click the "**+**" at the top next to your username, select **Import YAML**, and paste YAML into the window.  Alternatively, you can run the `oc` command, such as `oc apply -f <file>` where *&lt;file&gt;* is the YAML file.  In some cases, I'll show both, but other times for brevity or simplicity, I will only show one method.
 
@@ -227,4 +227,4 @@ This release provides features that give you better control on how resources are
 
 We want to make a bigger push to serve the community, so if there's something on your wishlist, go to the [discussion board](https://github.com/netobserv/network-observability-operator/discussions), and let us know what you have in mind!  Until next time...
 
-_Special thanks to Julien Pinsonneau, Olivier Cazade, Amogh Rameshappa Devapura, Leandro Beretta, and Joel Takvorian for reviewing this article._
+_Special thanks to Julien Pinsonneau, Olivier Cazade, Amogh Rameshappa Devapura, Leandro Beretta, Joel Takvorian, and Mehul Modi for reviewing this article._
