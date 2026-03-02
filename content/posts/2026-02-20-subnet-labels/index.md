@@ -100,7 +100,7 @@ These metrics leverage the absence of Subnet Labels in order to track external t
 ```
 
 {#admon title="Info"}
-In FlowMetrics, when there are several filters for the same key, those filters are OR'ed, ie. the match is satisfied if one at least is satisfied. Filters on different keys are AND'ed.
+In FlowMetrics, when there are several filters for the same key, those filters are OR'ed, i.e. the match is satisfied if at least one is satisfied. Filters on different keys are AND'ed.
 {/}
 
 In Prometheus, you can query them with the following `promQL`:
