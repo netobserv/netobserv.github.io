@@ -117,7 +117,7 @@ Or in the OpenShift Console, navigate to Observe > Dashboards > NetObserv / Main
 
 ## Going further: identifying the external workloads
 
-All good so far, however this doesn't answer the question: where is this traffic flowing to (or from) ?
+All good so far, however this doesn't answer the question: where is this traffic flowing to (or from)?
 
 At this point, if we don't search into the per-flow details, we don't know. With the `FlowMetrics` API, we _could_ add the destination IPs as a metric label, however this is not recommended, because it results in a very high metrics cardinality, causing your Prometheus index to balloon. If you try it, the `FlowMetrics` webhook will warn you about it. Let's try something different...
 
