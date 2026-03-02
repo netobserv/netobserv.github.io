@@ -52,7 +52,7 @@ When you open the Console plugin and configure columns to show the subnet labels
 
 ![Subnet labels by default](./subnet-labels-default.png)
 
-Every time `flowlogs-pipeline` has to process a network flow, it checks if the IP belongs to any of the defined subnet, and if so, it associates the flow with the related label.
+Every time `flowlogs-pipeline` has to process a network flow, it checks if the IP belongs to any of the defined subnets, and if so, it associates the flow with the related label.
 
 This is not just for OpenShift. If you're not running on OpenShift, or if you want to customize the default setup for OpenShift, you can perfectly configure different CIDRs. For instance, to add more machine networks, you can write in `FlowCollector`:
 
