@@ -6,7 +6,7 @@ tags: subnet,labels,cardinality,external,metrics,flowmetrics
 authors: [jotak]
 ---
 
-_Thanks to: Mike Fiedler for reviewing_
+_Thanks to: Mike Fiedler, Leandro Beretta and Mehul Modi for reviewing_
 
 Often times, people who are installing NetObserv are especially looking for a solution that monitors the traffic from and to the cluster. For them, in-cluster traffic monitoring only comes as a secondary consideration. NetObserv does not process external traffic in any particular way, by default, internal and external traffic are just regular network traffic, period. 
 
