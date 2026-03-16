@@ -91,7 +91,8 @@ issues, it comes with some caveats to favor performance. This feature isn't
 supported with Prometheus as datastore since storing DNS names as metric values
 could cause high cardinality. That means, if you're looking to use this feature
 you must use Loki as your datasource. Captured DNS names will be truncated at 32
-bytes to balance the memory netobserv-ebpf-agent's memory utilization.
+bytes to balance the memory netobserv-ebpf-agent's memory utilization, however
+this length should cover most practical scenarios.
 
 DNS name tracking currently does not support DNS compression pointers — a
 space-saving technique defined in
