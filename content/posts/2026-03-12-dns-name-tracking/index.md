@@ -8,7 +8,7 @@ authors: [memodi, jpinsonneau]
 
 Network Observability has long had a feature that reports the DNS latencies and
 response codes for the DNS resolutions in your Kubernetes cluster. `DNSTracking`
-feature can be simply enabled in Flowcollector config as below.
+feature can be simply enabled in FlowCollector config as below.
 
 ```yaml
 spec:
@@ -20,7 +20,7 @@ spec:
 
 In the most recent 1.11 release, a major enhancement was added to existing
 `DNSTracking` feature to report DNS query names as well without any additional
-configuration to the flowcollector.
+configuration to the FlowCollector.
 
 The current implementation captures DNS latencies, response codes, and query
 names from DNS response packets. To understand this better, let's examine the
