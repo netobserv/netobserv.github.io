@@ -2,7 +2,7 @@
 layout: :theme/post
 title: "DNS name tracking with Network Observability"
 description: "Overview of DNS name tracking feature"
-tags: network,observability,dns,loki,troubleshooting
+tags: network,observability,DNS,loki,troubleshooting
 authors: [memodi, jpinsonneau]
 ---
 
@@ -66,13 +66,15 @@ nameserver 172.30.0.10
 options ndots:5
 ```
 
-Short DNS names for cluster services causes high load on the cluster DNS service
-resulting in higher latencies, negative caching and increased dns traffic. This
-negative impact can be prevented by using Fully Qualified Domain Name (FQDN) in
-the requests. After updating the hostname to `nginx.server.svc.cluster.local.`
-in the curl requests, we are not seeing any NXDOMAINS and reduced unnecessary
-dns traffic in our cluster. You can imagine the performance impact if such
-configuration issue propagated to hundreds of services in your cluster.
+Short DNS names for cluster services cause high load on the cluster DNS service
+resulting in higher latencies, negative caching (where DNS servers cache
+negative responses—like NXDOMAIN-until the TTL expires), and increased DNS
+traffic. This negative impact can be prevented by using Fully Qualified Domain
+Name (FQDN) in the requests. After updating the hostname to
+`nginx.server.svc.cluster.local.` (note the trailing dot) in the curl requests,
+we are not seeing any NXDOMAINS and reduced unnecessary DNS traffic in our
+cluster. You can imagine the performance impact if such configuration issue
+propagated to hundreds of services in your cluster.
 
 ![FQDN DNS names](fixed-client-config.png)
 
@@ -90,9 +92,12 @@ While DNS name decoding has great use-cases in identifying and troubleshooting
 issues, it comes with some caveats to favor performance. This feature isn't
 supported with Prometheus as datastore since storing DNS names as metric values
 could cause high cardinality. That means, if you're looking to use this feature
-you must use Loki as your datasource. Captured DNS names will be truncated at 32
-bytes to balance the netobserv-ebpf-agent's memory utilization, however
-this length should cover most practical scenarios.
+you must use Loki as your datasource. We're actively working to measure the
+performance impact and expose DNS names as Prometheus metrics, though.
+
+Captured DNS names will be truncated at 32 bytes to balance the
+netobserv-ebpf-agent's memory utilization, however this length should cover most
+practical scenarios.
 
 DNS name tracking currently does not support DNS compression pointers — a
 space-saving technique defined in
@@ -102,14 +107,13 @@ compression is rarely used in the Question section where queries are tracked.
 Compression pointers are predominantly used in Answer sections to reference the
 queried domain name.
 
-In combination with other Network Observability features such as built in alerts
-for overall network health, DNS name tracking will help identify real world
-issues faster. Before we wrap up, we'd like to acknowledge <__add
-acknowledgements__>.
+To conclude, in combination with other Network Observability features such as
+built in alerts for overall network health, DNS name tracking will help identify
+real world issues faster. Before wrapping up, we'd like to acknowledge Amogh
+Rameshappa Devapura, Mike Fiedler, Joel Takvorian for reviewing this blog.
 
 If you'd like to share feedback or engage with us, feel free to ping us on
 [slack](https://cloud-native.slack.com/archives/C08HHHDA9ND) or drop in a
 [discussion](https://github.com/orgs/netobserv/discussions).
-
 
 Thank you for reading!
