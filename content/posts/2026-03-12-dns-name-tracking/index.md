@@ -68,7 +68,7 @@ options ndots:5
 
 Short DNS names for cluster services cause high load on the cluster DNS service
 resulting in higher latencies, negative caching (where DNS servers cache
-negative responses—like NXDOMAIN-until the TTL expires), and increased DNS
+negative responses—like NXDOMAIN—until the TTL expires), and increased DNS
 traffic. This negative impact can be prevented by using Fully Qualified Domain
 Name (FQDN) in the requests. After updating the hostname to
 `nginx.server.svc.cluster.local.` (note the trailing dot) in the curl requests,
