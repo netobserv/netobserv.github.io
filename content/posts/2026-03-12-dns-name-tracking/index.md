@@ -38,7 +38,7 @@ activity.
 We're running an OpenShift cluster on AWS with a simple test setup: a `client`
 pod making requests to an `nginx` service in a different namespace. The nginx
 service runs in the `server` namespace, while the client pod runs in the
-`client` namespace."
+`client` namespace; client pod just fetches a fixed object in a loop as below:
 
 ```bash
  while : ; do
@@ -48,7 +48,7 @@ service runs in the `server` namespace, while the client pod runs in the
 ```
 
 While the requests to fetch 100K object does succeed, can you spot the
-configuration issue in the above curl command for the nginx requests that its
+configuration issues in the above curl command for the nginx requests that its
 making? Let's look at what we do see in the flowlogs:
 
 ![Queries to nginx server](nginx-queries.png)
@@ -83,7 +83,7 @@ queried most:
 
 ![Top 5 DNS Names panel](top5-dns-name.png)
 
-Note that `pod` filters are removed in above image since the DNS traffic is
+Note that `pod` filters are removed in the above image since the DNS traffic is
 reported by the DNS `Service` in the cluster. This visualization can identify
 suspicious domain name activities in your cluster and with table view you can
 narrow down to the resource where such activities could be coming from.
