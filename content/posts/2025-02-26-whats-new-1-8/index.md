@@ -315,4 +315,4 @@ This is another feature-rich release that works hand-in-hand with OVN-Kubernetes
 
 Network Observability continues to provide flexibility in deciding what you want to observe so that you can minimize the resources used.  This is in addition to the internal optimizations that we've made in this release.
 
-While many of the features are in Developer Preview, it gives you a chance to try these out and give us some feedback before it becomes generally available.  You can write comments and contact us on the [discussion board](https://github.com/netobserv/network-observability-operator/discussions).
+While many of the features are in Developer Preview, it gives you a chance to try these out and give us some feedback before it becomes generally available.  You can write comments and contact us on the [discussion board](https://github.com/netobserv/netobserv-operator/discussions).
