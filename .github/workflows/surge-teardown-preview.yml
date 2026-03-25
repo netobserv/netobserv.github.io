@@ -15,7 +15,7 @@ jobs:
         id: teardown-blog
         run: npx surge teardown https://netobserv-io-blog-${{ github.event.number }}-preview.surge.sh --token ${{ secrets.SURGE_TOKEN }} || true
       - name: Update PR status comment
-        uses: quarkusio/action-helpers@main
+        uses: quarkusio/action-helpers@b53791b65e22e8d7e5d7f84b8f546be8fb3e8f6d
         with:
           action: maintain-one-comment
           github-token: ${{ secrets.GITHUB_TOKEN }}

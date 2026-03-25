@@ -35,7 +35,7 @@ jobs:
         run: npx surge ./ --domain https://netobserv-io-blog-${{ steps.pr.outputs.id }}-preview.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
       - name: Update PR status comment on success
-        uses: quarkusio/action-helpers@main
+        uses: quarkusio/action-helpers@b53791b65e22e8d7e5d7f84b8f546be8fb3e8f6d
         with:
           action: maintain-one-comment
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -46,7 +46,7 @@ jobs:
           body-marker: <!-- Preview status comment marker -->
 
       - name: Update PR status comment on failure
-        uses: quarkusio/action-helpers@main
+        uses: quarkusio/action-helpers@b53791b65e22e8d7e5d7f84b8f546be8fb3e8f6d
         if: ${{ failure() }}
         with:
           action: maintain-one-comment

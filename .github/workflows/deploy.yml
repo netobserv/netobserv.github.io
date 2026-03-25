@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Generate Blog
-        uses: quarkiverse/quarkus-roq@v1
+        uses: quarkiverse/quarkus-roq@b1f9d35110720c993b2d8385f84bb6e2bda6fdf7 # v1.10.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           maven-executable: 'mvn'
