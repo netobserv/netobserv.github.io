@@ -111,7 +111,7 @@ key: SrcK8S_Namespace value: openshift.*
 
 ![regexes]({page.image('cli-whats-new-1-8/regexes.png')})
 
-Regexes are comma-separated, so you can use multiple at once, such as `--regexes=SrcK8S_Namespace~my-ns,SrcK8S_Name~my-app`. Refer to the [flows format](https://github.com/netobserv/network-observability-operator/blob/main/docs/flows-format.adoc) to see the possible fields.
+Regexes are comma-separated, so you can use multiple at once, such as `--regexes=SrcK8S_Namespace~my-ns,SrcK8S_Name~my-app`. Refer to the [flows format](https://github.com/netobserv/netobserv-operator/blob/main/docs/flows-format.adoc) to see the possible fields.
 
 ## Unified Collector User Experience
 All filtering capabilities are now supported for **packets** capture and displays enriched data while collecting. This improvement was made possible by introducing the [flowlogs-pipeline](https://github.com/netobserv/flowlogs-pipeline) component inside [eBPF agents](https://github.com/netobserv/netobserv-ebpf-agent), which parses packets and generates flows from them.

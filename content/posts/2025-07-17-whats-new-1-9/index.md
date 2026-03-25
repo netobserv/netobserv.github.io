@@ -223,6 +223,6 @@ Figure 6: Wireshark - Packet capture file with comments
 
 ## Summary
 
-This is another solid release from the Network Observability team.  If you use IPsec, you can get insight into this type of traffic.  A filter query was added in both flowlogs-pipeline and the Network Observability CLI.  If you want to easily capture flows, metrics, and packets, Network Observability CLI is the tool for you!  Write to us on the [discussion board](https://github.com/netobserv/network-observability-operator/discussions) if you have any feedback or suggestions for improvements.
+This is another solid release from the Network Observability team.  If you use IPsec, you can get insight into this type of traffic.  A filter query was added in both flowlogs-pipeline and the Network Observability CLI.  If you want to easily capture flows, metrics, and packets, Network Observability CLI is the tool for you!  Write to us on the [discussion board](https://github.com/netobserv/netobserv-operator/discussions) if you have any feedback or suggestions for improvements.
 
 _Special thanks to Julien Pinsonneau, Joel Takvorian, Mehul Modi, and Mohamed S. Mahmoud for reviewing._

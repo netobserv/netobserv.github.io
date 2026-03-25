@@ -207,7 +207,7 @@ This had a big impact on CPU usage:
 - +457% CPU when compared to `cacheMaxFlows=10000`
 - +143% CPU when compared to `cacheMaxFlows=2000, cacheTimeout=1s`
 
-To avoid this, it's best to keep `cacheMaxFlows` big enough to minimize the ring buffer ratio usage, in spite of the increased memory usage. Other mitigation options could be limiting the number of generated flows by other means, such as [configuring the agent](https://github.com/netobserv/network-observability-operator/blob/19bcb45d6899f12feb13f94a925a10a4f4c92106/docs/FlowCollector.md#flowcollectorspecagentebpf-1) to add filters on monitored interfaces or to increase the sampling value, if the resulting loss in observability is an acceptable trade-off for you.
+To avoid this, it's best to keep `cacheMaxFlows` big enough to minimize the ring buffer ratio usage, in spite of the increased memory usage. Other mitigation options could be limiting the number of generated flows by other means, such as [configuring the agent](https://github.com/netobserv/netobserv-operator/blob/19bcb45d6899f12feb13f94a925a10a4f4c92106/docs/FlowCollector.md#flowcollectorspecagentebpf-1) to add filters on monitored interfaces or to increase the sampling value, if the resulting loss in observability is an acceptable trade-off for you.
 
 ## Conclusion
 

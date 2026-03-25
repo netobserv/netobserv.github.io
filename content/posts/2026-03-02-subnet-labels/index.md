@@ -18,7 +18,7 @@ But again, it doesn't know with absolute certainty what IP should be considered 
 
 ## What are subnet labels?
 
-As per [the doc](https://github.com/netobserv/network-observability-operator/blob/main/docs/FlowCollector.md#flowcollectorspecprocessorsubnetlabels), subnet labels "allow to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic. When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`."
+As per [the doc](https://github.com/netobserv/netobserv-operator/blob/main/docs/FlowCollector.md#flowcollectorspecprocessorsubnetlabels), subnet labels "allow to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic. When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`."
 
 In OpenShift, NetObserv checks the Cluster Network Operator configuration to know which CIDRs are configured for Pods, Services and Nodes, then it configures `flowlogs-pipeline` accordingly. You can verify that in the generated configmap:
 
@@ -82,11 +82,11 @@ It gives you all the traffic to external workloads or services.
 You can also create `FlowMetrics` resources dedicated to outside traffic. Thankfully, we provide some examples that should work out of the box with the default subnet labels:
 
 ```bash
-kubectl apply -n netobserv -f https://raw.githubusercontent.com/netobserv/network-observability-operator/refs/heads/main/config/samples/flowmetrics/cluster_external_egress_traffic.yaml
-kubectl apply -n netobserv -f https://raw.githubusercontent.com/netobserv/network-observability-operator/refs/heads/main/config/samples/flowmetrics/cluster_external_ingress_traffic.yaml
+kubectl apply -n netobserv -f https://raw.githubusercontent.com/netobserv/netobserv-operator/refs/heads/main/config/samples/flowmetrics/cluster_external_egress_traffic.yaml
+kubectl apply -n netobserv -f https://raw.githubusercontent.com/netobserv/netobserv-operator/refs/heads/main/config/samples/flowmetrics/cluster_external_ingress_traffic.yaml
 ```
 
-(More examples available [here](https://github.com/netobserv/network-observability-operator/tree/main/config/samples/flowmetrics), including for external traffic latency)
+(More examples available [here](https://github.com/netobserv/netobserv-operator/tree/main/config/samples/flowmetrics), including for external traffic latency)
 
 These metrics leverage the absence of Subnet Labels in order to track external traffic. They also consider Subnet Labels prefixed with `EXT:` as external traffic. If you look at their definition, you'll see these rules expressed as that: 
 

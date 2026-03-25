@@ -157,7 +157,7 @@ The drawback of using per-CPU maps for network flows is that for the same flow, 
 
 Today, we change all of that by refactoring our data structures. Our solution is to avoid writing the flow map from the enrichment hooks. Instead of that, we are introducing a new map, dedicated to enriched data. Map keys are going to be duplicated across those two maps, but it's a lesser evil. So now, we can change the main map to be a shared one across CPUs, with a spinlock. We still have some reassembling work to do in the user space though, to merge the main map with the enrichment map, but it is more straightforward than merging entire flows together. We also have a couple of ideas to further improve this process, more on that later.
 
-Splitting data between a main map and an enrichment map has another benefit: when no enrichment is needed (e.g. when none of the [agent features](https://github.com/netobserv/network-observability-operator/blob/main/docs/FlowCollector.md#flowcollectorspecagentebpf-1) are enabled), no memory is allocated for them, resulting — again — in a more efficient memory usage.
+Splitting data between a main map and an enrichment map has another benefit: when no enrichment is needed (e.g. when none of the [agent features](https://github.com/netobserv/netobserv-operator/blob/main/docs/FlowCollector.md#flowcollectorspecagentebpf-1) are enabled), no memory is allocated for them, resulting — again — in a more efficient memory usage.
 
 This is for a large part what triggered the memory improvement mentioned above:
 

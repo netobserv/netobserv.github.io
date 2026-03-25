@@ -42,7 +42,7 @@ Let's look for another approach.
 
 ### The FlowMetrics API
 
-The [FlowMetrics API](https://github.com/netobserv/network-observability-operator/blob/main/docs/FlowMetric.md) is a very good fit here, because it allows you to shape the metrics that you want. You choose what to aggregate on, what to filter on, what to observe. What do we want here? For every connection:
+The [FlowMetrics API](https://github.com/netobserv/netobserv-operator/blob/main/docs/FlowMetric.md) is a very good fit here, because it allows you to shape the metrics that you want. You choose what to aggregate on, what to filter on, what to observe. What do we want here? For every connection:
 
 - The source (client) workloads and namespaces
 - The destination (server) workloads, namespaces and ports
@@ -116,7 +116,7 @@ Labels are what flows are going to be aggregated on. When several flows are reco
 
 This list of labels is roughly what we described above, plus the `SrcSubnetLabel` / `DstSubnetLabel` which will be explained below, and the `Flags` (TCP flags) which we need for flattening+filtering as explained below.
 
-You can read more about all the available fields [here](https://github.com/netobserv/network-observability-operator/blob/main/docs/flows-format.adoc).
+You can read more about all the available fields [here](https://github.com/netobserv/netobserv-operator/blob/main/docs/flows-format.adoc).
 
 ```yaml
   flatten: [Flags]

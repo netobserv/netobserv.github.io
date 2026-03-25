@@ -102,7 +102,7 @@ spec:
       privileged: true
 ```
 
-Underneath the covers, it creates a PrometheusRule object.  To see what that looks like, enter `oc get prometheusrules -n netobserv -o yaml`.  However, if you want to modify a predefined alert, you must [edit FlowCollector as described here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_observability/network-observability-alerts_nw-observe-network-traffic#network-observability-configuring-predefined-alerts_network-observability-alerts).  If you get ambitious, you can also write your own custom alerts!  See [Alerts in the NetObserv Operator](https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md) for more information on this feature.
+Underneath the covers, it creates a PrometheusRule object.  To see what that looks like, enter `oc get prometheusrules -n netobserv -o yaml`.  However, if you want to modify a predefined alert, you must [edit FlowCollector as described here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_observability/network-observability-alerts_nw-observe-network-traffic#network-observability-configuring-predefined-alerts_network-observability-alerts).  If you get ambitious, you can also write your own custom alerts!  See [Alerts in the NetObserv Operator](https://github.com/netobserv/netobserv-operator/blob/main/docs/Alerts.md) for more information on this feature.
 
 ## Technology Preview: Network Health Dashboard
 
@@ -190,6 +190,6 @@ Figure 14: Network Observability CLI - Packets
 
 In Network Observability CLI, there were significant improvements in the user interface and ease of use. The UI was completely revised and supports the mouse.  Columns in the flow table and selection of graphs to display for metrics are customizable.  It is now able to display graphs and packet captures without resorting to external programs.
 
-In Network Observability, it is easier to create a FlowCollector and FlowMetric instance.  It is more secure with the use of network policies.  The custom alerts and Network Health Dashboard, while still in Technology Preview, are signs of things to come.  As we move beyond insights into analysis, give us feedback on this and other topics on the [discussion board](https://github.com/netobserv/network-observability-operator/discussions).
+In Network Observability, it is easier to create a FlowCollector and FlowMetric instance.  It is more secure with the use of network policies.  The custom alerts and Network Health Dashboard, while still in Technology Preview, are signs of things to come.  As we move beyond insights into analysis, give us feedback on this and other topics on the [discussion board](https://github.com/netobserv/netobserv-operator/discussions).
 
 _Special thanks to Joel Takvorian, Julien Pinsonneau, and Amogh Rameshappa Devapura for reviewing this article._

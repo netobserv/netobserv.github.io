@@ -33,7 +33,7 @@ In the **Deployment model** field, there is a new **Service** option.  It deploy
 ![FlowCollector Wizard - Service deployment model](flowcollector_wizard-service.png)<br>
 Figure 1. The "Deployment model" field provides a new "Service" option.
 
-The Service model is sort of in between the two existing models, Direct and Kafka.  The Direct model deploys as a DaemonSet, so it runs a flowlogs-pipeline pod on each node.  The Kafka model is just like the Service model, except it supports Apache Kafka for better scalability.  View the [architectural diagrams of each model](https://github.com/netobserv/network-observability-operator/blob/main/docs/Architecture.md#service-deployment-model) for more details.
+The Service model is sort of in between the two existing models, Direct and Kafka.  The Direct model deploys as a DaemonSet, so it runs a flowlogs-pipeline pod on each node.  The Kafka model is just like the Service model, except it supports Apache Kafka for better scalability.  View the [architectural diagrams of each model](https://github.com/netobserv/netobserv-operator/blob/main/docs/Architecture.md#service-deployment-model) for more details.
 
 The default setting is Service model with three flowlogs-pipeline pods.  You may need more pods if your cluster has heavy traffic or uses a low sampling interval (that is, samples more data).  For large clusters, it is still recommended to use the Kafka model.
 
@@ -225,6 +225,6 @@ Speaking of icons, they've been refreshed and updated to better represent the Ku
 
 This release provides features that give you better control on how resources are used with the Service deployment model and the new FlowCollectorSlice CRD.  There were improvements to the Network Health dashboard and support for recording rules.  Usability enhancements were made in the UI filters, along with a zero-click Loki setup for demonstration purposes.  Finally, the DNS name was added and the Kubernetes Gateway object is now recognized.
 
-We want to make a bigger push to serve the community, so if there's something on your wishlist, go to the [discussion board](https://github.com/netobserv/network-observability-operator/discussions), and let us know what you have in mind!  Until next time...
+We want to make a bigger push to serve the community, so if there's something on your wishlist, go to the [discussion board](https://github.com/netobserv/netobserv-operator/discussions), and let us know what you have in mind!  Until next time...
 
 _Special thanks to Julien Pinsonneau, Olivier Cazade, Amogh Rameshappa Devapura, Leandro Beretta, Joel Takvorian, and Mehul Modi for reviewing this article._
