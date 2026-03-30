@@ -264,7 +264,7 @@ Now the application is effectively broken from the user’s perspective.
 To observe the effect, we generate traffic through the application:
 
 ```bash
-for i in {1..100}; do curl -s http://<bookinfo-url>/productpage > /dev/null; done
+for i in \{1..100\}; do curl -s http://<bookinfo-url>/productpage > /dev/null; done
 ```
 
 At this point:
