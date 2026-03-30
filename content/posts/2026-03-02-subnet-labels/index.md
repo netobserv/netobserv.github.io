@@ -106,7 +106,7 @@ In FlowMetrics, when there are several filters for the same key, those filters a
 In Prometheus, you can query them with the following `promQL`:
 
 ```
-topk(10, sum(rate(netobserv_cluster_external_egress_bytes_total{SrcK8S_Namespace!=""}[2m])) by (SrcK8S_Namespace, SrcK8S_OwnerName))
+topk(10, sum(rate(netobserv_cluster_external_egress_bytes_total{ SrcK8S_Namespace!="" }[2m])) by (SrcK8S_Namespace, SrcK8S_OwnerName))
 ```
 
 ![Prometheus/promql for external egress traffic](./external-promql.png)
