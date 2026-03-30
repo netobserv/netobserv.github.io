@@ -26,7 +26,7 @@ These built-in rules provide immediate diagnostic value without requiring users 
 
 But in real-world environments, every application behaves differently. What is considered “healthy” for one workload might not apply to another.
 
-This is where Network Health becomes particularly powerful: it allows you to define **custom health signals** tailored to the specific behavior and expectations of your applications.
+This is where Network Health becomes particularly powerful: it allows you to define **custom health rules** tailored to the specific behavior and expectations of your applications.
 
 The dashboard is organized by scope: **Global**, **Nodes**, **Namespaces**, and **Workloads**. The tab counts show how many items you have in each scope, so you know at a glance where to look.
 
@@ -192,7 +192,7 @@ This is an important detail:
 - With Istio, metrics can be reported from the **source** or the **destination**
 - Using `reporter="source"` ensures we capture **failed requests even when they are not successfully handled by the destination workload** (for example, connection failures, early aborts, or fault injections)
 
-Instead of relying on alerts, we use the following **recording rule** so that the signal is always visible, even before it becomes critical.
+We use the following **recording rule**:
 
 ```yaml
 apiVersion: monitoring.coreos.com/v1
@@ -312,7 +312,7 @@ in just a few clicks.
 
 We've seen:
 
-- What the Network Health dashboard is and how it surfaces built-in signals (DNS, packet drops, latency, ingress errors, and more).
+- What the Network Health dashboard is and how it surfaces built-in rules (DNS, packet drops, latency, ingress errors, and more).
 - The difference between **alert** and **recording** rules, and when to use each.
 - How to configure custom health rules (alerts and recording rules) so they appear in the dashboard.
 - A **BookInfo** walkthrough: **`PrometheusRule`** with Istio metrics plus **VirtualService** fault injection (**100% / HTTP 500** on **reviews**); **Network Health → Namespaces** marks **bookinfo** as **critical** showing the HTTP 5xx error rate.
