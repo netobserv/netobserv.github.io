@@ -1,3 +1,4 @@
 data/*.json
 .quarkus
 target/
+node_modules/
