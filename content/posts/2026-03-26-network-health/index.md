@@ -14,15 +14,15 @@ Issues like packet drops, DNS failures, or policy denials often require digging 
 
 NetObserv now features a dedicated **Network Health** section designed to provide a high-level overview of your cluster's networking status. This interface relies on a set of predefined health rules that automatically surface potential issues by analyzing NetObserv metrics.
 
-Out of the box, these rules monitor several key signals such as:
+Out of the box and **assuming the specific eBPF feature is enabled**, these rules monitor several key signals such as:
 
-- **DNS errors and NXDOMAIN responses**
-- **packet drops**
-- **network policy denials**
-- **latency trends**
-- **ingress errors**
+- **DNS errors and NXDOMAIN responses** (requires `DNSTracking: true`)
+- **Packet drops** (requires `PacketDrop: true`)
+- **Network policy denials** (enabled by default)
+- **Latency trends** (requires `FlowRTT: true`)
+- **Ingress errors** (enabled by default)
 
-These built-in rules provide immediate diagnostic value without requiring users to write complex PromQL queries.
+These built-in rules provide immediate diagnostic value without requiring users to write complex PromQL queries. Rules are only created when their corresponding eBPF feature is enabled in the FlowCollector configuration.
 
 But in real-world environments, every application behaves differently. What is considered “healthy” for one workload might not apply to another.
 
@@ -42,7 +42,7 @@ The following images describe some health rules in two different scopes:
 
 ## Understanding Health Rules: Alerts vs Recording Rules
 
-Behind the scenes, the Network Health section is powered by **PrometheusRule** resources. NetObserv supports two different rule modes, each designed for a different monitoring strategy.
+Behind the scenes, the Network Health section is powered by **PrometheusRule** resources. The **PrometheusRule** supports two different rule modes, each designed for a different monitoring strategy.
 
 ### Alert mode
 
@@ -69,9 +69,167 @@ Recording rules are particularly useful for:
 In practice:
 
 - Use **alert rules** when you need to be notified of immediate issues  
-- Use **recording rules** when you want continuous visibility into how a metric evolves over time  
+- Use **recording rules** when you want continuous visibility into how a metric evolves  
 
 For Network Health, recording rules are often a better fit, as they allow you to observe degradation trends before they become critical.
+
+## Configuring the Built-in Health Rules
+
+NetObserv includes predefined health rules that are automatically enabled when their required features are active. You can customize these rules to match your cluster's specific needs.
+
+### Available Built-in Rules
+
+| Rule Name | Monitors | Required Feature | Default Threshold |
+|-----------|----------|------------------|-------------------|
+| `DNSErrors` | DNS query failures | `DNSTracking: true` | Critical: >10% |
+| `DNSNxDomain` | NXDOMAIN responses | `DNSTracking: true` | Warning: >5% |
+| `PacketDropsByDevice` | Interface-level drops | `PacketDrop: true` | Critical: >5% |
+| `PacketDropsByKernel` | Kernel-level drops | `PacketDrop: true` | Critical: >5% |
+| `IPsecErrors` | IPsec encryption failures | Default flows | Warning: >1% |
+| `NetpolDenied` | Network policy denials | Default flows | Info: >10/min |
+| `LatencyHighTrend` | RTT latency increases | `FlowRTT: true` | Warning: +50ms trend |
+| `Ingress5xxErrors` | HTTP 5xx responses | Default flows | Critical: >5% |
+| `IngressHTTPLatencyTrend` | HTTP latency increases | Default flows | Warning: +200ms trend |
+
+**Note:** Rules are only created if their required eBPF feature is enabled in the FlowCollector configuration.
+
+### Adjusting Thresholds
+
+You can override default thresholds via the FlowCollector custom resource:
+
+```yaml
+apiVersion: flows.netobserv.io/v1beta2
+kind: FlowCollector
+metadata:
+  name: cluster
+spec:
+  agent:
+    ebpf:
+      features:
+        - DNSTracking      # Required for DNS rules
+        - FlowRTT          # Required for latency rules
+        - PacketDrop       # Required for packet drop rules
+  
+  processor:
+    metrics:
+      healthRules:
+        # Customize DNSErrors rule
+        - template: DNSErrors
+          mode: Alert              # Can be Alert or Recording
+          variants:
+            # Global threshold (no grouping)
+            - thresholds:
+                critical: "15"     # Increased from default 10%
+                warning: "8"       # Added warning level
+            
+            # Per-namespace threshold with multiple severity levels
+            - thresholds:
+                critical: "20"
+                warning: "10"
+                info: "5"
+              groupBy: Namespace
+        
+        # Customize PacketDropsByKernel as Recording rule
+        - template: PacketDropsByKernel
+          mode: Recording          # Continuous tracking, no alerts
+          variants:
+            - thresholds:
+                critical: "8"      # Increased from default 5%
+                warning: "5"
+                info: "3"
+              groupBy: Node
+```
+
+**Important:** When you configure a template, it **replaces** the default configuration. To add a variant while keeping the defaults, you must include the default variant in your configuration.
+
+### Disabling Rules
+
+If certain rules don't apply to your environment, you can disable them:
+
+```yaml
+spec:
+  processor:
+    metrics:
+      disableAlerts:
+        - DNSNxDomain        # Disable if NXDOMAIN is expected
+        - NetpolDenied       # Disable if policies are intentionally restrictive
+```
+
+**Note:** If a rule is both disabled (via `disableAlerts`) and configured (via `healthRules`), the disable setting takes precedence.
+
+### Alert vs. Recording Mode
+
+Each built-in rule template can operate in one or both modes, configurable at the template level or per-variant.
+
+**Alert Mode:**
+- Integrates with Alertmanager
+- Sends notifications when thresholds are exceeded
+- Requires threshold to be sustained for a duration (e.g., `for: 5m`)
+  - **"Sustained"** means the condition must remain true for the specified duration before firing
+  - Shows as **pending** while waiting, **firing** once duration is met
+- Appears in Network Health only when **pending** or **firing**
+
+**Recording Mode:**
+- Continuously computes and stores metric values
+- No Alertmanager integration
+- Appears in Network Health as soon as value reaches lowest threshold (info level)
+- Better for trend analysis and reducing alert fatigue
+
+**How to configure modes:**
+
+You can set `mode` at the **template level** (applies to all variants):
+
+```yaml
+healthRules:
+  - template: DNSErrors
+    mode: Alert              # All variants will be alerts
+    variants:
+      - thresholds:
+          critical: "15"
+      - thresholds:
+          warning: "10"
+        groupBy: Namespace
+```
+
+**Or** set `mode` at the **variant level** (takes precedence over template-level):
+
+```yaml
+healthRules:
+  - template: DNSErrors
+    mode: Alert              # Default mode for variants without explicit mode
+    variants:
+      - thresholds:          # Variant 1: Alert (inherits from template)
+          critical: "15"
+      
+      - mode: Recording      # Variant 2: Recording (overrides template)
+        thresholds:
+          critical: "20"
+          warning: "10"
+          info: "5"
+        groupBy: Namespace
+```
+
+This creates **two health rules** from the same template:
+- One **alert rule** for global DNS errors (critical at 15%)
+- One **recording rule** for per-namespace DNS errors (tracked continuously)
+
+**For custom rules:** You can create separate PrometheusRule resources - one alert and one recording - monitoring the same metric. They will appear as **separate health rules** in the dashboard.
+
+### Runbooks and Troubleshooting
+
+Each built-in health rule comes with a **detailed runbook** that includes:
+- What the rule monitors and why it matters
+- Common root causes
+- Step-by-step investigation procedures
+- Resolution recommendations
+- Links to relevant documentation
+
+**Accessing Runbooks:**
+1. In the Network Health dashboard, click on any violation
+2. Click "View runbook" in the rule details panel
+3. Or view all runbooks at: [NetObserv Runbooks](https://github.com/openshift/runbooks/tree/master/alerts/network-observability-operator)
+
+For complete configuration details, see the [Health Rules documentation](https://github.com/netobserv/netobserv-operator/blob/main/docs/HealthRules.md).
 
 ## Health in the topology
 
@@ -125,43 +283,323 @@ netobserv: "true"
 
 on both the `PrometheusRule` and each rule’s `labels`.
 
-### Example: custom recording rule
+### Example: Monitoring Pod Restart Rate
 
-The following example defines a simple recording rule and shows it in the Global tab with custom thresholds:
+Before diving into a full-featured demo, let’s look at a practical recording rule example.
+
+This rule tracks pod restart rates per namespace, which often correlates with network health issues:
 
 ```yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: my-recording-rules
+  name: pod-restart-health
   namespace: netobserv
   labels:
     netobserv: "true"
   annotations:
-    netobserv.io/network-health: |
+    netobserv_io_network_health: |
       {
-        "my_simple_number": {
-          "summary": "Test metric (value: {{ $value }})",
-          "description": "Numeric value to test thresholds.",
-          "netobserv_io_network_health": "{\"unit\":\"\",\"upperBound\":\"100\",\"recordingThresholds\":{\"info\":\"10\",\"warning\":\"25\",\"critical\":\"50\"}}"
+        "pod_restart_rate": {
+          "summary": "Namespace {{ $labels.namespace }} has {{ $value }} pod restarts/min",
+          "description": "High pod restart rate in {{ $labels.namespace }} may indicate application issues affecting network connectivity.",
+          "netobserv_io_network_health": "{\"unit\":\"restarts/min\",\"upperBound\":\"10\",\"namespaceLabels\":[\"namespace\"],\"recordingThresholds\":{\"info\":\"1\",\"warning\":\"3\",\"critical\":\"5\"}}"
         }
       }
 spec:
   groups:
-    - name: SimpleNumber
+    - name: PodRestartHealth
       interval: 30s
       rules:
-        - record: my_simple_number
-          expr: vector(25)
+        - record: pod_restart_rate
+          expr: |
+            sum(rate(kube_pod_container_status_restarts_total[5m])) by (namespace) * 60
           labels:
             netobserv: "true"
 ```
 
-While this example is intentionally simple, the same mechanism applies to more complex metrics, including real application signals.
+**Why this correlates with network health:**
 
-So far, we've looked at how Network Health works and how to extend it.
+Frequent pod restarts often indicate underlying network issues:
+- **DNS failures**: Pods crash when they can’t resolve service names during startup
+- **Health check failures**: Network latency causes liveness/readiness probes to timeout
+- **Service mesh issues**: Envoy sidecar crashes due to misconfigured network policies
+- **Connection failures**: Pods fail to connect to databases or external APIs
 
-Let’s now put this into practice with a concrete example.
+This recording rule appears in the **Namespaces** tab (due to `namespaceLabels: ["namespace"]`) and helps identify namespaces where network issues are impacting application stability.
+
+## How to Create and Test Custom Rules
+
+Creating custom health rules involves several steps. Here’s a practical workflow:
+
+### Step 1: Identify What to Monitor
+
+Determine the metric and threshold that indicates a health issue:
+- What metric indicates the problem? (e.g., `istio_requests_total`)
+- What value indicates unhealthy state? (e.g., 5xx responses > 5%)
+- What scope? (global, per-namespace, per-workload)
+
+### Step 2: Test the PromQL Query
+
+**Before creating the PrometheusRule**, validate your PromQL query in Prometheus:
+
+1. Open the Prometheus UI (or OpenShift Observe → Metrics)
+2. Test your query interactively:
+
+```promql
+# Example: Calculate 5xx error rate per service
+(
+  sum(rate(istio_requests_total{reporter="source", response_code=~"5.."}[5m])) 
+    by (destination_service_name, destination_service_namespace)
+  /
+  sum(rate(istio_requests_total{reporter="source"}[5m])) 
+    by (destination_service_name, destination_service_namespace)
+  * 100
+)
+```
+
+3. Verify the query returns expected results
+4. Check the labels in the output - these will be used in `summary` and `description`
+
+💡 **Tip:** Use the Query Browser to see what labels are available: click on any metric result to inspect its labels.
+
+### Step 3: Choose Rule Mode
+
+Decide between **Alert** or **Recording** rule:
+
+| Use Alert if... | Use Recording if... |
+|----------------|---------------------|
+| You want Alertmanager notifications | You want continuous visibility |
+| The issue requires immediate action | You’re tracking trends over time |
+| You need integration with PagerDuty/Slack | You want to avoid alert fatigue |
+
+**Can you use both?** Yes! You can create a recording rule for continuous tracking AND an alert rule that triggers only when critical. Example:
+
+```yaml
+# Recording rule: track continuously
+- record: service_5xx_rate_percent
+  expr: (rate(errors[5m]) / rate(requests[5m])) * 100
+
+# Alert rule: fire only when critical
+- alert: Service5xxHigh
+  expr: service_5xx_rate_percent > 10
+  for: 5m  # Must stay above threshold for 5 minutes
+```
+
+### Step 4: Build the PrometheusRule YAML
+
+Use this template:
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: my-custom-rule          # ← Your rule name
+  namespace: netobserv           # ← Or your preferred namespace
+  labels:
+    netobserv: "true"            # ← REQUIRED (must be quoted)
+  annotations:
+    # For RECORDING rules, metadata goes here
+    netobserv_io_network_health: |
+      {
+        "my_metric_name": {      # ← Must match record: field below
+          "summary": "...",
+          "description": "...",
+          "netobserv_io_network_health": "{...}"
+        }
+      }
+spec:
+  groups:
+    - name: MyRuleGroup
+      interval: 30s              # ← How often to evaluate
+      rules:
+        - record: my_metric_name # ← Recording rule
+          # OR
+          # alert: MyAlertName    # ← Alert rule
+          
+          expr: |                # ← Your PromQL query (tested in Step 2)
+            your_promql_here
+            
+          labels:
+            netobserv: "true"    # ← REQUIRED (must be quoted)
+            # For alerts only:
+            # severity: critical  # ← critical, warning, or info
+            
+          # For ALERT rules, metadata goes here
+          annotations:
+            summary: "..."
+            description: "..."
+            netobserv_io_network_health: ‘{...}’
+```
+
+**Important Label Requirements:**
+
+The label `netobserv: "true"` is **required** and the value **must be quoted**:
+
+✅ Correct:
+```yaml
+labels:
+  netobserv: "true"
+```
+
+❌ Incorrect (will not work):
+```yaml
+labels:
+  netobserv: true    # Boolean - won’t be recognized
+```
+
+This applies to **both**:
+- PrometheusRule metadata labels
+- Individual rule labels within the spec
+
+### Step 5: Configure the Health Metadata
+
+The `netobserv_io_network_health` annotation is a JSON string with these fields:
+
+#### Basic Display Fields
+
+**`unit`** - The display unit for the metric value
+- Examples: `"%"`, `"ms"`, `"bytes/sec"`, `"requests/min"`
+- Use `""` (empty string) for dimensionless numbers
+- This only affects display, not calculations
+
+```json
+"unit": "%"          // Shows as "12.5%"
+"unit": "ms"         // Shows as "85ms"
+"unit": ""           // Shows as "42"
+```
+
+**`upperBound`** - Maximum expected value for scoring calculations
+- Used to compute health scores on a closed scale [0-10]
+- **Must be a quoted string**, even though it’s a number: `"100"`, not `100`
+- Metric values above this bound are clamped for scoring purposes
+- Doesn’t prevent values from exceeding it, just affects score calculation
+
+```json
+"upperBound": "100"   // For percentages (0-100%)
+"upperBound": "1000"  // For milliseconds (0-1000ms expected)
+"upperBound": "10"    // For rate metrics (0-10/sec expected)
+```
+
+**Why must numbers be quoted?**  
+JSON embedded in YAML annotations requires string values to avoid parsing issues. Using `"100"` is more reliable than `100`.
+
+#### Scope Fields (determines which tab)
+
+**`namespaceLabels`** - Array of label names containing namespace
+- Rule appears in **Namespaces** tab
+- Use the label name from your PromQL query results
+
+```json
+"namespaceLabels": ["namespace"]           // Standard Kubernetes label
+"namespaceLabels": ["destination_namespace"] // Istio label
+"namespaceLabels": ["k8s_namespace"]       // Custom label
+```
+
+**`nodeLabels`** - Array of label names containing node name
+- Rule appears in **Nodes** tab
+
+```json
+"nodeLabels": ["node"]
+"nodeLabels": ["instance"]
+```
+
+**`workloadLabels`** + **`kindLabels`** - Workload name and type
+- **Both required** for **Workloads** tab
+- `workloadLabels`: pod/deployment/statefulset name
+- `kindLabels`: resource type (Pod, Deployment, StatefulSet, etc.)
+
+```json
+"workloadLabels": ["pod"],
+"kindLabels": ["owner_kind"]
+```
+
+**Note:** `namespaceLabels`, `nodeLabels`, and `workloadLabels` are mutually exclusive for scope. If none provided, rule appears in **Global** tab.
+
+#### Threshold Fields (mode-specific)
+
+**For Alert rules only:**
+
+```json
+"threshold": "10"    // Must match the threshold in your alert expr
+                     // Example: expr: my_metric > 10
+```
+
+**For Recording rules only:**
+
+```json
+"recordingThresholds": {
+  "info": "5",       // Shows as blue/info when value ≥ 5
+  "warning": "10",   // Shows as orange/warning when value ≥ 10
+  "critical": "20"   // Shows as red/critical when value ≥ 20
+}
+```
+
+All threshold values are **quoted strings**.
+
+#### Complete Metadata Example
+
+Here’s a complete example with all fields:
+
+```yaml
+annotations:
+  # Use single quotes to avoid escaping internal double quotes
+  netobserv_io_network_health: ‘{
+    "unit": "%",
+    "upperBound": "100",
+    "namespaceLabels": ["destination_service_namespace"],
+    "workloadLabels": ["destination_service_name"],
+    "recordingThresholds": {
+      "info": "1",
+      "warning": "5",
+      "critical": "10"
+    }
+  }’
+```
+
+**Best Practice:** Use **single quotes** around the entire JSON value to avoid escaping every internal double quote:
+
+```yaml
+# ❌ Hard to read and error-prone
+netobserv_io_network_health: "{\"unit\":\"%\",\"upperBound\":\"100\"}"
+
+# ✅ Clean and readable
+netobserv_io_network_health: ‘{"unit":"%","upperBound":"100"}’
+```
+
+### Step 6: Apply and Verify
+
+```bash
+# Apply the PrometheusRule
+kubectl apply -f my-rule.yaml
+
+# Verify it was created
+kubectl get prometheusrule -n netobserv my-custom-rule
+
+# For recording rules, check the metric appears in Prometheus (wait ~1 minute)
+# Query: your_metric_name
+
+# For alert rules, check the alert state
+kubectl get prometheusrule my-custom-rule -o yaml | grep -A 10 status
+```
+
+### Step 7: Check Network Health Dashboard
+
+Wait 1-2 minutes, then:
+
+1. Open Network Health dashboard
+2. Navigate to the appropriate tab (Global/Nodes/Namespaces/Workloads)
+3. Your rule should appear when its threshold is exceeded
+
+**Troubleshooting:**
+- **Rule doesn’t appear:** Check `netobserv: "true"` label on both PrometheusRule and individual rule
+- **Wrong tab:** Verify `namespaceLabels`/`nodeLabels`/`workloadLabels` match your query’s label names
+- **No data:** Confirm your PromQL query returns results in Prometheus UI
+- **Metadata not showing:** Validate JSON syntax in `netobserv_io_network_health` annotation
+
+---
+
+Now let’s put this workflow into practice with a complete real-world example.
 
 ## Demo: Surfacing service failures with Network Health
 
@@ -173,7 +611,7 @@ Now the question becomes:
 
 > *How do you make this visible at a glance for cluster administrators, without digging into Prometheus queries?*
 
-This is exactly where **Network Health** comes into play.
+This is where **Network Health** becomes particularly useful.
 
 ### Step 1 — Define the health signal
 
@@ -264,7 +702,7 @@ Now the application is effectively broken from the user’s perspective.
 To observe the effect, we generate traffic through the application:
 
 ```bash
-for i in \{1..100\}; do curl -s http://<bookinfo-url>/productpage > /dev/null; done
+for i in {1..100}; do curl -s http://<bookinfo-url>/productpage > /dev/null; done
 ```
 
 At this point:
