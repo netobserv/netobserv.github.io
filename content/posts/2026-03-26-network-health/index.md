@@ -299,13 +299,13 @@ metadata:
     netobserv: "true"
   annotations:
     netobserv_io_network_health: |
-      {
-        "pod_restart_rate": {
+      {{
+        "pod_restart_rate": {{
           "summary": "Namespace {{ $labels.namespace }} has {{ $value }} pod restarts/min",
           "description": "High pod restart rate in {{ $labels.namespace }} may indicate application issues affecting network connectivity.",
-          "netobserv_io_network_health": "{\"unit\":\"restarts/min\",\"upperBound\":\"10\",\"namespaceLabels\":[\"namespace\"],\"recordingThresholds\":{\"info\":\"1\",\"warning\":\"3\",\"critical\":\"5\"}}"
-        }
-      }
+          "netobserv_io_network_health": "{{\"unit\":\"restarts/min\",\"upperBound\":\"10\",\"namespaceLabels\":[\"namespace\"],\"recordingThresholds\":{{\"info\":\"1\",\"warning\":\"3\",\"critical\":\"5\"}}}}"
+        }}
+      }}
 spec:
   groups:
     - name: PodRestartHealth
@@ -401,13 +401,13 @@ metadata:
   annotations:
     # For RECORDING rules, metadata goes here
     netobserv_io_network_health: |
-      {
-        "my_metric_name": {      # ← Must match record: field below
+      {{
+        "my_metric_name": {{      # ← Must match record: field below
           "summary": "...",
           "description": "...",
-          "netobserv_io_network_health": "{...}"
-        }
-      }
+          "netobserv_io_network_health": "{{...}}"
+        }}
+      }}
 spec:
   groups:
     - name: MyRuleGroup
@@ -429,7 +429,7 @@ spec:
           annotations:
             summary: "..."
             description: "..."
-            netobserv_io_network_health: ‘{...}’
+            netobserv_io_network_health: ‘{{...}}’
 ```
 
 **Important Label Requirements:**
@@ -528,11 +528,11 @@ JSON embedded in YAML annotations requires string values to avoid parsing issues
 **For Recording rules only:**
 
 ```json
-"recordingThresholds": {
+"recordingThresholds": {{
   "info": "5",       // Shows as blue/info when value ≥ 5
   "warning": "10",   // Shows as orange/warning when value ≥ 10
   "critical": "20"   // Shows as red/critical when value ≥ 20
-}
+}}
 ```
 
 All threshold values are **quoted strings**.
@@ -544,27 +544,27 @@ Here’s a complete example with all fields:
 ```yaml
 annotations:
   # Use single quotes to avoid escaping internal double quotes
-  netobserv_io_network_health: ‘{
+  netobserv_io_network_health: ‘{{
     "unit": "%",
     "upperBound": "100",
     "namespaceLabels": ["destination_service_namespace"],
     "workloadLabels": ["destination_service_name"],
-    "recordingThresholds": {
+    "recordingThresholds": {{
       "info": "1",
       "warning": "5",
       "critical": "10"
-    }
-  }’
+    }}
+  }}’
 ```
 
 **Best Practice:** Use **single quotes** around the entire JSON value to avoid escaping every internal double quote:
 
 ```yaml
 # ❌ Hard to read and error-prone
-netobserv_io_network_health: "{\"unit\":\"%\",\"upperBound\":\"100\"}"
+netobserv_io_network_health: "{{\"unit\":\"%\",\"upperBound\":\"100\"}}"
 
 # ✅ Clean and readable
-netobserv_io_network_health: ‘{"unit":"%","upperBound":"100"}’
+netobserv_io_network_health: ‘{{"unit":"%","upperBound":"100"}}’
 ```
 
 ### Step 6: Apply and Verify
@@ -642,13 +642,13 @@ metadata:
     netobserv: "true"
   annotations:
     netobserv.io/network-health: |
-      {
-        "bookinfo_service_5xx_rate_percent": {
+      {{
+        "bookinfo_service_5xx_rate_percent": {{
           "summary": "Service {{ $labels.destination_service_name }} is generating {{ $value }}% of 5xx errors",
           "description": "Percentage of HTTP 5xx server errors for requests to the {{ $labels.destination_service_name }} service, measured from source reporter over a 5-minute window.",
-          "netobserv_io_network_health": "{\"unit\":\"%\",\"upperBound\":\"100\",\"namespaceLabels\":[\"destination_service_namespace\"],\"workloadLabels\":[\"destination_service_name\"],\"recordingThresholds\":{\"info\":\"1\",\"warning\":\"25\",\"critical\":\"90\"}}"
-        }
-      }
+          "netobserv_io_network_health": "{{\"unit\":\"%\",\"upperBound\":\"100\",\"namespaceLabels\":[\"destination_service_namespace\"],\"workloadLabels\":[\"destination_service_name\"],\"recordingThresholds\":{{\"info\":\"1\",\"warning\":\"25\",\"critical\":\"90\"}}}}"
+        }}
+      }}
 spec:
   groups:
     - name: bookinfo-service-5xx
@@ -702,7 +702,7 @@ Now the application is effectively broken from the user’s perspective.
 To observe the effect, we generate traffic through the application:
 
 ```bash
-for i in {1..100}; do curl -s http://<bookinfo-url>/productpage > /dev/null; done
+for i in {{1..100}}; do curl -s http://<bookinfo-url>/productpage > /dev/null; done
 ```
 
 At this point:
