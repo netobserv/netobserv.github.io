@@ -349,10 +349,10 @@ Determine the metric and threshold that indicates a health issue:
 ```promql
 # Example: Calculate 5xx error rate per service
 (
-  sum(rate(istio_requests_total{reporter="source", response_code=~"5.."}[5m])) 
+  sum(rate(istio_requests_total{{reporter="source", response_code=~"5.."}}[5m])) 
     by (destination_service_name, destination_service_namespace)
   /
-  sum(rate(istio_requests_total{reporter="source"}[5m])) 
+  sum(rate(istio_requests_total{{reporter="source"}}[5m])) 
     by (destination_service_name, destination_service_namespace)
   * 100
 )
@@ -657,9 +657,9 @@ spec:
         - record: bookinfo_service_5xx_rate_percent
           expr: |
             (
-              sum(rate(istio_requests_total{ reporter="source", response_code=~"5.."}[5m])) by (destination_service, destination_service_name, destination_service_namespace)
+              sum(rate(istio_requests_total{{ reporter="source", response_code=~"5.."}}[5m])) by (destination_service, destination_service_name, destination_service_namespace)
               /
-              sum(rate(istio_requests_total{ reporter="source"}[5m])) by (destination_service, destination_service_name, destination_service_namespace)
+              sum(rate(istio_requests_total{{ reporter="source"}}[5m])) by (destination_service, destination_service_name, destination_service_namespace)
               * 100
             )
           labels:
