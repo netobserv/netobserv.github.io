@@ -273,19 +273,9 @@ Determine the metric and threshold that indicates a health issue:
 **Before creating the PrometheusRule**, validate your PromQL query in Prometheus:
 
 1. Open the Prometheus UI (or OpenShift Observe → Metrics)
-2. Test your query interactively:
+2. Test your query interactively. For example, to calculate 5xx error rate per service:
 
-```promql
-# Example: Calculate 5xx error rate per service
-(
-  sum(rate(istio_requests_total{{reporter="source", response_code=~"5.."}}[5m])) 
-    by (destination_service_name, destination_service_namespace)
-  /
-  sum(rate(istio_requests_total{{reporter="source"}}[5m])) 
-    by (destination_service_name, destination_service_namespace)
-  * 100
-)
-```
+`(sum(rate(istio_requests_total{reporter="source", response_code=~"5.."}[5m])) by (destination_service_name, destination_service_namespace) / sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_service_name, destination_service_namespace) * 100)`
 
 3. Verify the query returns expected results
 4. Check the labels in the output - these will be used in `summary` and `description`
