@@ -40,3 +40,10 @@ stleerh:
   profile: "https://github.com/stleerh"
   nickname: "stleerh"
   bio: ""
+lberetta:
+  name: "Leandro Beretta"
+  avatar: "https://github.com/leandroberetta.png"
+  profile: "https://github.com/leandroberetta"
+  nickname: "lberetta"
+  bio: |
+    I'm a software engineer working at Red Hat since 2015. I'm from Buenos Aires, Argentina.
