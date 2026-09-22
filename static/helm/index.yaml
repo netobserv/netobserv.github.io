@@ -10,6 +10,66 @@ entries:
         - title: Flow details
           url: https://netobserv.io/static/assets/images/about/network-traffic-main.png
     apiVersion: v2
+    appVersion: 2.0.0-community
+    created: "2026-09-22T12:46:18.498372738+02:00"
+    dependencies:
+    - alias: prom-stack
+      condition: install.prom-stack
+      name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: ~86.2.3
+    - condition: install.loki
+      name: loki-stack
+      repository: https://grafana.github.io/helm-charts
+      version: ~2.10.3
+    description: Network Observability in Kubernetes based on eBPF.
+    digest: ad6d3a6616565e0ee8bdd7d1fc4d92536f265c248896478d97ac00e0cee2ba72
+    home: https://netobserv.io/
+    icon: https://netobserv.io/static/assets/images/netobserv.svg
+    keywords:
+    - netobserv
+    - ebpf
+    - ipfix
+    - flow tracing
+    - netflows
+    - topology
+    - network
+    - observability
+    maintainers:
+    - email: jpinsonn@redhat.com
+      name: Julien Pinsonneau
+    - email: jtakvori@redhat.com
+      name: Joel Takvorian
+    - email: lberetta@redhat.com
+      name: Leandro Beretta
+    - email: ljira@redhat.com
+      name: Luis Jira
+    - email: mmahmoud2201@gmail.com
+      name: Mohamed S. Mahmoud
+    - email: ocazade@redhat.com
+      name: Olivier Cazade
+    - email: stlee@redhat.com
+      name: Steven Lee
+    name: netobserv-operator
+    sources:
+    - https://github.com/netobserv/netobserv-operator
+    - https://github.com/netobserv/flowlogs-pipeline
+    - https://github.com/netobserv/netobserv-ebpf-agent
+    - https://github.com/netobserv/netobserv-web-console
+    - https://github.com/netobserv/netobserv-cli
+    type: application
+    urls:
+    - https://netobserv.io/static/helm/netobserv-operator-2.0.0.tgz
+    version: 2.0.0
+  - annotations:
+      artifacthub.io/operator: "true"
+      artifacthub.io/operatorCapabilities: Deep Insights
+      artifacthub.io/screenshots: |
+        - title: Topology view
+          url: https://netobserv.io/static/assets/images/about/topology-main.png
+        - title: Flow details
+          url: https://netobserv.io/static/assets/images/about/network-traffic-main.png
+    apiVersion: v2
     appVersion: 1.12.0-community
     created: "2026-07-21T10:04:18.409298789+02:00"
     dependencies:
@@ -771,4 +831,4 @@ entries:
     urls:
     - https://netobserv.io/static/helm/netobserv-operator-1.8.0.tgz
     version: 1.8.0
-generated: "2026-07-21T10:04:18.320256069+02:00"
+generated: "2026-09-22T12:46:18.387604218+02:00"
