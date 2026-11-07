@@ -104,8 +104,8 @@ If you use Border Gateway Protocol (BGP), the flows can be enriched with the sou
 To set up routing and BGP on OpenShift, see [this article](https://developers.redhat.com/articles/2026/01/21/selective-network-hosting-bgp-router-openshift). Assuming you have created a UserDefinedNetwork resource and a couple of pods to talk to each other periodically, enable this feature by entering `oc edit flowcollector` and adding:
 
 ```yaml
-spec
-  processor
+spec:
+  processor:
     bgpEnrichment: true  # add this line
 ```
 
@@ -162,10 +162,9 @@ Networking is critical infrastructure, and without network observability, you're
 In OCP 5.0, network observability can be enabled through a feature gate. To enable the feature gate when creating a cluster with `openshift-install`, add the following to your **install-config.yaml** file:
 
 ```yaml
-spec:
-  featureSet: CustomNoUpgrade
-  customNoUpgrade:
-    enabled: [NetworkObservabilityInstall]
+featureSet: CustomNoUpgrade
+customNoUpgrade:
+  enabled: [NetworkObservabilityInstall]
 ```
 
 **Important:** The `CustomNoUpgrade` feature set prevents cluster upgrades. Use this configuration only in a test environment.
@@ -173,7 +172,7 @@ spec:
 Single Node OpenShift (SNO) clusters are excluded from the default installation policy. If you want it enabled even for SNO clusters, add the following to your **install-config.yaml** file:
 
 ```yaml
-spec:
+networking:
   networkObservability:
     installationPolicy: InstallAndEnable
 ```
