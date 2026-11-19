@@ -80,8 +80,10 @@ spec:
   processor:
     metrics:
       server:
-        scrapeInterval: 60  # seconds
+        scrapeInterval: 10  # seconds
 ```
+
+Lowering the `scrapeInterval` gives more precise, higher-resolution metrics, at the expense of increased CPU and storage usage. Raising it does the opposite. Make sure the `scrapeInterval` isn't too large because the Prometheus rate or range window should be at least four times the `scrapeInterval` or 40 seconds in this case. If your queries are less, the metrics may not be reliable.
 
 ## Cluster TLS security profile
 
